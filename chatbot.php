@@ -123,7 +123,7 @@ function callGroqAI($user_message, $context_data) {
     $api_url = GROQ_API_URL;
 
     if (empty($api_key) || $api_key === 'YOUR_GROQ_API_KEY_HERE') {
-        return "Groq API key belum dikonfigurasi. Silakan hubungi admin.";
+        return "Groq API key is not configured. Please contact the admin.";
     }
 
     // Build context text
@@ -224,17 +224,17 @@ YOUR RULES:
 
     if ($response === false) {
         error_log("Groq request failed: unable to connect to $api_url");
-        return "Koneksi ke AI gagal. Coba lagi sebentar ya.";
+        return "Connection to AI failed. Please try again in a moment.";
     }
 
     if ($http_code !== 200) {
         error_log("Groq HTTP $http_code: $response");
-        return "AI sedang sibuk. Coba lagi dalam beberapa detik.";
+        return "AI is busy. Please try again in a few seconds.";
     }
 
     $data = json_decode($response, true);
     return $data['choices'][0]['message']['content']
-        ?? "Maaf, saya tidak bisa merespons saat ini. Coba lagi ya!";
+        ?? "Sorry, I cannot respond right now. Please try again!";
 }
 
 // Parse markdown → HTML
@@ -300,7 +300,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['message'])) {
         $posted_message    = $user_message;
 
     } elseif ($rateLimited) {
-        $ai_response = "Kamu sudah mengirim terlalu banyak pesan. Coba lagi dalam 1 jam ya!";
+        $ai_response = "You have sent too many messages. Please try again in 1 hour!";
     }
 }
 
@@ -578,7 +578,7 @@ include 'header.php';
   <div class="page-header">
     <div>
       <h1><i class="fas fa-robot" style="color: var(--primary);"></i> AI Health Assistant</h1>
-      <p class="muted">Powered by Zoonexa AI · Mengenal data kesehatanmu</p>
+      <p class="muted">Powered by Zoonexa AI · Get to know your health data</p>
     </div>
   </div>
 
@@ -593,13 +593,13 @@ include 'header.php';
       <span class="pill-value" style="font-size: 16px; text-transform: capitalize;"><?php echo e($userData['health_mode']); ?></span>
     </div>
     <div class="stat-pill">
-      <span class="pill-label">Streak (7 hari)</span>
-      <span class="pill-value"><?php echo $healthData['streak']; ?> <span style="font-size:14px;color:var(--text-muted)">hari</span></span>
+      <span class="pill-label">Streak (7 days)</span>
+      <span class="pill-value"><?php echo $healthData['streak']; ?> <span style="font-size:14px;color:var(--text-muted)">days</span></span>
     </div>
     <div class="stat-pill">
-      <span class="pill-label">Langganan</span>
+      <span class="pill-label">Subscription</span>
       <span class="pill-value" style="font-size:14px; color: <?php echo $userData['subscription_active'] ? 'var(--success)' : 'var(--warning)'; ?>;">
-        <?php echo $userData['subscription_active'] ? '✓ Aktif' : '✗ Free'; ?>
+        <?php echo $userData['subscription_active'] ? '✓ Active' : '✗ Free'; ?>
       </span>
     </div>
   </div>
@@ -614,21 +614,21 @@ include 'header.php';
         <div class="message bot-message">
           <div class="message-header">
             <strong><i class="fas fa-robot"></i> Zoonexa AI</strong>
-            <span class="message-time">Sekarang</span>
+            <span class="message-time">Now</span>
           </div>
           <div class="message-content">
-            Halo <strong><?php echo e($userData['username']); ?></strong>! 👋<br><br>
-            Saya Zoonexa AI — asisten kesehatanmu. Saya bisa melihat data kesehatanmu langsung dari database dan memberikan saran yang personal.<br><br>
+            Hello <strong><?php echo e($userData['username']); ?></strong>! 👋<br><br>
+            I am Zoonexa AI — your health assistant. I can view your health data directly from the database and give personalized advice.<br><br>
             <?php if (!empty($healthData['averages'])): ?>
-              <strong>📊 Ringkasan data kamu:</strong><br>
-              🚶 Rata-rata langkah: <strong><?php echo number_format($healthData['averages']['steps']); ?>/hari</strong><br>
-              😴 Rata-rata tidur: <strong><?php echo $healthData['averages']['sleep']; ?> jam/malam</strong><br>
-              ⚖️ Rata-rata berat: <strong><?php echo $healthData['averages']['weight_kg']; ?> kg</strong><br>
-              📈 Rata-rata BMI: <strong><?php echo $healthData['averages']['bmi']; ?></strong><br><br>
+              <strong>📊 Your data summary:</strong><br>
+              🚶 Average steps: <strong><?php echo number_format($healthData['averages']['steps']); ?>/day</strong><br>
+              😴 Average sleep: <strong><?php echo $healthData['averages']['sleep']; ?> hours/night</strong><br>
+              ⚖️ Average weight: <strong><?php echo $healthData['averages']['weight_kg']; ?> kg</strong><br>
+              📈 Average BMI: <strong><?php echo $healthData['averages']['bmi']; ?></strong><br><br>
             <?php else: ?>
-              Kamu belum punya data kesehatan. <a href="health_log.php">Mulai log pertamamu!</a><br><br>
+              You don't have any health data yet. <a href="health_log.php">Start your first log!</a><br><br>
             <?php endif; ?>
-            Ada yang bisa saya bantu hari ini? 💪
+            How can I help you today? 💪
           </div>
         </div>
 
@@ -636,7 +636,7 @@ include 'header.php';
         <?php foreach ($chat_history as $chat): ?>
           <div class="message user-message">
             <div class="message-header">
-              <strong><i class="fas fa-user"></i> Kamu</strong>
+              <strong><i class="fas fa-user"></i> You</strong>
               <span class="message-time"><?php echo date('H:i', strtotime($chat['timestamp'])); ?></span>
             </div>
             <div class="message-content"><?php echo e($chat['user']); ?></div>
@@ -658,7 +658,7 @@ include 'header.php';
           type="text"
           name="message"
           id="messageInput"
-          placeholder="Tanya tentang kesehatanmu..."
+          placeholder="Ask about your health..."
           autocomplete="off"
           autofocus
           required
@@ -666,13 +666,13 @@ include 'header.php';
         >
         <button type="submit" id="sendButton" <?php echo $rateLimited ? 'disabled' : ''; ?>>
           <i class="fas fa-paper-plane"></i>
-          <span>Kirim</span>
+          <span>Send</span>
         </button>
       </form>
 
       <?php if ($rateLimited): ?>
         <div style="padding: 8px 16px 12px; font-size: 12px; color: var(--warning); text-align: center;">
-          ⚠️ Batas pesan tercapai. Coba lagi dalam 1 jam.
+          ⚠️ Message limit reached. Try again in 1 hour.
         </div>
       <?php endif; ?>
     </div><!-- end chat-container -->
@@ -680,28 +680,28 @@ include 'header.php';
 
     <!-- ========= Right: Health Summary Sidebar ========= -->
     <div class="card" style="padding: 20px;">
-      <h3 style="font-size: 15px; margin-bottom: 4px;"><i class="fas fa-chart-bar"></i> Ringkasan Kesehatan</h3>
+      <h3 style="font-size: 15px; margin-bottom: 4px;"><i class="fas fa-chart-bar"></i> Health Summary</h3>
 
       <div class="health-summary">
         <?php if (!empty($healthData['averages'])): ?>
           <div class="health-metric">
             <div class="metric-icon"><i class="fas fa-walking"></i></div>
             <div class="metric-info">
-              <strong>Langkah</strong>
-              <p class="metric-value"><?php echo number_format($healthData['averages']['steps']); ?> avg/hari</p>
+              <strong>Steps</strong>
+              <p class="metric-value"><?php echo number_format($healthData['averages']['steps']); ?> avg/day</p>
             </div>
           </div>
           <div class="health-metric">
             <div class="metric-icon"><i class="fas fa-moon"></i></div>
             <div class="metric-info">
-              <strong>Tidur</strong>
-              <p class="metric-value"><?php echo $healthData['averages']['sleep']; ?> jam avg/malam</p>
+              <strong>Sleep</strong>
+              <p class="metric-value"><?php echo $healthData['averages']['sleep']; ?> hours avg/night</p>
             </div>
           </div>
           <div class="health-metric">
             <div class="metric-icon"><i class="fas fa-weight"></i></div>
             <div class="metric-info">
-              <strong>Berat Badan</strong>
+              <strong>Weight</strong>
               <p class="metric-value"><?php echo $healthData['averages']['weight_kg']; ?> kg avg</p>
             </div>
           </div>
@@ -715,29 +715,29 @@ include 'header.php';
           <div class="health-metric">
             <div class="metric-icon"><i class="fas fa-fire"></i></div>
             <div class="metric-info">
-              <strong>Streak Log</strong>
-              <p class="metric-value"><?php echo $healthData['streak']; ?> dari 7 hari terakhir</p>
+              <strong>Log Streak</strong>
+              <p class="metric-value"><?php echo $healthData['streak']; ?> of the last 7 days</p>
             </div>
           </div>
         <?php else: ?>
           <div class="no-data">
-            <p><i class="fas fa-clipboard-list"></i> Belum ada data kesehatan.</p>
-            <a href="health_log.php" class="btn-record"><i class="fas fa-plus-circle"></i> Mulai Logging</a>
+            <p><i class="fas fa-clipboard-list"></i> No health data yet.</p>
+            <a href="health_log.php" class="btn-record"><i class="fas fa-plus-circle"></i> Start Logging</a>
           </div>
         <?php endif; ?>
       </div>
 
       <!-- Quick Questions -->
       <div class="quick-questions">
-        <h4><i class="fas fa-lightbulb"></i> Coba tanya:</h4>
+        <h4><i class="fas fa-lightbulb"></i> Try asking:</h4>
         <div class="question-buttons">
           <?php
           $quickQuestions = [
-            ['fas fa-bed',        'Tips tidur lebih baik?'],
-            ['fas fa-dumbbell',   'Rekomendasi olahraga?'],
-            ['fas fa-chart-line', 'Analisis progres kesehatanku'],
-            ['fas fa-crown',      'Manfaat subscribe apa saja?'],
-            ['fas fa-bullseye',   'Mode apa yang cocok untukku?'],
+            ['fas fa-bed',        'Tips for better sleep?'],
+            ['fas fa-dumbbell',   'Exercise recommendations?'],
+            ['fas fa-chart-line', 'Analyze my health progress'],
+            ['fas fa-crown',      'What are the subscription benefits?'],
+            ['fas fa-bullseye',   'Which mode is right for me?'],
           ];
           foreach ($quickQuestions as $q):
           ?>
@@ -754,14 +754,14 @@ include 'header.php';
       <!-- Recent Logs -->
       <?php if (!empty($healthData['recent_logs'])): ?>
       <div class="recent-logs">
-        <h4><i class="fas fa-calendar-alt"></i> Log Terbaru</h4>
+        <h4><i class="fas fa-calendar-alt"></i> Recent Logs</h4>
         <div class="logs-table">
           <table>
             <thead>
               <tr>
-                <th>Tanggal</th>
-                <th>Langkah</th>
-                <th>Tidur</th>
+                <th>Date</th>
+                <th>Steps</th>
+                <th>Sleep</th>
                 <th>BMI</th>
               </tr>
             </thead>
@@ -770,7 +770,7 @@ include 'header.php';
               <tr>
                 <td><?php echo date('M d', strtotime($log['log_date'])); ?></td>
                 <td><?php echo number_format($log['steps'] ?? 0); ?></td>
-                <td><?php echo number_format($log['sleep_hours'] ?? 0, 1); ?>j</td>
+                <td><?php echo number_format($log['sleep_hours'] ?? 0, 1); ?>h</td>
                 <td><?php echo number_format($log['bmi'] ?? 0, 1); ?></td>
               </tr>
               <?php endforeach; ?>

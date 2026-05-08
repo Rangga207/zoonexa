@@ -14,8 +14,8 @@ include 'header.php';
     <div class="success-icon">⏳</div>
     <h1 style="color: var(--warning);">Payment Pending</h1>
     <p class="muted">
-      Terima kasih telah melakukan konfirmasi pembayaran! Tim admin kami akan segera 
-      memverifikasi transaksimu dalam waktu maksimal 1x24 jam.
+      Thank you for confirming your payment! Our admin team will verify your transaction 
+      within a maximum of 24 hours.
     </p>
 
     <div class="sub-details" style="margin: 24px 0; text-align: left;">
@@ -34,10 +34,10 @@ include 'header.php';
     </div>
 
     <div class="info-card" style="text-align: left; margin: 20px 0;">
-      <h3>💡 Langkah Selanjutnya</h3>
+      <h3>💡 Next Steps</h3>
       <p>
-        Kamu hanya perlu menunggu. Setelah admin mencentang (mengonfirmasi) transaksimu di sistem,
-        akun kamu akan otomatis berubah menjadi Zoonexa Pro dan semua fitur premium akan terbuka.
+        You just need to wait. Once the admin confirms your transaction in the system,
+        your account will automatically upgrade to Zoonexa Pro and all premium features will be unlocked.
       </p>
     </div>
 

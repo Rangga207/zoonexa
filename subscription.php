@@ -132,13 +132,13 @@ include 'header.php';
 
     <!-- Pay Button -->
     <div class="sub-pay-section" style="text-align: center; border-top: 1px solid var(--border); padding-top: 20px; margin-top: 20px;">
-      <h3 style="margin-bottom: 15px;">Scan QRIS Untuk Membayar</h3>
+      <h3 style="margin-bottom: 15px;">Scan QRIS to Pay</h3>
       
       <div style="background: white; padding: 15px; border-radius: 12px; display: inline-block; margin-bottom: 20px;">
         <!-- QRIS Image -->
         <img src="qris.png" alt="QRIS Zoonexa" style="width: 200px; height: 200px; display: block; border-radius: 8px; object-fit: contain; background: white;">
       </div>
-      <p class="muted" style="margin-bottom: 20px;">Silakan scan QR di atas melalui M-Banking atau E-Wallet pilihanmu (GoPay, OVO, Dana, dll).</p>
+      <p class="muted" style="margin-bottom: 20px;">Please scan the QR above via Mobile Banking or your preferred E-Wallet (GoPay, OVO, Dana, etc).</p>
 
       <?php if (isset($error)): ?>
         <div class="alert"><?php echo e($error); ?></div>
@@ -147,11 +147,11 @@ include 'header.php';
       <form method="POST">
         <input type="hidden" name="action" value="submit_payment">
         <button type="submit" class="hero-btn primary" style="width: 100%; justify-content: center;">
-          ✅ Saya Sudah Transfer
+          ✅ I Have Transferred
         </button>
       </form>
       <p class="muted small" style="margin-top: 12px; text-align: center;">
-        Admin akan memverifikasi pembayaranmu dalam waktu maksimal 1x24 jam.
+        The admin will verify your payment within a maximum of 24 hours.
       </p>
     </div>
   </div>

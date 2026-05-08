@@ -108,7 +108,7 @@ include 'header.php';
       <div class="alert success"><?php echo e($success); ?></div>
     <?php endif; ?>
 
-    <form method="post" class="form" id="health-form">
+    <form method="post" class="form" id="health-form" enctype="multipart/form-data">
       <div class="form-grid">
         <label>
           Date
@@ -141,7 +141,30 @@ include 'header.php';
                  step="0.01" readonly placeholder="Auto-calculated" required>
         </label>
       </div>
-      <button type="submit">Save Log</button>
+
+      <!-- Bonus Missions -->
+      <div style="background: var(--bg-secondary); padding: 20px; border-radius: 12px; margin-top: 20px; border: 1px solid var(--border);">
+        <h3 style="margin-bottom: 16px; font-size: 16px;">🎯 Bonus Missions</h3>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; align-items: start;">
+          <!-- Jogging -->
+          <div>
+            <label style="display: flex; align-items: center; gap: 10px; cursor: pointer; margin: 0; padding-top: 25px;">
+              <input type="checkbox" name="jogging_mission" style="width: 20px; height: 20px; border-radius: 4px; border: 1px solid var(--border); accent-color: var(--primary);">
+              <span style="font-weight: normal; color: var(--text-body);">🏃‍♂️ Jogging (Medium Task, +3 pts)</span>
+            </label>
+          </div>
+
+          <!-- Strava Proof -->
+          <div>
+            <span style="display: block; margin-bottom: 8px; color: var(--text-body); font-size: 14px; font-weight: 600;">Upload Strava Proof (Hardest Task, +5 pts)</span>
+            <div style="border: 2px dashed var(--border); padding: 15px; border-radius: 10px; background: var(--bg-card); display: flex; align-items: center;">
+              <input type="file" name="strava_proof" accept="image/*" style="width: 100%; border: none; padding: 0; background: transparent; font-size: 14px;">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <button type="submit" style="margin-top: 20px;">Save Log</button>
     </form>
   </div>
 

@@ -20,8 +20,21 @@
   <!-- Styles -->
   <link rel="stylesheet" href="style.css">
 
+  <!-- PWA Manifest & Meta -->
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#0d1117">
+  <link rel="apple-touch-icon" href="zoonexa-logo.png">
+
   <!-- Scripts -->
   <script defer src="script.js"></script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/zoonexa/sw.js')
+          .catch(err => console.error('Service Worker registration failed: ', err));
+      });
+    }
+  </script>
 </head>
 <body>
 
@@ -48,6 +61,7 @@
         <a href="health_log.php"><i class="fas fa-clipboard-list"></i> <span class="nav-label">Daily Log</span></a>
         <a href="health_modes.php"><i class="fas fa-bullseye"></i> <span class="nav-label">Modes</span></a>
         <a href="tips.php"><i class="fas fa-lightbulb"></i> <span class="nav-label">Tips</span></a>
+        <a href="merchandise.php"><i class="fas fa-shopping-bag"></i> <span class="nav-label">Merch</span></a>
         <a href="milestone.php" class="nav-milestone"><i class="fas fa-trophy"></i> <span class="nav-label">Milestones</span></a>
         <a href="chatbot.php" class="nav-chatbot">
           <i class="fas fa-robot"></i> <span class="nav-label">AI Assistant</span>
@@ -133,6 +147,9 @@
       </a>
       <a href="tips.php" class="mobile-nav-item">
         <i class="fas fa-lightbulb"></i> Tips
+      </a>
+      <a href="merchandise.php" class="mobile-nav-item">
+        <i class="fas fa-shopping-bag"></i> Merch
       </a>
       <a href="milestone.php" class="mobile-nav-item">
         <i class="fas fa-trophy"></i> Milestones

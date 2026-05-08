@@ -1,0 +1,21 @@
+{
+  "name": "Zoonexa",
+  "short_name": "Zoonexa",
+  "description": "Simple health tracking that actually works.",
+  "start_url": "/zoonexa/index.php",
+  "display": "standalone",
+  "background_color": "#0d1117",
+  "theme_color": "#3a86ff",
+  "icons": [
+    {
+      "src": "zoonexa-logo.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "zoonexa-logo.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
