@@ -12,9 +12,10 @@
   <!-- Font Awesome -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-  <!-- Preconnect for performance -->
+  <!-- Google Fonts: Inter (SF Pro substitute) -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
 
   <!-- Styles -->
   <link rel="stylesheet" href="style.css">
@@ -24,7 +25,13 @@
 </head>
 <body>
 
-<header class="site-header">
+<header class="site-header mac-window-header">
+  <!-- macOS Traffic Lights -->
+  <div class="mac-traffic-lights">
+    <div class="mac-btn close"></div>
+    <div class="mac-btn minimize"></div>
+    <div class="mac-btn maximize"></div>
+  </div>
   <div class="header-inner">
 
     <!-- Logo -->
@@ -52,6 +59,10 @@
             <i class="fas fa-chevron-down nav-chevron"></i>
           </button>
           <div class="nav-dropdown" id="userDropdown">
+            <?php if (isAdmin()): ?>
+              <a href="admin.php" style="color: var(--primary);"><i class="fas fa-shield-alt"></i> Admin Panel</a>
+              <div class="nav-dropdown-divider" style="height:1px; background:var(--border); margin:4px 0;"></div>
+            <?php endif; ?>
             <a href="profile.php"><i class="fas fa-user-circle"></i> Profile</a>
             <a href="subscription.php"><i class="fas fa-crown"></i> Subscription</a>
             <a href="logout.php" class="nav-logout-link"><i class="fas fa-sign-out-alt"></i> Logout</a>
@@ -130,6 +141,11 @@
         <i class="fas fa-robot"></i> AI Assistant
       </a>
       <div class="mobile-nav-divider"></div>
+      <?php if (isAdmin()): ?>
+        <a href="admin.php" class="mobile-nav-item" style="color: var(--primary);">
+          <i class="fas fa-shield-alt"></i> Admin Panel
+        </a>
+      <?php endif; ?>
       <a href="profile.php" class="mobile-nav-item">
         <i class="fas fa-user-circle"></i> Profile
       </a>

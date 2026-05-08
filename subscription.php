@@ -8,80 +8,28 @@ $activeSubscription = getActiveSubscription();
 $locked = isset($_GET['locked']) && $_GET['locked'] == '1';
 
 // =============================================
-// HANDLE: Create Midtrans payment (AJAX endpoint)
+// HANDLE: Submit Manual Payment
 // =============================================
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'create_payment') {
-    header('Content-Type: application/json');
-
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'submit_payment') {
     if ($subscribed) {
-        echo json_encode(['error' => 'You already have an active subscription.']);
-        exit;
-    }
-
-    // Generate unique order ID
-    $orderId = 'zoonexa-' . $user_id . '-' . time();
-
-    // Midtrans Snap configuration
-    $payload = [
-        'transaction_details' => [
-            'order_id'  => $orderId,
-            'amount'    => 10000,
-        ],
-        'customer_details' => [
-            'name'  => $_SESSION['username'],
-            'email' => $_SESSION['username'] . '@zoonexa.local', // placeholder email
-        ],
-        'item_details' => [
-            [
-                'id'       => 'zoonexa-sub-monthly',
-                'price'    => 10000,
-                'quantity' => 1,
-                'name'     => 'Zoonexa Pro — 1 Month',
-            ]
-        ],
-    ];
-
-    // Call Midtrans Snap API
-    $ch = curl_init();
-    $url = (MIDTRANS_IS_SANDBOX)
-        ? 'https://api.sandbox.midtrans.com/v1/payment/transactions'
-        : 'https://api.midtrans.com/v1/payment/transactions';
-
-    curl_setopt($ch, CURLOPT_URL, $url);
-    curl_setopt($ch, CURLOPT_POST, true);
-    curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($payload));
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-    curl_setopt($ch, CURLOPT_HTTPHEADER, [
-        'Content-Type: application/json',
-        'Authorization: Basic ' . base64_encode(MIDTRANS_SERVER_KEY . ':'),
-    ]);
-
-    $response = curl_exec($ch);
-    $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-    curl_close($ch);
-
-    if ($httpCode === 201) {
-        $snapData = json_decode($response, true);
-
+        $error = 'You already have an active subscription.';
+    } else {
+        // Generate unique order ID
+        $orderId = 'zoonexa-' . $user_id . '-' . time();
+        
         // Simpan pending subscription ke DB
         $stmt = $mysqli->prepare("
-            INSERT INTO subscriptions (user_id, midtrans_order_id, status, amount_paid)
-            VALUES (?, ?, 'pending', 10000)
+            INSERT INTO subscriptions (user_id, midtrans_order_id, status, amount_paid, payment_method)
+            VALUES (?, ?, 'pending', 10000, 'qris_manual')
         ");
         $stmt->bind_param('is', $user_id, $orderId);
         $stmt->execute();
         $stmt->close();
 
-        echo json_encode([
-            'success'  => true,
-            'snap_token' => $snapData['token'],
-            'order_id'   => $orderId,
-        ]);
-    } else {
-        error_log('Midtrans error: ' . $response);
-        echo json_encode(['error' => 'Payment initialization failed. Please try again.']);
+        // Redirect ke pending page
+        header('Location: subscription-pending.php?order_id=' . $orderId);
+        exit;
     }
-    exit;
 }
 
 // =============================================
@@ -183,12 +131,27 @@ include 'header.php';
     </div>
 
     <!-- Pay Button -->
-    <div class="sub-pay-section">
-      <button type="button" id="pay-btn" class="btn-pay">
-        💳 Subscribe Now — Rp 10,000
-      </button>
+    <div class="sub-pay-section" style="text-align: center; border-top: 1px solid var(--border); padding-top: 20px; margin-top: 20px;">
+      <h3 style="margin-bottom: 15px;">Scan QRIS Untuk Membayar</h3>
+      
+      <div style="background: white; padding: 15px; border-radius: 12px; display: inline-block; margin-bottom: 20px;">
+        <!-- Generate QR Image Placeholder -->
+        <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=ZoonexaPay-Rp10000" alt="QRIS Zoonexa" style="width: 200px; height: 200px; display: block; border-radius: 8px;">
+      </div>
+      <p class="muted" style="margin-bottom: 20px;">Silakan scan QR di atas melalui M-Banking atau E-Wallet pilihanmu (GoPay, OVO, Dana, dll).</p>
+
+      <?php if (isset($error)): ?>
+        <div class="alert"><?php echo e($error); ?></div>
+      <?php endif; ?>
+
+      <form method="POST">
+        <input type="hidden" name="action" value="submit_payment">
+        <button type="submit" class="hero-btn primary" style="width: 100%; justify-content: center;">
+          ✅ Saya Sudah Transfer
+        </button>
+      </form>
       <p class="muted small" style="margin-top: 12px; text-align: center;">
-        Secure payment via Midtrans. Cancel anytime.
+        Admin akan memverifikasi pembayaranmu dalam waktu maksimal 1x24 jam.
       </p>
     </div>
   </div>
@@ -218,60 +181,6 @@ include 'header.php';
   </div>
 </section>
 
-<!-- Midtrans Snap JS (only load if not subscribed) -->
-<?php if (!$subscribed): ?>
-<script src="https://app.sandbox.midtrans.com/snap/v2/snap.js"
-        data-client-key="<?php echo MIDTRANS_CLIENT_KEY; ?>"></script>
-<script>
-document.getElementById('pay-btn').addEventListener('click', function () {
-    const btn = this;
-    btn.disabled = true;
-    btn.textContent = 'Processing...';
-
-    // Step 1: Call our backend to create a Midtrans transaction
-    fetch('subscription.php', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: 'action=create_payment',
-    })
-    .then(res => res.json())
-    .then(data => {
-        if (data.error) {
-            alert(data.error);
-            btn.disabled = false;
-            btn.textContent = '💳 Subscribe Now — Rp 10,000';
-            return;
-        }
-
-        // Step 2: Open Midtrans Snap popup with the snap_token
-        snap.open(data.snap_token, {
-            onSuccess: function (result) {
-                // Payment success — redirect to success page
-                window.location.href = 'subscription-success.php?order_id=' + data.order_id;
-            },
-            onPending: function (result) {
-                // Payment pending (e.g. bank transfer) — redirect to pending page
-                window.location.href = 'subscription-pending.php?order_id=' + data.order_id;
-            },
-            onError: function (result) {
-                alert('Payment failed. Please try again.');
-                btn.disabled = false;
-                btn.textContent = '💳 Subscribe Now — Rp 10,000';
-            },
-            onClose: function () {
-                btn.disabled = false;
-                btn.textContent = '💳 Subscribe Now — Rp 10,000';
-            }
-        });
-    })
-    .catch(err => {
-        console.error(err);
-        alert('Something went wrong. Please try again.');
-        btn.disabled = false;
-        btn.textContent = '💳 Subscribe Now — Rp 10,000';
-    });
-});
-</script>
-<?php endif; ?>
+<!-- End Subscription Page -->
 
 <?php include 'footer.php'; ?>

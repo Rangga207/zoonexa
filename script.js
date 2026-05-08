@@ -213,3 +213,112 @@ function initFormValidation() {
         });
     });
 }
+
+// =============================================
+// SUPER SMOOTH SPA PAGE ROUTER
+// =============================================
+document.addEventListener('DOMContentLoaded', () => {
+    initSPARouter();
+});
+
+function initSPARouter() {
+    const mainContent = document.querySelector('main.page');
+    if (!mainContent) return;
+
+    // Attach click listener to all internal links
+    document.body.addEventListener('click', e => {
+        const link = e.target.closest('a');
+        if (!link) return;
+        
+        const href = link.getAttribute('href');
+        if (!href || href.startsWith('#') || href.startsWith('mailto:') || link.target === '_blank') return;
+
+        // Ensure it's the same origin
+        const url = new URL(link.href);
+        if (url.origin !== window.location.origin) return;
+        
+        // Skip some URLs like logout
+        if (href.includes('logout.php')) return;
+
+        e.preventDefault();
+        navigateTo(url.pathname + url.search);
+    });
+
+    window.addEventListener('popstate', () => {
+        navigateTo(window.location.pathname + window.location.search, true);
+    });
+}
+
+async function navigateTo(url, isPopState = false) {
+    const mainContent = document.querySelector('main.page');
+    if (!mainContent) return;
+
+    // Fade out
+    mainContent.classList.add('page-fade-out');
+
+    try {
+        const response = await fetch(url, {
+            headers: { 'X-Requested-With': 'XMLHttpRequest' }
+        });
+
+        // Check if we got redirected (e.g., requireSubscription redirect)
+        if (response.redirected) {
+            url = response.url; // Update url to the redirected one
+        }
+
+        const html = await response.text();
+
+        // Create a temporary document to extract title and main content
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(html, 'text/html');
+        
+        const newMain = doc.querySelector('main.page');
+        const newTitle = doc.querySelector('title');
+
+        if (!newMain) {
+            // Fallback: If parsing fails, do a normal redirect
+            window.location.href = url;
+            return;
+        }
+
+        // Wait for fade-out animation
+        await new Promise(r => setTimeout(r, 200));
+
+        // Swap content
+        mainContent.innerHTML = newMain.innerHTML;
+        if (newTitle) document.title = newTitle.textContent;
+
+        // Execute inline scripts inside the new main content
+        const scripts = mainContent.querySelectorAll('script');
+        scripts.forEach(oldScript => {
+            const newScript = document.createElement('script');
+            Array.from(oldScript.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value));
+            newScript.appendChild(document.createTextNode(oldScript.innerHTML));
+            oldScript.parentNode.replaceChild(newScript, oldScript);
+        });
+
+        // Re-initialize global scripts for new DOM
+        initBMICalculator();
+        initFormValidation();
+
+        // Update history
+        if (!isPopState) {
+            window.history.pushState({}, '', url);
+        }
+
+        // Fade in
+        mainContent.classList.remove('page-fade-out');
+        mainContent.classList.add('page-fade-in');
+        
+        // Scroll to top smoothly
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+
+        setTimeout(() => {
+            mainContent.classList.remove('page-fade-in');
+        }, 400);
+
+    } catch (err) {
+        console.error('SPA Error:', err);
+        window.location.href = url;
+    }
+}

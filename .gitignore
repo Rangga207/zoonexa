@@ -1,0 +1,9 @@
+# Ignore environment variables
+.env
+
+# Ignore macOS generated files
+.DS_Store
+
+# Ignore dependencies if any
+vendor/
+node_modules/

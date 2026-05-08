@@ -14,8 +14,8 @@ include 'header.php';
     <div class="success-icon">⏳</div>
     <h1 style="color: var(--warning);">Payment Pending</h1>
     <p class="muted">
-      Your payment is pending. If you chose a bank transfer, please complete the payment 
-      using the instructions provided by your bank. Your subscription will activate automatically once payment is confirmed.
+      Terima kasih telah melakukan konfirmasi pembayaran! Tim admin kami akan segera 
+      memverifikasi transaksimu dalam waktu maksimal 1x24 jam.
     </p>
 
     <div class="sub-details" style="margin: 24px 0; text-align: left;">
@@ -34,11 +34,10 @@ include 'header.php';
     </div>
 
     <div class="info-card" style="text-align: left; margin: 20px 0;">
-      <h3>💡 What's Next?</h3>
+      <h3>💡 Langkah Selanjutnya</h3>
       <p>
-        If you selected a bank transfer, check your banking app for the pending payment and complete it. 
-        Midtrans will automatically notify us once the payment is confirmed, and your subscription will activate immediately. 
-        This usually takes a few minutes to a few hours depending on your bank.
+        Kamu hanya perlu menunggu. Setelah admin mencentang (mengonfirmasi) transaksimu di sistem,
+        akun kamu akan otomatis berubah menjadi Zoonexa Pro dan semua fitur premium akan terbuka.
       </p>
     </div>
 

@@ -3,25 +3,41 @@
 session_start();
 
 // =============================================
+// LOAD ENVIRONMENT VARIABLES
+// =============================================
+function loadEnv($path) {
+    if (!file_exists($path)) return;
+    $lines = file($path, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+    foreach ($lines as $line) {
+        if (strpos(trim($line), '#') === 0) continue;
+        list($name, $value) = explode('=', $line, 2);
+        $name = trim($name);
+        $value = trim($value, " \t\n\r\0\x0B\"");
+        if (!array_key_exists($name, $_SERVER) && !array_key_exists($name, $_ENV)) {
+            putenv(sprintf('%s=%s', $name, $value));
+            $_ENV[$name] = $value;
+            $_SERVER[$name] = $value;
+        }
+    }
+}
+loadEnv(__DIR__ . '/.env');
+
+// =============================================
 // DATABASE CONFIG
 // =============================================
-define('DB_HOST', 'localhost');
-define('DB_NAME', 'zoonexa_db');
-define('DB_USER', 'root');
-define('DB_PASS', '');
+define('DB_HOST', getenv('DB_HOST') ?: 'localhost');
+define('DB_NAME', getenv('DB_NAME') ?: 'zoonexa_db');
+define('DB_USER', getenv('DB_USER') ?: 'root');
+define('DB_PASS', getenv('DB_PASS') ?: '');
 
 // Midtrans Config
-// Daftar di: https://dashboard.midtrans.com
-// Ganti dengan key milikmu
-define('MIDTRANS_SERVER_KEY', 'YOUR_SERVER_KEY_HERE');
-define('MIDTRANS_CLIENT_KEY', 'YOUR_CLIENT_KEY_HERE');
-define('MIDTRANS_IS_SANDBOX', true); // true = sandbox, false = production
+define('MIDTRANS_SERVER_KEY', getenv('MIDTRANS_SERVER_KEY') ?: 'YOUR_SERVER_KEY_HERE');
+define('MIDTRANS_CLIENT_KEY', getenv('MIDTRANS_CLIENT_KEY') ?: 'YOUR_CLIENT_KEY_HERE');
+define('MIDTRANS_IS_SANDBOX', getenv('MIDTRANS_IS_SANDBOX') === 'false' ? false : true);
 
 // Groq AI Config (untuk chatbot)
-// Dapatkan API key gratis di: https://console.groq.com
-// JANGAN hardcode di sini — simpan di environment variable atau file .env terpisah
-define('GROQ_API_KEY', getenv('GROQ_API_KEY') ?: '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');
-define('GROQ_API_URL', 'https://api.groq.com/openai/v1/chat/completions');
+define('GROQ_API_KEY', getenv('GROQ_API_KEY') ?: 'YOUR_GROQ_API_KEY_HERE');
+define('GROQ_API_URL', getenv('GROQ_API_URL') ?: 'https://api.groq.com/openai/v1/chat/completions');
 
 // =============================================
 // DATABASE CONNECTION
@@ -74,6 +90,11 @@ function requireLogin() {
         header('Location: login.php');
         exit;
     }
+}
+
+// Check if user is admin
+function isAdmin() {
+    return isLoggedIn() && isset($_SESSION['role']) && $_SESSION['role'] === 'admin';
 }
 
 // =============================================

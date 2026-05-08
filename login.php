@@ -18,7 +18,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($username === '' || $password === '') {
         $error = 'Please enter username and password.';
     } else {
-        $stmt = $mysqli->prepare('SELECT id, password_hash FROM users WHERE username = ?');
+        $stmt = $mysqli->prepare('SELECT id, password_hash, role FROM users WHERE username = ?');
         $stmt->bind_param('s', $username);
         $stmt->execute();
         $result = $stmt->get_result();
@@ -28,6 +28,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 // Login successful
                 $_SESSION['user_id'] = $row['id'];
                 $_SESSION['username'] = $username;
+                $_SESSION['role'] = $row['role'];
 
                 // Check and award milestones on login
                 checkAndAwardMilestones($row['id']);
