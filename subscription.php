@@ -135,8 +135,8 @@ include 'header.php';
       <h3 style="margin-bottom: 15px;">Scan QRIS Untuk Membayar</h3>
       
       <div style="background: white; padding: 15px; border-radius: 12px; display: inline-block; margin-bottom: 20px;">
-        <!-- Generate QR Image Placeholder -->
-        <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=ZoonexaPay-Rp10000" alt="QRIS Zoonexa" style="width: 200px; height: 200px; display: block; border-radius: 8px;">
+        <!-- QRIS Image -->
+        <img src="qris.png" alt="QRIS Zoonexa" style="width: 200px; height: 200px; display: block; border-radius: 8px; object-fit: contain; background: white;">
       </div>
       <p class="muted" style="margin-bottom: 20px;">Silakan scan QR di atas melalui M-Banking atau E-Wallet pilihanmu (GoPay, OVO, Dana, dll).</p>
 
