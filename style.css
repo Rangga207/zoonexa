@@ -175,54 +175,42 @@ body.theme-dark .text-vibrant { mix-blend-mode: plus-lighter; }
 }
 
 /* =============================================
-   HEADER — Full-Width iOS Frosted Glass
+   HEADER — iOS Full-Width Navigation Bar
    ============================================= */
+:root { --nav-h: 64px; }
+
 .mac-window-header {
-    /* iOS 18 style: full-width, strong blur, razor-thin border */
     position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    width: 100%;
-    max-width: 100%;
+    top: 0; left: 0; right: 0;
+    width: 100%; max-width: 100%;
     transform: none;
     height: var(--nav-h);
     z-index: 200;
 
-    /* Frosted glass */
-    background: rgba(8, 9, 15, 0.78);
-    backdrop-filter: blur(28px) saturate(200%) brightness(1.05);
-    -webkit-backdrop-filter: blur(28px) saturate(200%) brightness(1.05);
-
-    /* No border-radius — full width flush to edges */
+    /* Nearly-solid so hero gradient doesn't bleed through */
+    background: rgba(10, 11, 18, 0.96);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
     border-radius: 0;
 
-    /* Subtle bottom separator + top rim glow */
-    border-bottom: 0.5px solid rgba(255, 255, 255, 0.08);
-    box-shadow:
-        inset 0 1px 0 rgba(255, 255, 255, 0.06),
-        0 4px 24px rgba(0, 0, 0, 0.35);
-
-    transition: background 0.3s ease, box-shadow 0.3s ease;
+    /* Clean bottom line */
+    border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+    box-shadow: 0 1px 0 rgba(255, 255, 255, 0.03), 0 4px 32px rgba(0, 0, 0, 0.5);
+    transition: background 0.3s ease;
 }
 
-/* Traffic lights — hidden in full-width iOS header mode */
-.mac-traffic-lights {
-    display: none;
-}
+/* Traffic lights hidden */
+.mac-traffic-lights { display: none; }
 
 .mac-btn {
-    width: 13px;
-    height: 13px;
+    width: 13px; height: 13px;
     border-radius: 50%;
     position: relative;
     cursor: default;
     transition: filter 0.2s ease;
     flex-shrink: 0;
 }
-
 .mac-btn::before {
-    /* Symbol inside each button, hidden by default */
     content: '';
     position: absolute;
     inset: 0;
@@ -233,13 +221,10 @@ body.theme-dark .text-vibrant { mix-blend-mode: plus-lighter; }
     background-repeat: no-repeat;
     background-position: center;
 }
-
 .mac-traffic-lights:hover .mac-btn::before { opacity: 1; }
-
 .mac-btn.close    { background: var(--mac-close);    box-shadow: inset 0 0.5px 0 rgba(255,255,255,0.3); }
 .mac-btn.minimize { background: var(--mac-minimize); box-shadow: inset 0 0.5px 0 rgba(255,255,255,0.3); }
 .mac-btn.maximize { background: var(--mac-maximize); box-shadow: inset 0 0.5px 0 rgba(255,255,255,0.3); }
-
 .mac-btn.close::before {
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 10'%3E%3Cpath d='M3 3l4 4M7 3l-4 4' stroke='%23810000' stroke-width='1.2' stroke-linecap='round'/%3E%3C/svg%3E");
 }
@@ -250,16 +235,16 @@ body.theme-dark .text-vibrant { mix-blend-mode: plus-lighter; }
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 10'%3E%3Cpath d='M3 7l4-4M3 3h4v4' stroke='%23005400' stroke-width='1.1' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
 }
 
-/* Header inner — centered, full-width layout */
+/* Header inner — 3-column: logo | nav | user */
 .mac-window-header .header-inner {
     height: var(--nav-h);
-    max-width: 1280px;
+    max-width: 1440px;
     margin: 0 auto;
-    padding: 0 32px;
+    padding: 0 28px;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 16px;
+    gap: 20px;
 }
 
 .logo {
@@ -270,7 +255,7 @@ body.theme-dark .text-vibrant { mix-blend-mode: plus-lighter; }
     flex-shrink: 0;
     transition: opacity 0.2s ease, transform 0.25s var(--spring);
 }
-.logo:hover { opacity: 0.8; transform: scale(0.98); }
+.logo:hover { opacity: 0.75; transform: scale(0.97); }
 
 .logo-large {
     display: flex;
@@ -279,18 +264,12 @@ body.theme-dark .text-vibrant { mix-blend-mode: plus-lighter; }
 }
 
 .logo-image {
-    max-height: 30px;
+    max-height: 32px;
     width: auto;
     display: block;
 }
 
-.logo-icon {
-    color: var(--primary);
-    font-size: 20px;
-}
-
-.logo-icon { color: var(--primary); font-size: 17px; }
-
+.logo-icon { color: var(--primary); font-size: 18px; }
 .logo-text {
     font-weight: 700;
     font-size: 16px;
@@ -298,17 +277,17 @@ body.theme-dark .text-vibrant { mix-blend-mode: plus-lighter; }
     letter-spacing: -0.02em;
 }
 
-/* Desktop Nav — macOS Menu Bar style */
+/* Desktop Nav */
 .main-nav {
     display: flex;
     align-items: center;
-    gap: 2px;
+    gap: 1px;
     font-size: 13px;
 }
 
-.main-nav>a {
-    color: var(--text-body);
-    padding: 6px 11px;
+.main-nav > a {
+    color: rgba(255, 255, 255, 0.65);
+    padding: 7px 12px;
     border-radius: var(--radius-sm);
     font-weight: 500;
     font-size: 13px;
@@ -320,33 +299,44 @@ body.theme-dark .text-vibrant { mix-blend-mode: plus-lighter; }
     white-space: nowrap;
 }
 
-.main-nav>a:hover {
-    background: var(--bg-secondary);
-    color: var(--text-dark);
+.main-nav > a:hover {
+    background: rgba(255, 255, 255, 0.08);
+    color: rgba(255, 255, 255, 0.95);
 }
 
-.main-nav>a:active { transform: scale(0.96); }
+.main-nav > a:active { transform: scale(0.96); }
+.main-nav > a.active,
+.main-nav > a[aria-current="page"] {
+    background: rgba(255, 255, 255, 0.10);
+    color: white;
+}
 
-/* Nav CTA (Get Started) — macOS Filled Button */
+/* Nav icon — slightly smaller & muted */
+.main-nav > a > i {
+    font-size: 12px;
+    opacity: 0.7;
+}
+
+/* Nav CTA Button */
 .nav-cta {
-    background: var(--primary);
+    background: var(--primary) !important;
     color: white !important;
     font-weight: 600 !important;
     border-radius: var(--radius-pill) !important;
-    padding: 6px 14px !important;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.2), var(--rim-light-nested);
+    padding: 6px 16px !important;
+    box-shadow: 0 2px 10px rgba(16,185,129,0.3);
 }
 .nav-cta:hover {
     background: var(--primary-dark) !important;
     color: white !important;
-    transform: none;
+    transform: translateY(-1px) !important;
 }
 
-/* Nav AI Assistant Button — Emerald to Indigo pill */
+/* AI Assistant Button */
 .nav-chatbot {
     background: linear-gradient(135deg, #10b981 0%, #6366f1 100%);
     color: white !important;
-    padding: 6px 16px;
+    padding: 7px 16px;
     border-radius: var(--radius-pill);
     font-size: 13px;
     font-weight: 600;
@@ -354,44 +344,46 @@ body.theme-dark .text-vibrant { mix-blend-mode: plus-lighter; }
     align-items: center;
     gap: 6px;
     transition: all 0.2s var(--spring);
-    box-shadow: 0 2px 12px rgba(16, 185, 129, 0.35), inset 0 1px 0 rgba(255,255,255,0.15);
+    box-shadow: 0 2px 14px rgba(16, 185, 129, 0.30), inset 0 1px 0 rgba(255,255,255,0.15);
     border: none;
     letter-spacing: -0.01em;
+    white-space: nowrap;
 }
-.nav-chatbot:hover   { filter: brightness(1.1); transform: translateY(-1px); box-shadow: 0 4px 20px rgba(16,185,129,0.45); }
-.nav-chatbot:active  { transform: scale(0.96); }
+.nav-chatbot:hover  { filter: brightness(1.1); transform: translateY(-1px); box-shadow: 0 4px 20px rgba(16,185,129,0.45); }
+.nav-chatbot:active { transform: scale(0.96); }
 
 /* Nav Milestone */
-.nav-milestone { color: var(--text-body) !important; }
+.nav-milestone { color: rgba(255,255,255,0.65) !important; }
 .nav-milestone:hover { color: var(--warning) !important; }
 
-/* Nav User Dropdown */
+/* Nav User Controls area */
 .nav-user { position: relative; }
 
 .nav-username {
     display: inline-flex;
     align-items: center;
-    gap: 6px;
-    padding: 5px 10px 5px 8px;
+    gap: 7px;
+    padding: 6px 12px 6px 8px;
     border-radius: var(--radius-pill);
     font-size: 13px;
     font-weight: 500;
-    color: var(--text-dark);
+    color: rgba(255, 255, 255, 0.85);
     cursor: pointer;
-    background: var(--bg-secondary);
-    border: none;
-    box-shadow: var(--rim-light-nested);
+    background: rgba(255, 255, 255, 0.09);
+    border: 1px solid rgba(255, 255, 255, 0.10);
+    box-shadow: none;
     transition: all 0.2s var(--spring);
     font-family: inherit;
+    white-space: nowrap;
 }
-.nav-username:hover  { background: var(--bg-card); }
-.nav-username:active { transform: scale(0.95); }
+.nav-username:hover  { background: rgba(255, 255, 255, 0.14); color: white; }
+.nav-username:active { transform: scale(0.96); }
 
-/* User avatar in nav */
+/* User avatar circle */
 .nav-username .fa-user {
     width: 22px;
     height: 22px;
-    background: var(--primary);
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
     color: white;
     border-radius: 50%;
     font-size: 10px;
@@ -404,20 +396,18 @@ body.theme-dark .text-vibrant { mix-blend-mode: plus-lighter; }
 
 .nav-chevron {
     font-size: 10px;
-    color: var(--text-muted);
+    color: rgba(255,255,255,0.45);
     transition: transform 0.2s var(--spring);
 }
 .nav-username[aria-expanded="true"] .nav-chevron { transform: rotate(180deg); }
 
-/* Dropdown — macOS contextual menu style */
+/* Dropdown menu */
 .nav-dropdown {
     display: none;
     position: absolute;
     top: calc(100% + 8px);
     right: 0;
-    background: var(--bg-toolbar);
-    backdrop-filter: blur(48px) saturate(1.8);
-    -webkit-backdrop-filter: blur(48px) saturate(1.8);
+    background: rgba(14, 16, 26, 0.97);
     border-radius: var(--radius-md);
     box-shadow:
         var(--rim-light),
