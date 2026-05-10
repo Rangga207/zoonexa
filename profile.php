@@ -6,7 +6,7 @@ $user_id = $_SESSION['user_id'];
 $username = $_SESSION['username'];
 
 // Get user account info
-$stmt = $mysqli->prepare('SELECT created_at, health_mode, points, subscription_status FROM users WHERE id = ?');
+$stmt = $mysqli->prepare('SELECT created_at, health_mode, points, subscription_status, avatar_border FROM users WHERE id = ?');
 $stmt->bind_param('i', $user_id);
 $stmt->execute();
 $result = $stmt->get_result();
@@ -64,13 +64,37 @@ include 'header.php';
 
   <!-- Profile Header -->
   <div class="card big-card">
-    <div class="page-header">
+    <div class="page-header" style="display: flex; align-items: center; gap: 24px;">
+      <!-- User Avatar with Border Feature -->
+      <div style="
+        width: 80px; 
+        height: 80px; 
+        border-radius: 50%; 
+        background: var(--bg-main); 
+        display: flex; 
+        align-items: center; 
+        justify-content: center; 
+        font-size: 36px; 
+        font-family: 'Outfit', sans-serif;
+        font-weight: 800; 
+        color: var(--primary);
+        <?php if (!empty($user['avatar_border'])): ?>
+            border: 4px solid <?php echo e($user['avatar_border']); ?>;
+            box-shadow: 0 0 20px <?php echo e($user['avatar_border']); ?>;
+        <?php else: ?>
+            border: 2px solid var(--border);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+        <?php endif; ?>
+      ">
+        <?php echo strtoupper(substr($username, 0, 1)); ?>
+      </div>
+
       <div>
         <h1>Your Profile</h1>
         <p class="muted">A quick overview of your health journey.</p>
-      </div>
-      <div class="muted small">
-        Logged in as <span class="accent-text"><?php echo e($username); ?></span>
+        <div class="muted small" style="margin-top: 4px;">
+          Logged in as <span class="accent-text"><?php echo e($username); ?></span>
+        </div>
       </div>
     </div>
 

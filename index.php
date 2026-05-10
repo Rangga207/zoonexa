@@ -610,7 +610,31 @@ main.page {
     <span class="pulse-label"><i class="fas fa-bolt"></i> Live</span>
     <div class="pulse-ticker">
       <?php foreach ($pulseData as $p): ?>
-        <span style="margin-right:40px;">
+        <span style="margin-right:40px; display: inline-flex; align-items: center; gap: 8px;">
+          <!-- Mini Avatar -->
+          <div style="
+            width: 24px; 
+            height: 24px; 
+            border-radius: 50%; 
+            background: var(--bg-card); 
+            display: inline-flex; 
+            align-items: center; 
+            justify-content: center; 
+            font-size: 12px; 
+            font-family: 'Outfit', sans-serif;
+            font-weight: 800; 
+            color: var(--primary);
+            flex-shrink: 0;
+            <?php if (!empty($p['avatar_border'])): ?>
+                border: 2px solid <?php echo e($p['avatar_border']); ?>;
+                box-shadow: 0 0 10px <?php echo e($p['avatar_border']); ?>;
+            <?php else: ?>
+                border: 1px solid var(--border);
+            <?php endif; ?>
+          ">
+            <?php echo strtoupper(substr($p['username'], 0, 1)); ?>
+          </div>
+          
           <strong style="color:var(--text-body);"><?php echo e($p['username']); ?></strong>
           <span><?php echo $p['action']; ?></span>
         </span>
