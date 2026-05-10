@@ -163,10 +163,10 @@ body.theme-dark .text-vibrant { mix-blend-mode: plus-lighter; }
    LAYOUT
    ============================================= */
 .page {
-    min-height: calc(100vh - var(--nav-h));
-    max-width: 1200px;
+    min-height: calc(100vh - 80px);
+    max-width: 1160px;
     margin: 0 auto;
-    padding: var(--nav-h) 28px 64px;
+    padding: 96px 20px 48px;
     background: transparent;
 }
 
@@ -175,32 +175,34 @@ body.theme-dark .text-vibrant { mix-blend-mode: plus-lighter; }
 }
 
 /* =============================================
-   HEADER — iOS Full-Width Navigation Bar
+   HEADER — Floating macOS Window Chrome
    ============================================= */
-:root { --nav-h: 64px; }
-
 .mac-window-header {
+    background: var(--bg-toolbar);
+    backdrop-filter: blur(48px) saturate(1.8);
+    -webkit-backdrop-filter: blur(48px) saturate(1.8);
+    border-radius: var(--radius-xl);
+    box-shadow:
+        var(--rim-strong),
+        var(--shadow-md),
+        0 0 0 1px var(--border-strong);
     position: fixed;
-    top: 0; left: 0; right: 0;
-    width: 100%; max-width: 100%;
-    transform: none;
-    height: var(--nav-h);
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: calc(100% - 40px);
+    max-width: 1160px;
     z-index: 200;
-
-    /* Nearly-solid so hero gradient doesn't bleed through */
-    background: rgba(10, 11, 18, 0.96);
-    backdrop-filter: blur(20px) saturate(180%);
-    -webkit-backdrop-filter: blur(20px) saturate(180%);
-    border-radius: 0;
-
-    /* Clean bottom line */
-    border-bottom: 1px solid rgba(255, 255, 255, 0.07);
-    box-shadow: 0 1px 0 rgba(255, 255, 255, 0.03), 0 4px 32px rgba(0, 0, 0, 0.5);
-    transition: background 0.3s ease;
+    transition: box-shadow 0.3s var(--spring);
 }
 
-/* Traffic lights hidden */
-.mac-traffic-lights { display: none; }
+/* macOS Traffic Lights */
+.mac-traffic-lights {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 20px 0;
+}
 
 .mac-btn {
     width: 13px; height: 13px;
@@ -235,16 +237,14 @@ body.theme-dark .text-vibrant { mix-blend-mode: plus-lighter; }
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 10'%3E%3Cpath d='M3 7l4-4M3 3h4v4' stroke='%23005400' stroke-width='1.1' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
 }
 
-/* Header inner — 3-column: logo | nav | user */
+/* Header inner */
 .mac-window-header .header-inner {
-    height: var(--nav-h);
-    max-width: 1440px;
-    margin: 0 auto;
-    padding: 0 28px;
+    padding: 8px 20px 12px;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 20px;
+    gap: 16px;
+    border-top: none;
 }
 
 .logo {
@@ -982,11 +982,11 @@ body.theme-dark .alert.success { color: var(--success); }
         #0e4165 65%,
         #1e1b4b 100%
     );
-    margin: calc(-1 * var(--nav-h)) -28px 0;
-    padding: calc(var(--nav-h) + 52px) 28px 72px;
+    margin: -96px -20px 0;
+    padding: 128px 24px 60px;
     position: relative;
     overflow: hidden;
-    border-radius: 0 0 32px 32px;
+    border-radius: 0 0 var(--radius-xl) var(--radius-xl);
     box-shadow: 0 8px 48px rgba(0,0,0,0.6);
     border-bottom: none;
 }
