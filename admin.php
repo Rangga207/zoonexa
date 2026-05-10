@@ -74,6 +74,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
     $success = "Bonus mission rejected.";
 }
 
+// Handle User Deletion
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'delete_user') {
+    $user_id_to_delete = (int)$_POST['user_id'];
+    
+    if ($user_id_to_delete === $_SESSION['user_id']) {
+        $error = "You cannot delete your own admin account.";
+    } else {
+        // Cascade delete all related user data
+        $mysqli->query("DELETE FROM health_logs WHERE user_id = $user_id_to_delete");
+        $mysqli->query("DELETE FROM bonus_missions WHERE user_id = $user_id_to_delete");
+        $mysqli->query("DELETE FROM merchandise_orders WHERE user_id = $user_id_to_delete");
+        $mysqli->query("DELETE FROM subscriptions WHERE user_id = $user_id_to_delete");
+        
+        $stmt = $mysqli->prepare("DELETE FROM users WHERE id = ?");
+        $stmt->bind_param("i", $user_id_to_delete);
+        if ($stmt->execute()) {
+            $success = "Member successfully removed from the system.";
+        }
+        $stmt->close();
+    }
+}
+
 // Fetch Stats
 $res = $mysqli->query("SELECT COUNT(id) AS total FROM users");
 $totalUsers = $res->fetch_assoc()['total'];
@@ -131,6 +153,16 @@ $stmt->execute();
 $pendingMissions = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
 $stmt->close();
 
+// Fetch All Users for Member Management
+$stmt = $mysqli->prepare("
+    SELECT id, username, role, points, created_at 
+    FROM users 
+    ORDER BY role ASC, created_at DESC
+");
+$stmt->execute();
+$allUsers = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+$stmt->close();
+
 $page_title = 'Admin Panel';
 include 'header.php';
 ?>
@@ -145,6 +177,9 @@ include 'header.php';
 
   <?php if (isset($success)): ?>
     <div class="alert success"><?php echo e($success); ?></div>
+  <?php endif; ?>
+  <?php if (isset($error)): ?>
+    <div class="alert" style="background: rgba(231,76,60,0.1); border-color: var(--danger); color: #e74c3c;"><?php echo e($error); ?></div>
   <?php endif; ?>
 
   <!-- Stats Grid -->
@@ -369,6 +404,65 @@ include 'header.php';
     <?php else: ?>
       <div style="text-align: center; padding: 20px 0;">
         <p class="muted">No merchandise orders yet.</p>
+      </div>
+    <?php endif; ?>
+  </div>
+
+  <!-- Member Management -->
+  <div class="card big-card" style="margin-top: 24px;">
+    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px;">
+        <h2><i class="fas fa-users-cog" style="color: var(--primary);"></i> Member Management</h2>
+        <span style="background: var(--primary); color: white; padding: 2px 8px; border-radius: 12px; font-size: 12px; font-weight: 700;"><?php echo count($allUsers); ?> Users</span>
+    </div>
+
+    <?php if (count($allUsers) > 0): ?>
+      <div style="overflow-x: auto;">
+        <table style="width: 100%; border-collapse: collapse; text-align: left;">
+          <thead>
+            <tr style="border-bottom: 2px solid var(--border);">
+              <th style="padding: 12px; color: var(--text-dark);">ID</th>
+              <th style="padding: 12px; color: var(--text-dark);">Username</th>
+              <th style="padding: 12px; color: var(--text-dark);">Role</th>
+              <th style="padding: 12px; color: var(--text-dark);">Points</th>
+              <th style="padding: 12px; color: var(--text-dark);">Joined</th>
+              <th style="padding: 12px; text-align: right; color: var(--text-dark);">Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <?php foreach ($allUsers as $u): ?>
+            <tr style="border-bottom: 1px solid var(--border);">
+              <td style="padding: 12px; color: var(--text-muted); font-size: 13px;">#<?php echo e($u['id']); ?></td>
+              <td style="padding: 12px; color: var(--text-body);"><strong><?php echo e($u['username']); ?></strong></td>
+              <td style="padding: 12px;">
+                <?php if ($u['role'] === 'admin'): ?>
+                    <span style="background: var(--warning); color: white; padding: 2px 8px; border-radius: 12px; font-size: 12px; font-weight: 700;">Admin</span>
+                <?php else: ?>
+                    <span style="background: var(--border); color: var(--text-dark); padding: 2px 8px; border-radius: 12px; font-size: 12px; font-weight: 600;">Member</span>
+                <?php endif; ?>
+              </td>
+              <td style="padding: 12px; color: var(--primary); font-weight: 600;">
+                  <?php echo ($u['role'] === 'admin') ? 'Unlimited' : number_format($u['points']); ?>
+              </td>
+              <td style="padding: 12px; color: var(--text-body); font-size: 14px;"><?php echo date('M d, Y', strtotime($u['created_at'])); ?></td>
+              <td style="padding: 12px; text-align: right;">
+                <?php if ($u['id'] !== $_SESSION['user_id']): ?>
+                    <form method="POST" style="margin: 0; display: inline-block;">
+                      <input type="hidden" name="action" value="delete_user">
+                      <input type="hidden" name="user_id" value="<?php echo e($u['id']); ?>">
+                      <button type="submit" class="hero-btn danger" style="padding: 6px 12px; font-size: 12px; margin: 0; background: rgba(231,76,60,0.1); border-color: var(--danger); color: #e74c3c;" onclick="return confirm('⚠️ DANGER: Are you sure you want to completely delete the member <?php echo e($u['username']); ?> and all their data? This action cannot be undone.');">
+                        <i class="fas fa-trash-alt"></i> Delete
+                      </button>
+                    </form>
+                <?php endif; ?>
+              </td>
+            </tr>
+            <?php endforeach; ?>
+          </tbody>
+        </table>
+      </div>
+    <?php else: ?>
+      <div style="text-align: center; padding: 20px 0;">
+        <p class="muted">No users found.</p>
       </div>
     <?php endif; ?>
   </div>

@@ -302,16 +302,18 @@ function getUserPoints($user_id = null) {
 
     if ($user_id === null) {
         if (!isLoggedIn()) return 0;
+        if (isset($_SESSION['role']) && $_SESSION['role'] === 'admin') return 999999;
         $user_id = $_SESSION['user_id'];
     }
 
-    $stmt = $mysqli->prepare("SELECT points FROM users WHERE id = ?");
+    $stmt = $mysqli->prepare("SELECT points, role FROM users WHERE id = ?");
     $stmt->bind_param("i", $user_id);
     $stmt->execute();
     $result = $stmt->get_result();
 
     if ($row = $result->fetch_assoc()) {
         $stmt->close();
+        if ($row['role'] === 'admin') return 999999;
         return $row['points'];
     }
 
