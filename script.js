@@ -18,11 +18,9 @@ function initThemeToggle() {
 
     function applyTheme(isDark) {
         if (isDark) {
-            body.classList.add('theme-dark');
-            body.classList.remove('theme-light');
+            document.documentElement.setAttribute('data-theme', 'dark');
         } else {
-            body.classList.remove('theme-dark');
-            body.classList.remove('theme-light');
+            document.documentElement.removeAttribute('data-theme');
         }
         [toggleBtn, toggleMobile].forEach(btn => {
             if (!btn) return;
@@ -36,7 +34,7 @@ function initThemeToggle() {
     applyTheme(savedTheme === 'dark');
 
     function handleToggle() {
-        const isDark = body.classList.toggle('theme-dark');
+        const isDark = document.documentElement.getAttribute('data-theme') !== 'dark';
         localStorage.setItem('zoonexa-theme', isDark ? 'dark' : 'light');
         applyTheme(isDark);
     }

@@ -30,7 +30,7 @@
 /* =============================================
    DARK MODE VARIABLES
    ============================================= */
-body.theme-dark {
+:root[data-theme="dark"] {
     --bg-main: #1a1a1a;
     --bg-secondary: #2d2d2d;
     --bg-card: #242424;
@@ -990,13 +990,13 @@ button:disabled {
 }
 
 /* Dark mode fix for hero buttons */
-body.theme-dark .hero-btn.primary {
+:root[data-theme="dark"] .hero-btn.primary {
     background: var(--bg-card);
     color: var(--primary-light);
     border: 2px solid var(--primary-light);
 }
 
-body.theme-dark .hero-btn.primary:hover {
+:root[data-theme="dark"] .hero-btn.primary:hover {
     background: var(--primary-light);
     color: var(--text-dark);
 }
@@ -1020,7 +1020,7 @@ body.theme-dark .hero-btn.primary:hover {
     box-shadow: 0 16px 40px rgba(0, 0, 0, 0.15);
 }
 
-body.theme-dark .home-hero-banner {
+:root[data-theme="dark"] .home-hero-banner {
     background: var(--bg-card);
     box-shadow: 0 16px 40px rgba(0, 0, 0, 0.4);
 }
@@ -1168,7 +1168,7 @@ body.theme-dark .home-hero-banner {
     border-left: 4px solid var(--primary);
 }
 
-body.theme-dark .info-card {
+:root[data-theme="dark"] .info-card {
     background: linear-gradient(135deg, #1e3a2e, #1e2a3a);
     border-left-color: var(--primary-light);
 }
@@ -1335,7 +1335,7 @@ body.theme-dark .info-card {
     box-shadow: 0 0 0 3px rgba(22, 160, 133, 0.15);
 }
 
-body.theme-dark .mode-active {
+:root[data-theme="dark"] .mode-active {
     background: #1a2e1a !important;
 }
 
@@ -1484,7 +1484,7 @@ body.theme-dark .mode-active {
     margin-bottom: 24px;
 }
 
-body.theme-dark .sub-active-banner {
+:root[data-theme="dark"] .sub-active-banner {
     background: #1a2e1a;
     border-color: #27ae60;
 }
@@ -1561,7 +1561,7 @@ body.theme-dark .sub-active-banner {
     font-weight: 600;
 }
 
-body.theme-dark .feature-item.active {
+:root[data-theme="dark"] .feature-item.active {
     background: #1a2e1a;
 }
 
@@ -1698,7 +1698,7 @@ body.theme-dark .feature-item.active {
     background: #f0fdf4;
 }
 
-body.theme-dark .milestone-achieved {
+:root[data-theme="dark"] .milestone-achieved {
     background: #1a2e1a;
     border-color: #27ae60;
 }
@@ -1869,7 +1869,7 @@ body.theme-dark .milestone-achieved {
         box-shadow: -10px 0 40px rgba(0,0,0,0.15);
     }
     
-    body.theme-dark .mobile-drawer {
+    :root[data-theme="dark"] .mobile-drawer {
         box-shadow: -10px 0 40px rgba(0,0,0,0.5);
     }
 
@@ -2068,52 +2068,52 @@ body.theme-dark .milestone-achieved {
 /* =============================================
    DARK MODE OVERRIDES (specific tweaks)
    ============================================= */
-body.theme-dark {
+:root[data-theme="dark"] {
     /* Set body text directly to ensure it updates */
     background-color: var(--bg-main) !important;
     color: var(--text-body) !important;
 }
 
-body.theme-dark .home-hero {
+:root[data-theme="dark"] .home-hero {
     background: linear-gradient(135deg, #138871 0%, #16a085 50%, #2980b9 100%);
 }
 
-body.theme-dark .banner-box,
-body.theme-dark .site-header {
+:root[data-theme="dark"] .banner-box,
+:root[data-theme="dark"] .site-header {
     background: var(--bg-card);
 }
 
-body.theme-dark .text-dark,
-body.theme-dark h1,
-body.theme-dark h2,
-body.theme-dark h3,
-body.theme-dark h4,
-body.theme-dark h5,
-body.theme-dark h6,
-body.theme-dark .milestone-stat-value,
-body.theme-dark .logo-text,
-body.theme-dark .nav-username {
+:root[data-theme="dark"] .text-dark,
+:root[data-theme="dark"] h1,
+:root[data-theme="dark"] h2,
+:root[data-theme="dark"] h3,
+:root[data-theme="dark"] h4,
+:root[data-theme="dark"] h5,
+:root[data-theme="dark"] h6,
+:root[data-theme="dark"] .milestone-stat-value,
+:root[data-theme="dark"] .logo-text,
+:root[data-theme="dark"] .nav-username {
     color: var(--text-dark) !important;
 }
 
-body.theme-dark .auth-page {
+:root[data-theme="dark"] .auth-page {
     background: linear-gradient(135deg, #1a2e1a 0%, #1a1a2e 100%);
 }
 
-body.theme-dark .tip-item,
-body.theme-dark .faq-item,
-body.theme-dark .target-card,
-body.theme-dark .milestone-stat,
-body.theme-dark .sub-detail-item {
+:root[data-theme="dark"] .tip-item,
+:root[data-theme="dark"] .faq-item,
+:root[data-theme="dark"] .target-card,
+:root[data-theme="dark"] .milestone-stat,
+:root[data-theme="dark"] .sub-detail-item {
     background: var(--bg-secondary);
     border-color: var(--border);
 }
 
-body.theme-dark .mode-active {
+:root[data-theme="dark"] .mode-active {
     background: #1a2e1a !important;
     border-color: #27ae60 !important;
 }
 
-body.theme-dark .feature-item {
+:root[data-theme="dark"] .feature-item {
     background: var(--bg-secondary);
 }
