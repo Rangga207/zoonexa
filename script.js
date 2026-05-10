@@ -6,40 +6,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initFormValidation();
     initMobileMenu();
     initUserDropdown();
-    initPageTransitions();
 });
-
-// =============================================
-// SMOOTH PAGE TRANSITIONS
-// =============================================
-function initPageTransitions() {
-    document.addEventListener('click', (e) => {
-        // Find closest anchor tag
-        const link = e.target.closest('a');
-        if (!link) return;
-
-        const href = link.getAttribute('href');
-        const target = link.getAttribute('target');
-        
-        // Ignore external links, new tabs, and anchor hash links
-        if (!href || href.startsWith('#') || href.startsWith('mailto:') || target === '_blank') {
-            return;
-        }
-
-        // Only handle internal links
-        if (link.hostname === window.location.hostname) {
-            e.preventDefault();
-            // Fade out the body
-            document.body.style.transition = 'opacity 0.2s ease-out, transform 0.2s ease-out';
-            document.body.style.opacity = '0';
-            document.body.style.transform = 'translateY(-4px)';
-            
-            setTimeout(() => {
-                window.location.href = href;
-            }, 150); // Matches the animation duration closely to avoid hanging
-        }
-    });
-}
 
 // =============================================
 // THEME TOGGLE
