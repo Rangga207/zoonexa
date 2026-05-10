@@ -1,58 +1,58 @@
 /* =============================================
-   CSS VARIABLES — macOS Tahoe / Sonoma
+   CSS VARIABLES — Teal Glassmorphism Theme
    ============================================= */
 :root {
-    /* Apple System Colors */
-    --primary:       #007AFF; /* Apple Blue */
-    --primary-dark:  #0064D2;
-    --primary-light: #409CFF;
-    --secondary:     #5E5CE6; /* Apple Purple */
-    --accent:        #FF375F; /* Apple Pink */
+    /* Main Theme Colors */
+    --primary:       #00C9B1; /* Bright Teal */
+    --primary-dark:  #00A38E;
+    --primary-light: #33D8C3;
+    --secondary:     #0F6C7D; /* Darker Teal */
+    --accent:        #00D4FF; /* Cyan Accent */
 
-    /* macOS Window Backgrounds (Light) */
-    --bg-wall:       #E8EAF0;   /* macOS Desktop wallpaper base */
-    --bg-window:     rgba(246, 246, 248, 0.75);  /* NSWindow content */
-    --bg-sidebar:    rgba(240, 240, 245, 0.80);  /* Sidebar vibrancy */
-    --bg-toolbar:    rgba(255, 255, 255, 0.72);  /* Toolbar vibrancy */
-    --bg-card:       rgba(255, 255, 255, 0.60);
-    --bg-secondary:  rgba(255, 255, 255, 0.45);
+    /* Dark Theme Backgrounds (Default) */
+    --bg-wall:       #15171A;   /* Very dark grayish blue */
+    --bg-window:     rgba(33, 37, 41, 0.75);  /* Dark glass */
+    --bg-sidebar:    rgba(25, 28, 31, 0.80);
+    --bg-toolbar:    rgba(33, 37, 41, 0.85);
+    --bg-card:       rgba(42, 47, 52, 0.60);  /* Card dark glass */
+    --bg-secondary:  rgba(55, 62, 69, 0.45);
     --bg-main:       transparent;
-    --bg-control:    rgba(255, 255, 255, 0.55);  /* Button/input base */
+    --bg-control:    rgba(55, 62, 69, 0.55);
     
-    /* macOS Text (Light) */
-    --text-dark:     rgba(0, 0, 0, 0.88);    /* NSColor.labelColor */
-    --text-body:     rgba(0, 0, 0, 0.72);    /* NSColor.secondaryLabelColor */
-    --text-muted:    rgba(0, 0, 0, 0.44);    /* NSColor.tertiaryLabelColor */
-    --text-placeholder: rgba(0, 0, 0, 0.28);
+    /* Text Colors (Light on Dark) */
+    --text-dark:     rgba(255, 255, 255, 0.95);
+    --text-body:     rgba(255, 255, 255, 0.75);
+    --text-muted:    rgba(255, 255, 255, 0.50);
+    --text-placeholder: rgba(255, 255, 255, 0.35);
     
     /* Separator */
-    --border:        rgba(0, 0, 0, 0.08);
-    --border-strong: rgba(0, 0, 0, 0.15);
+    --border:        rgba(255, 255, 255, 0.10);
+    --border-strong: rgba(255, 255, 255, 0.20);
 
     /* Semantic */
-    --danger:   #FF3B30;
-    --warning:  #FF9500;
-    --success:  #34C759;
-    --info:     #32ADE6;
-    --cyan:     #5AC8FA;
+    --danger:   #FF4A4A;
+    --warning:  #FFB340;
+    --success:  #00E676;
+    --info:     #00B8D4;
+    --cyan:     #00E5FF;
 
-    /* macOS Layered Shadows */
-    --shadow-xs: 0 1px 2px rgba(0,0,0,0.06);
-    --shadow-sm: 0 2px 8px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
-    --shadow-md: 0 4px 16px rgba(0,0,0,0.08), 0 2px 6px rgba(0,0,0,0.04);
-    --shadow-lg: 0 8px 32px rgba(0,0,0,0.12), 0 4px 12px rgba(0,0,0,0.06);
-    --shadow-xl: 0 16px 56px rgba(0,0,0,0.18), 0 8px 24px rgba(0,0,0,0.08);
+    /* Shadows (Darker for dark theme) */
+    --shadow-xs: 0 1px 3px rgba(0,0,0,0.3);
+    --shadow-sm: 0 3px 10px rgba(0,0,0,0.4), 0 1px 3px rgba(0,0,0,0.3);
+    --shadow-md: 0 6px 20px rgba(0,0,0,0.5), 0 2px 8px rgba(0,0,0,0.3);
+    --shadow-lg: 0 10px 40px rgba(0,0,0,0.6), 0 4px 15px rgba(0,0,0,0.4);
+    --shadow-xl: 0 20px 60px rgba(0,0,0,0.7), 0 8px 30px rgba(0,0,0,0.5);
     
-    /* Rim Light (glass highlight) */
-    --rim-light:        inset 0 1px 0 rgba(255,255,255,0.80), inset 0 -1px 0 rgba(0,0,0,0.06);
-    --rim-light-nested: inset 0 1px 0 rgba(255,255,255,0.70), inset 0 -1px 0 rgba(0,0,0,0.04);
-    --rim-strong:       inset 0 1.5px 0 rgba(255,255,255,0.90), inset 0 -1.5px 0 rgba(0,0,0,0.10);
+    /* Rim Light (Subtle white borders for glass effect) */
+    --rim-light:        inset 0 1px 0 rgba(255,255,255,0.15), inset 0 -1px 0 rgba(0,0,0,0.4);
+    --rim-light-nested: inset 0 1px 0 rgba(255,255,255,0.10), inset 0 -1px 0 rgba(0,0,0,0.3);
+    --rim-strong:       inset 0 1.5px 0 rgba(255,255,255,0.20), inset 0 -1.5px 0 rgba(0,0,0,0.5);
 
     /* Spring easing */
     --spring:  cubic-bezier(0.4, 0, 0.2, 1);
     --bounce:  cubic-bezier(0.34, 1.56, 0.64, 1);
     
-    /* macOS Radii */
+    /* Radii */
     --radius-xs: 6px;
     --radius-sm: 10px;
     --radius-md: 14px;
@@ -67,45 +67,34 @@
 }
 
 /* =============================================
-   DARK MODE VARIABLES — macOS Dark
+   LIGHT MODE VARIABLES (Optional/Toggleable)
    ============================================= */
-body.theme-dark {
-    --primary:       #0A84FF;
-    --primary-dark:  #007AFF;
-    --primary-light: #409CFF;
-    --secondary:     #5E5CE6;
+body.theme-light {
+    --bg-wall:       #F0F4F8;
+    --bg-window:     rgba(255, 255, 255, 0.85);
+    --bg-sidebar:    rgba(248, 250, 252, 0.90);
+    --bg-toolbar:    rgba(255, 255, 255, 0.90);
+    --bg-card:       rgba(255, 255, 255, 0.70);
+    --bg-secondary:  rgba(226, 232, 240, 0.60);
+    --bg-control:    rgba(241, 245, 249, 0.80);
 
-    /* macOS Window Backgrounds (Dark) */
-    --bg-wall:       #1C1C1E;   /* macOS Dark wallpaper base */
-    --bg-window:     rgba(30, 30, 32, 0.78);
-    --bg-sidebar:    rgba(36, 36, 38, 0.82);
-    --bg-toolbar:    rgba(44, 44, 46, 0.75);
-    --bg-card:       rgba(44, 44, 46, 0.65);
-    --bg-secondary:  rgba(58, 58, 60, 0.55);
-    --bg-main:       transparent;
-    --bg-control:    rgba(72, 72, 74, 0.60);
+    --text-dark:     rgba(15, 23, 42, 0.95);
+    --text-body:     rgba(51, 65, 85, 0.85);
+    --text-muted:    rgba(100, 116, 139, 0.70);
+    --text-placeholder: rgba(148, 163, 184, 0.60);
 
-    /* macOS Text (Dark) */
-    --text-dark:     rgba(255, 255, 255, 0.92);
-    --text-body:     rgba(255, 255, 255, 0.76);
-    --text-muted:    rgba(255, 255, 255, 0.44);
-    --text-placeholder: rgba(255, 255, 255, 0.26);
+    --border:        rgba(0, 0, 0, 0.08);
+    --border-strong: rgba(0, 0, 0, 0.15);
 
-    /* Separator */
-    --border:        rgba(255, 255, 255, 0.10);
-    --border-strong: rgba(255, 255, 255, 0.18);
+    --shadow-xs: 0 1px 2px rgba(0,0,0,0.05);
+    --shadow-sm: 0 2px 8px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+    --shadow-md: 0 4px 16px rgba(0,0,0,0.08), 0 2px 6px rgba(0,0,0,0.04);
+    --shadow-lg: 0 8px 32px rgba(0,0,0,0.10), 0 4px 12px rgba(0,0,0,0.05);
+    --shadow-xl: 0 16px 56px rgba(0,0,0,0.12), 0 8px 24px rgba(0,0,0,0.06);
 
-    /* Dark Shadows */
-    --shadow-xs: 0 1px 2px rgba(0,0,0,0.3);
-    --shadow-sm: 0 2px 8px rgba(0,0,0,0.4), 0 1px 2px rgba(0,0,0,0.3);
-    --shadow-md: 0 4px 16px rgba(0,0,0,0.5), 0 2px 6px rgba(0,0,0,0.3);
-    --shadow-lg: 0 8px 32px rgba(0,0,0,0.6), 0 4px 12px rgba(0,0,0,0.4);
-    --shadow-xl: 0 16px 56px rgba(0,0,0,0.7), 0 8px 24px rgba(0,0,0,0.5);
-
-    /* Rim Light (Dark) */
-    --rim-light:        inset 0 1px 0 rgba(255,255,255,0.14), inset 0 -1px 0 rgba(0,0,0,0.5);
-    --rim-light-nested: inset 0 1px 0 rgba(255,255,255,0.10), inset 0 -1px 0 rgba(0,0,0,0.4);
-    --rim-strong:       inset 0 1.5px 0 rgba(255,255,255,0.18), inset 0 -1.5px 0 rgba(0,0,0,0.6);
+    --rim-light:        inset 0 1px 0 rgba(255,255,255,0.80), inset 0 -1px 0 rgba(0,0,0,0.06);
+    --rim-light-nested: inset 0 1px 0 rgba(255,255,255,0.70), inset 0 -1px 0 rgba(0,0,0,0.04);
+    --rim-strong:       inset 0 1.5px 0 rgba(255,255,255,0.90), inset 0 -1.5px 0 rgba(0,0,0,0.10);
 }
 
 /* =============================================
@@ -117,59 +106,31 @@ body.theme-dark {
     padding: 0;
 }
 
-/* Dynamic Mesh Gradient Background */
+/* Subtle background animation */
 @keyframes meshGradient {
-    0% {
-        background-position: 0% 0%;
-    }
-
-    25% {
-        background-position: 100% 0%;
-    }
-
-    50% {
-        background-position: 100% 100%;
-    }
-
-    75% {
-        background-position: 0% 100%;
-    }
-
-    100% {
-        background-position: 0% 0%;
-    }
+    0% { background-position: 0% 0%; }
+    50% { background-position: 100% 100%; }
+    100% { background-position: 0% 0%; }
 }
 
 html {
-    background: var(--bg-wall, #E8EAF0);
+    background: var(--bg-wall);
     min-height: 100vh;
 }
 
 body {
-    /* Inter = closest Google Fonts match to SF Pro */
-    font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif;
-    font-feature-settings: 'cv01', 'cv02', 'cv03', 'cv04', 'ss01'; /* Inter optical features */
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
     -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
     
-    /* Animated mesh gradient wallpaper */
-    background:
-        radial-gradient(ellipse at 20% 10%, rgba(120, 180, 255, 0.25) 0px, transparent 55%),
-        radial-gradient(ellipse at 80% 20%, rgba(180, 130, 255, 0.20) 0px, transparent 50%),
-        radial-gradient(ellipse at 90% 80%, rgba(255, 100, 130, 0.18) 0px, transparent 55%),
-        radial-gradient(ellipse at 10% 85%, rgba(80, 200, 160, 0.18) 0px, transparent 50%),
-        radial-gradient(ellipse at 50% 50%, rgba(200, 220, 255, 0.15) 0px, transparent 70%),
-        #dde3ee;
-    background-size: 200% 200%;
-    animation: meshGradient 28s ease-in-out infinite alternate;
-    background-attachment: fixed;
+    /* Dark subtle background */
+    background: var(--bg-wall);
     color: var(--text-body);
     line-height: 1.5;
     font-size: 14px;
     font-weight: 400;
-    letter-spacing: -0.011em; /* SF Pro tight tracking */
-    transition: color 0.3s ease;
+    letter-spacing: -0.011em;
+    transition: color 0.3s ease, background 0.3s ease;
 }
 
 body.theme-dark {
@@ -241,19 +202,17 @@ body.theme-dark .text-vibrant { mix-blend-mode: plus-lighter; }
 }
 
 /* =============================================
-   HEADER — macOS Window Chrome
+   HEADER — Glassmorphism Toolbar
    ============================================= */
 .mac-window-header {
-    /* macOS window: blurred, rounded at top (pill when floating) */
     background: var(--bg-toolbar);
-    backdrop-filter: blur(48px) saturate(1.8);
-    -webkit-backdrop-filter: blur(48px) saturate(1.8);
+    backdrop-filter: blur(20px) saturate(1.8);
+    -webkit-backdrop-filter: blur(20px) saturate(1.8);
     border-radius: var(--radius-xl);
-    /* Layered shadow = floating window shadow */
     box-shadow:
         var(--rim-strong),
         var(--shadow-md),
-        0 0 0 0.5px var(--border-strong);
+        0 0 0 1px var(--border-strong);
     position: fixed;
     top: 20px;
     left: 50%;
@@ -799,11 +758,9 @@ body.auth-page {
     align-items: center;
     justify-content: center;
     background:
-        radial-gradient(ellipse at 25% 25%, rgba(120, 180, 255, 0.30) 0px, transparent 55%),
-        radial-gradient(ellipse at 75% 75%, rgba(180, 130, 255, 0.25) 0px, transparent 50%),
-        #dde3ee;
-    animation: meshGradient 28s ease-in-out infinite alternate;
-    background-size: 200% 200%;
+        radial-gradient(ellipse at 25% 25%, rgba(10, 100, 255, 0.25) 0px, transparent 55%),
+        radial-gradient(ellipse at 75% 75%, rgba(94, 80, 230, 0.25) 0px, transparent 50%),
+        #111113;
 }
 
 body.auth-page.theme-dark {
@@ -833,20 +790,19 @@ body.auth-page.theme-dark {
 .auth-brand h1 {
     font-size: 24px;
     font-weight: 700;
-    color: var(--text-dark);
+    color: white;
     letter-spacing: -0.025em;
 }
 
 .auth-card {
-    background: var(--bg-window);
+    background: rgba(255,255,255,0.05);
     backdrop-filter: blur(48px) saturate(1.8);
     -webkit-backdrop-filter: blur(48px) saturate(1.8);
     border-radius: var(--radius-xl);
     padding: 28px 28px 24px;
     box-shadow:
-        var(--rim-strong),
-        var(--shadow-xl),
-        0 0 0 0.5px var(--border-strong);
+        0 8px 32px rgba(0,0,0,0.4),
+        0 0 0 1px rgba(255,255,255,0.1);
     border: none;
 }
 
@@ -854,7 +810,7 @@ body.auth-page.theme-dark {
     margin-top: 16px;
     text-align: center;
     font-size: 13px;
-    color: var(--text-muted);
+    color: rgba(255,255,255,0.6);
 }
 
 /* =============================================
@@ -1040,20 +996,17 @@ body.theme-dark .alert.success { color: var(--success); }
 }
 
 /* =============================================
-   HOME — HERO (macOS Welcome Banner)
+   HOME — HERO (Teal Gradient Banner)
    ============================================= */
 .home-hero {
-    background: var(--bg-window);
-    backdrop-filter: blur(40px) saturate(1.6);
-    -webkit-backdrop-filter: blur(40px) saturate(1.6);
+    /* Vibrant Teal to Cyan Gradient */
+    background: linear-gradient(135deg, #00C9B1 0%, #0093E9 100%);
     margin: -96px -20px 0;
-    padding: 124px 24px 52px;
+    padding: 130px 24px 60px;
     position: relative;
     overflow: hidden;
     border-radius: 0 0 var(--radius-xl) var(--radius-xl);
-    box-shadow:
-        0 0 0 0.5px var(--border),
-        var(--shadow-lg);
+    box-shadow: var(--shadow-lg);
     border-bottom: none;
 }
 
@@ -1061,9 +1014,9 @@ body.theme-dark .alert.success { color: var(--success); }
     content: '';
     position: absolute;
     inset: 0;
-    /* Radial spotlight effect like macOS wallpaper shine */
-    background: radial-gradient(ellipse at 60% 0%, rgba(0, 122, 255, 0.07) 0%, transparent 65%),
-                radial-gradient(ellipse at 10% 100%, rgba(94, 92, 230, 0.06) 0%, transparent 65%);
+    /* Subtle overlay pattern/shine */
+    background: radial-gradient(circle at top left, rgba(255,255,255,0.15) 0%, transparent 50%),
+                radial-gradient(circle at bottom right, rgba(0,0,0,0.15) 0%, transparent 50%);
     pointer-events: none;
 }
 
@@ -1078,35 +1031,39 @@ body.theme-dark .alert.success { color: var(--success); }
     z-index: 1;
 }
 
-/* Pill badge — like macOS status chip */
+/* Pill badge */
 .hero-tag {
     display: inline-flex;
     align-items: center;
     gap: 5px;
     padding: 4px 12px;
     border-radius: var(--radius-pill);
-    background: var(--bg-control);
-    color: var(--text-body);
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    color: white;
     font-size: 12px;
     font-weight: 500;
     margin-bottom: 12px;
-    box-shadow: 0 0 0 0.5px var(--border-strong), var(--rim-light-nested);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.2);
 }
 
 .home-hero-text h1 {
     font-size: clamp(26px, 3.2vw, 38px);
     font-weight: 700;
-    color: var(--text-dark);
+    color: white;
     margin-bottom: 12px;
     line-height: 1.1;
     letter-spacing: -0.035em;
+    text-shadow: 0 2px 10px rgba(0,0,0,0.1);
 }
 
 .home-hero-text .muted {
-    color: var(--text-body);
+    color: white;
     font-size: 14px;
     line-height: 1.6;
     margin-bottom: 20px;
+    text-shadow: 0 1px 4px rgba(0,0,0,0.1);
 }
 
 .hero-actions {
@@ -1131,32 +1088,66 @@ body.theme-dark .alert.success { color: var(--success); }
 }
 
 .hero-btn.primary {
-    background: var(--primary);
+    background: var(--primary-dark);
     color: white;
     box-shadow:
-        inset 0 1px 0 rgba(255,255,255,0.25),
-        inset 0 -1px 0 rgba(0,0,0,0.15),
-        0 1px 3px rgba(0,122,255,0.35);
+        inset 0 1px 0 rgba(255,255,255,0.2),
+        0 4px 12px rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(255,255,255,0.1);
 }
 .hero-btn.primary:hover {
-    filter: brightness(1.08);
+    filter: brightness(1.1);
     transform: translateY(-1px);
     box-shadow:
-        inset 0 1px 0 rgba(255,255,255,0.25),
-        0 3px 8px rgba(0,122,255,0.40);
+        inset 0 1px 0 rgba(255,255,255,0.3),
+        0 6px 16px rgba(0, 0, 0, 0.25);
 }
 .hero-btn.primary:active { transform: scale(0.97); filter: brightness(0.96); }
 
 .hero-btn.ghost {
-    background: var(--bg-control);
-    color: var(--text-dark);
-    box-shadow: var(--rim-light-nested), 0 0 0 0.5px var(--border-strong);
+    background: transparent;
+    color: white;
+    box-shadow: inset 0 0 0 1px rgba(255,255,255,0.5);
 }
 .hero-btn.ghost:hover {
-    background: var(--bg-card);
-    transform: translateY(-1px);
+    background: rgba(255,255,255,0.1);
+    color: white;
+    box-shadow: inset 0 0 0 1px rgba(255,255,255,0.8);
 }
-.hero-btn.ghost:active { transform: scale(0.97); }
+.hero-card {
+    background: rgba(21, 23, 26, 0.85); /* Dark solid background for the internal dashboard widget */
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-radius: var(--radius-lg);
+    padding: 24px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+    border: 1px solid rgba(255,255,255,0.05);
+    position: relative;
+    z-index: 10;
+}
+
+.hero-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+.hero-card-title {
+    font-size: 11px;
+    font-weight: 600;
+    color: rgba(255,255,255,0.5);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.hero-card-status {
+    font-size: 12px;
+    font-weight: 600;
+    color: white;
+}
 
 /* Hero Banner (stats box) — macOS widget style */
 .home-hero-banner {
