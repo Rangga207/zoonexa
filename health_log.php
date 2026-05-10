@@ -194,7 +194,7 @@ include 'header.php';
               <strong>Morning Jog</strong>
               <span>Complete a jogging session today</span>
             </div>
-            <div class="mission-pts">
+            <div class="mission-footer">
               <span class="pts-badge">+3 pts</span>
               <div class="mission-check"><i class="fas fa-check"></i></div>
             </div>
@@ -209,7 +209,7 @@ include 'header.php';
               <strong>Strava Proof</strong>
               <span id="strava-label-text">Tap to upload your route screenshot</span>
             </div>
-            <div class="mission-pts">
+            <div class="mission-footer">
               <span class="pts-badge" style="background: rgba(52,152,219,0.15); color: #3498db;">+5 pts</span>
               <label for="strava_proof" class="strava-upload-btn">
                 <i class="fas fa-cloud-upload-alt"></i>
@@ -303,24 +303,27 @@ include 'header.php';
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 12px;
+  align-items: stretch;
 }
 @media (max-width: 600px) {
   .bonus-grid { grid-template-columns: 1fr; }
 }
 
-/* Mission Card */
+/* Mission Card — vertical fill */
 .mission-card {
   display: flex;
-  align-items: center;
-  gap: 14px;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0;
   background: var(--bg-card);
   border: 2px solid var(--border);
   border-radius: 14px;
-  padding: 16px;
+  padding: 18px;
   cursor: pointer;
   transition: border-color 0.2s, background 0.2s, transform 0.15s;
   user-select: none;
-  position: relative;
+  min-height: 140px;
 }
 .mission-card:hover {
   border-color: var(--primary);
@@ -339,31 +342,37 @@ include 'header.php';
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  font-size: 20px;
+  font-size: 22px;
+  margin-bottom: 12px;
 }
 .mission-info {
   flex: 1;
-  min-width: 0;
+  width: 100%;
 }
 .mission-info strong {
   display: block;
-  font-size: 14px;
+  font-size: 15px;
   font-weight: 700;
   color: var(--text-body);
-  margin-bottom: 2px;
+  margin-bottom: 4px;
 }
 .mission-info span {
   font-size: 12px;
   color: var(--text-muted);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
   display: block;
+  line-height: 1.4;
+}
+.mission-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  margin-top: 16px;
 }
 .mission-pts {
   display: flex;
-  flex-direction: column;
-  align-items: flex-end;
+  flex-direction: row;
+  align-items: center;
   gap: 8px;
   flex-shrink: 0;
 }
