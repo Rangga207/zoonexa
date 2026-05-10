@@ -9,9 +9,20 @@ $stmt = $mysqli->prepare("
     ORDER BY points DESC 
     LIMIT 10
 ");
-$stmt->execute();
-$leaderboard = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
-$stmt->close();
+$leaderboard = [];
+if ($stmt) {
+    $stmt->execute();
+    $leaderboard = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+    $stmt->close();
+} else {
+    // Fallback if avatar_border column doesn't exist
+    $stmt = $mysqli->prepare("SELECT username, points, health_mode, subscription_status, 'default' as avatar_border FROM users ORDER BY points DESC LIMIT 10");
+    if ($stmt) {
+        $stmt->execute();
+        $leaderboard = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+        $stmt->close();
+    }
+}
 
 $page_title = 'Leaderboard';
 include 'header.php';

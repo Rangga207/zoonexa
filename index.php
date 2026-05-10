@@ -20,22 +20,28 @@ $stmt->close();
 
 // Fetch spin status
 $stmt = $mysqli->prepare("SELECT last_spin_date FROM users WHERE id = ?");
-$stmt->bind_param("i", $user_id);
-$stmt->execute();
-$userRow = $stmt->get_result()->fetch_assoc();
-$stmt->close();
-$canSpin = (!$userRow['last_spin_date'] || $userRow['last_spin_date'] < date('Y-m-d'));
+$userRow = null;
+if ($stmt) {
+    $stmt->bind_param("i", $user_id);
+    $stmt->execute();
+    $res = $stmt->get_result();
+    $userRow = $res ? $res->fetch_assoc() : null;
+    $stmt->close();
+}
+$canSpin = ($userRow && (empty($userRow['last_spin_date']) || $userRow['last_spin_date'] < date('Y-m-d')));
 
 // Fetch today's log
 $todayLog = null;
 $stmt = $mysqli->prepare("SELECT steps, sleep_hours, weight_kg FROM health_logs WHERE user_id = ? AND log_date = CURDATE()");
-$stmt->bind_param("i", $user_id);
-$stmt->execute();
-$res = $stmt->get_result();
-if ($res->num_rows > 0) {
-    $todayLog = $res->fetch_assoc();
+if ($stmt) {
+    $stmt->bind_param("i", $user_id);
+    $stmt->execute();
+    $res = $stmt->get_result();
+    if ($res && $res->num_rows > 0) {
+        $todayLog = $res->fetch_assoc();
+    }
+    $stmt->close();
 }
-$stmt->close();
 $targets = getDailyTargets($healthMode);
 
 // Fetch Social Pulse (Latest 5 activities)
@@ -47,9 +53,13 @@ $stmt = $mysqli->prepare("
      FROM user_milestones um JOIN users u ON um.user_id = u.id JOIN milestones m ON um.milestone_id = m.id)
     ORDER BY time DESC LIMIT 5
 ");
-$stmt->execute();
-$pulseData = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
-$stmt->close();
+$pulseData = [];
+if ($stmt) {
+    $stmt->execute();
+    $res = $stmt->get_result();
+    $pulseData = $res ? $res->fetch_all(MYSQLI_ASSOC) : [];
+    $stmt->close();
+}
 
 // Handle Spin Action via AJAX
 if (isset($_GET['action']) && $_GET['action'] === 'spin') {

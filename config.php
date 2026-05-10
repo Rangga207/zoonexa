@@ -186,6 +186,31 @@ if ($mysqli->connect_error) {
 $mysqli->set_charset('utf8mb4');
 
 // =============================================
+// AUTO-MIGRATE NEW SCHEMA (To prevent 500 errors on production)
+// =============================================
+try {
+    // Suppress warnings in case of query failures due to permissions
+    $res = @$mysqli->query("SHOW COLUMNS FROM users LIKE 'last_spin_date'");
+    if ($res && $res->num_rows === 0) {
+        @$mysqli->query("ALTER TABLE users ADD COLUMN last_spin_date DATE DEFAULT NULL");
+    }
+    
+    $res = @$mysqli->query("SHOW COLUMNS FROM users LIKE 'avatar_border'");
+    if ($res && $res->num_rows === 0) {
+        @$mysqli->query("ALTER TABLE users ADD COLUMN avatar_border VARCHAR(50) DEFAULT 'default'");
+    }
+    
+    $res = @$mysqli->query("SHOW COLUMNS FROM milestones LIKE 'icon'");
+    if ($res && $row = $res->fetch_assoc()) {
+        if (stripos($row['Type'], 'varchar') === false || (int)preg_replace('/[^0-9]/', '', $row['Type']) < 255) {
+            @$mysqli->query("ALTER TABLE milestones MODIFY icon VARCHAR(255)");
+        }
+    }
+} catch (Exception $e) {
+    // Silently ignore migration errors to not disrupt the app
+}
+
+// =============================================
 // CSRF TOKEN
 // =============================================
 if (empty($_SESSION['csrf_token'])) {

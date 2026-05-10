@@ -85,10 +85,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     if (addPoints(-$redeem_digital['price'])) {
                         $points -= $redeem_digital['price'];
                         $stmt = $mysqli->prepare("UPDATE users SET avatar_border = ? WHERE id = ?");
-                        $stmt->bind_param("si", $redeem_digital['id'], $user_id);
-                        $stmt->execute();
-                        $stmt->close();
-                        $success = "Successfully purchased " . e($redeem_digital['name']) . "! It is now equipped on the leaderboard.";
+                        if ($stmt) {
+                            $stmt->bind_param("si", $redeem_digital['id'], $user_id);
+                            $stmt->execute();
+                            $stmt->close();
+                            $success = "Successfully purchased " . e($redeem_digital['name']) . "! It is now equipped on the leaderboard.";
+                        } else {
+                            $error = "Database error. Missing avatar_border column.";
+                            // Refund points
+                            addPoints($redeem_digital['price']);
+                        }
                     } else {
                         $error = "Failed to process purchase.";
                     }
