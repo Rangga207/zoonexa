@@ -29,6 +29,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $_SESSION['user_id'] = $row['id'];
                 $_SESSION['username'] = $username;
                 $_SESSION['role'] = $row['role'];
+                $_SESSION['show_welcome_anim'] = true;
 
                 // Check and award milestones on login
                 checkAndAwardMilestones($row['id']);

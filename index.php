@@ -98,6 +98,65 @@ $page_title = 'Home';
 include 'header.php';
 ?>
 
+<?php
+// Display Welcome Animation if just logged in
+if (isset($_SESSION['show_welcome_anim']) && $_SESSION['show_welcome_anim'] === true):
+    unset($_SESSION['show_welcome_anim']); // Show only once
+?>
+<div id="welcome-overlay">
+  <div class="welcome-content">
+    <div class="welcome-icon">✨</div>
+    <h1 class="welcome-text">Welcome to the most health tracking web in indonesia</h1>
+  </div>
+</div>
+<style>
+#welcome-overlay {
+  position: fixed;
+  inset: 0;
+  background: #111;
+  z-index: 999999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: fadeOutOverlay 0.8s ease forwards 2.5s;
+}
+.welcome-content {
+  text-align: center;
+  animation: slideUpFade 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+.welcome-icon {
+  font-size: 60px;
+  margin-bottom: 20px;
+  animation: floatIcon 2s ease-in-out infinite;
+}
+.welcome-text {
+  font-size: 40px;
+  font-weight: 800;
+  background: linear-gradient(135deg, var(--primary), var(--secondary));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  max-width: 800px;
+  line-height: 1.3;
+  margin: 0;
+  text-transform: capitalize;
+}
+@media (max-width: 600px) {
+  .welcome-text { font-size: 28px; padding: 0 20px; }
+}
+@keyframes slideUpFade {
+  0% { opacity: 0; transform: translateY(40px) scale(0.9); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+@keyframes floatIcon {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-15px); }
+}
+@keyframes fadeOutOverlay {
+  to { opacity: 0; visibility: hidden; }
+}
+</style>
+<?php endif; ?>
+
 <style>
 /* =============================================
    CLEAN DASHBOARD LAYOUT — Full Screen + Responsive
