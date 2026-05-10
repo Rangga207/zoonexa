@@ -11,8 +11,8 @@ $points = getUserPoints();
 $healthMode = getUserHealthMode();
 $subscribed = isSubscribed();
 
-// Fetch last 30 logs for chart
-$stmt = $mysqli->prepare("SELECT log_date, weight_kg, bmi FROM health_logs WHERE user_id = ? ORDER BY log_date ASC LIMIT 30");
+// Fetch last 30 logs for chart and recent list
+$stmt = $mysqli->prepare("SELECT id, log_date, steps, sleep_hours, weight_kg, bmi FROM health_logs WHERE user_id = ? ORDER BY log_date ASC LIMIT 30");
 $stmt->bind_param("i", $user_id);
 $stmt->execute();
 $logData = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
@@ -138,8 +138,8 @@ main.page {
 /* Main 2-column grid — fills available width */
 .dash-grid {
   display: grid;
-  grid-template-columns: minmax(350px, 460px) 1fr;
-  gap: 24px;
+  grid-template-columns: 10fr 11fr; /* Nearly 50/50 but chart slightly wider */
+  gap: 30px;
   align-items: start;
   width: 100%;
 }
@@ -219,17 +219,18 @@ main.page {
   color: white;
 }
 
-/* Progress rings — bigger */
+/* Progress rings — bigger but safe */
 .rings-row {
   display: flex;
-  gap: 20px;
-  justify-content: space-around;
+  flex-wrap: wrap;
+  gap: 24px;
+  justify-content: center;
   padding: 10px 0;
 }
-.ring-wrap { text-align: center; flex: 1; }
+.ring-wrap { text-align: center; flex: 1; min-width: 110px; }
 .ring-circle {
-  width: 140px;
-  height: 140px;
+  width: 124px;
+  height: 124px;
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -239,8 +240,8 @@ main.page {
 }
 .ring-circle:hover { transform: scale(1.05); }
 .ring-inner {
-  width: 112px;
-  height: 112px;
+  width: 100px;
+  height: 100px;
   background: var(--bg-card);
   border-radius: 50%;
   display: flex;
@@ -255,7 +256,7 @@ main.page {
 .ring-label { font-size: 14px; color: var(--text-body); margin-top: 14px; font-weight: 700; }
 .ring-sub { font-size: 12px; color: var(--text-muted); margin-top: 4px; }
 
-/* Chart card — fills right column */
+/* Chart card */
 .chart-card {
   background: var(--bg-card);
   border: 1px solid var(--border);
@@ -283,10 +284,30 @@ main.page {
 }
 .chart-canvas-wrap {
   flex: 1;
-  min-height: 400px;
+  min-height: 480px;
   position: relative;
   margin-top: 10px;
 }
+
+/* Recent Logs List */
+.recent-logs-list {
+  margin-top: 24px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  padding: 24px 32px;
+}
+.log-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--border);
+}
+.log-item:last-child { border-bottom: none; padding-bottom: 0; }
+.log-date { font-weight: 600; color: var(--text-body); font-size: 14px; }
+.log-metrics { display: flex; gap: 16px; font-size: 13px; color: var(--text-muted); }
+.log-metrics span { display: flex; align-items: center; gap: 6px; }
 
 /* Social pulse ticker */
 .pulse-bar {
@@ -457,6 +478,31 @@ main.page {
           </div>
         <?php endif; ?>
       </div>
+
+      <!-- Recent Logs -->
+      <?php if (!empty($logData)): ?>
+      <div class="recent-logs-list">
+        <div class="card-header" style="margin-bottom: 16px;">
+          <h3 class="card-title" style="margin:0; font-size:15px; font-weight:700;"><i class="fas fa-history" style="color:var(--text-muted);"></i> Recent Entries</h3>
+        </div>
+        <div>
+          <?php 
+            $recent = array_slice(array_reverse($logData), 0, 4); // Get last 4
+            foreach ($recent as $l):
+          ?>
+            <div class="log-item">
+              <div class="log-date"><?php echo date('M j', strtotime($l['log_date'])); ?></div>
+              <div class="log-metrics">
+                <span><i class="fas fa-walking" style="color:var(--primary);"></i> <?php echo number_format($l['steps']); ?></span>
+                <span><i class="fas fa-bed" style="color:#3498db;"></i> <?php echo $l['sleep_hours']; ?>h</span>
+                <span><i class="fas fa-weight" style="color:#9b59b6;"></i> <?php echo $l['weight_kg']; ?>kg</span>
+              </div>
+            </div>
+          <?php endforeach; ?>
+        </div>
+      </div>
+      <?php endif; ?>
+
     </div>
 
     <!-- RIGHT COLUMN: Weight Chart -->
