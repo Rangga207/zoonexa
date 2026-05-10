@@ -223,6 +223,11 @@ include 'header.php';
     const healthMode = "<?php echo e($healthMode); ?>";
     const shouldReverse = (healthMode === 'cutting');
 
+    // Create gradient fill
+    let gradientFill = ctx.getContext("2d").createLinearGradient(0, 0, 0, 400);
+    gradientFill.addColorStop(0, primaryColor + '66'); // 40% opacity
+    gradientFill.addColorStop(1, primaryColor + '00'); // 0% opacity
+
     window.myHealthChart = new Chart(ctx, {
         type: 'line',
         data: {
@@ -231,30 +236,51 @@ include 'header.php';
                 label: 'Weight (kg)',
                 data: weightData,
                 borderColor: primaryColor,
-                backgroundColor: 'rgba(58, 134, 255, 0.15)',
+                backgroundColor: gradientFill,
                 borderWidth: 3,
                 fill: true,
                 tension: 0.4,
-                pointBackgroundColor: primaryColor,
-                pointBorderColor: '#fff',
-                pointBorderWidth: 2,
+                pointBackgroundColor: '#fff',
+                pointBorderColor: primaryColor,
+                pointBorderWidth: 3,
                 pointRadius: 4,
-                pointHoverRadius: 6
+                pointHoverRadius: 7,
+                pointHoverBackgroundColor: primaryColor,
+                pointHoverBorderColor: '#fff',
+                pointHoverBorderWidth: 3
             }]
         },
         options: {
             responsive: true,
             maintainAspectRatio: false,
+            animation: {
+                y: {
+                    duration: 2000,
+                    delay: 200,
+                    easing: 'easeOutQuart'
+                }
+            },
+            interaction: {
+                mode: 'index',
+                intersect: false,
+            },
             plugins: {
                 legend: { display: false },
                 tooltip: {
-                    backgroundColor: 'rgba(0,0,0,0.8)',
+                    backgroundColor: 'rgba(26, 26, 26, 0.9)',
+                    titleFont: { size: 14, family: 'Inter', weight: 'bold' },
+                    bodyFont: { size: 14, family: 'Inter' },
                     padding: 12,
-                    titleFont: { size: 14, family: "'Inter', sans-serif" },
-                    bodyFont: { size: 14, family: "'Inter', sans-serif" },
-                    displayColors: false
+                    cornerRadius: 8,
+                    displayColors: false,
+                    callbacks: {
+                        label: function(context) {
+                            return context.parsed.y + ' kg';
+                        }
+                    }
                 }
             },
+
             scales: {
                 x: {
                     grid: { display: false },

@@ -28,6 +28,10 @@
   <!-- Smooth Page Transitions (Modern Browsers) -->
   <meta name="view-transition" content="same-origin" />
 
+  <!-- External Libraries for Micro-interactions -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.8.1/vanilla-tilt.min.js"></script>
+
   <!-- Scripts -->
   <script defer src="script.js?v=<?php echo time(); ?>"></script>
   <script>

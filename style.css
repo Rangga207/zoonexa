@@ -61,6 +61,32 @@ body {
     transition: background 0.3s, color 0.3s;
     overflow-x: hidden;
     animation: fadeIn 0.15s ease-out forwards;
+    position: relative;
+}
+
+/* Aurora Mesh Background */
+body::before {
+    content: '';
+    position: fixed;
+    top: -50%;
+    left: -50%;
+    width: 200vw;
+    height: 200vh;
+    z-index: -1;
+    background: radial-gradient(circle at 50% 50%, var(--primary-light) 0%, transparent 40%),
+                radial-gradient(circle at 80% 20%, var(--secondary) 0%, transparent 30%);
+    opacity: 0.04;
+    animation: auroraRotate 25s linear infinite;
+    pointer-events: none;
+}
+
+:root[data-theme="dark"] body::before {
+    opacity: 0.12;
+}
+
+@keyframes auroraRotate {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
 }
 
 @keyframes fadeIn {

@@ -6,7 +6,40 @@ document.addEventListener('DOMContentLoaded', () => {
     initFormValidation();
     initMobileMenu();
     initUserDropdown();
+    initInteractiveEffects();
 });
+
+// =============================================
+// MICRO-INTERACTIONS (Tilt & Confetti)
+// =============================================
+function initInteractiveEffects() {
+    // 1. 3D Tilt Effect on Cards
+    if (typeof VanillaTilt !== 'undefined') {
+        VanillaTilt.init(document.querySelectorAll(".service-card, .info-card, .milestone-card, .target-card, .tip-item"), {
+            max: 5,
+            speed: 400,
+            glare: true,
+            "max-glare": 0.15,
+            scale: 1.02
+        });
+    }
+
+    // 2. Confetti on Form Submit (Gamification Reward)
+    const forms = document.querySelectorAll('form');
+    forms.forEach(form => {
+        form.addEventListener('submit', (e) => {
+            // Don't prevent default, just fire confetti right before it submits
+            if (typeof confetti !== 'undefined') {
+                confetti({
+                    particleCount: 100,
+                    spread: 70,
+                    origin: { y: 0.6 },
+                    colors: ['#16a085', '#1abc9c', '#f39c12', '#3498db']
+                });
+            }
+        });
+    });
+}
 
 // =============================================
 // THEME TOGGLE
