@@ -84,9 +84,9 @@ include 'header.php';
    ============================================= */
 .dash-wrap {
   width: 100%;
-  max-width: 1400px;
+  max-width: 1800px;
   margin: 0 auto;
-  padding: 28px 32px;
+  padding: 32px 40px;
   min-height: calc(100vh - 80px);
   box-sizing: border-box;
 }
@@ -131,8 +131,8 @@ include 'header.php';
 /* Main 2-column grid — fills available width */
 .dash-grid {
   display: grid;
-  grid-template-columns: minmax(320px, 420px) 1fr;
-  gap: 20px;
+  grid-template-columns: minmax(350px, 460px) 1fr;
+  gap: 24px;
   align-items: start;
   width: 100%;
 }
@@ -148,7 +148,7 @@ include 'header.php';
   background: var(--bg-card);
   border: 1px solid var(--border);
   border-radius: 16px;
-  padding: 18px 12px;
+  padding: 22px 16px;
   text-align: center;
   transition: transform 0.2s, box-shadow 0.2s;
 }
@@ -157,7 +157,7 @@ include 'header.php';
   box-shadow: 0 8px 24px rgba(0,0,0,0.12);
 }
 .stat-item .stat-val {
-  font-size: 24px;
+  font-size: 28px;
   font-weight: 800;
   color: var(--primary);
   display: block;
@@ -177,7 +177,7 @@ include 'header.php';
   background: var(--bg-card);
   border: 1px solid var(--border);
   border-radius: 18px;
-  padding: 24px;
+  padding: 32px;
   flex: 1;
 }
 .activity-card .card-header {
@@ -215,14 +215,14 @@ include 'header.php';
 /* Progress rings — bigger */
 .rings-row {
   display: flex;
-  gap: 16px;
+  gap: 20px;
   justify-content: space-around;
-  padding: 0 8px;
+  padding: 10px 0;
 }
 .ring-wrap { text-align: center; flex: 1; }
 .ring-circle {
-  width: 110px;
-  height: 110px;
+  width: 140px;
+  height: 140px;
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -232,28 +232,28 @@ include 'header.php';
 }
 .ring-circle:hover { transform: scale(1.05); }
 .ring-inner {
-  width: 86px;
-  height: 86px;
+  width: 112px;
+  height: 112px;
   background: var(--bg-card);
   border-radius: 50%;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 3px;
+  gap: 4px;
   box-shadow: inset 0 2px 6px rgba(0,0,0,0.15);
 }
-.ring-inner i { font-size: 18px; }
-.ring-inner strong { font-size: 14px; font-weight: 800; }
-.ring-label { font-size: 12px; color: var(--text-body); margin-top: 10px; font-weight: 700; }
-.ring-sub { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+.ring-inner i { font-size: 24px; }
+.ring-inner strong { font-size: 18px; font-weight: 800; }
+.ring-label { font-size: 14px; color: var(--text-body); margin-top: 14px; font-weight: 700; }
+.ring-sub { font-size: 12px; color: var(--text-muted); margin-top: 4px; }
 
 /* Chart card — fills right column */
 .chart-card {
   background: var(--bg-card);
   border: 1px solid var(--border);
   border-radius: 18px;
-  padding: 24px;
+  padding: 32px;
   height: 100%;
   box-sizing: border-box;
   display: flex;
@@ -276,8 +276,9 @@ include 'header.php';
 }
 .chart-canvas-wrap {
   flex: 1;
-  min-height: 300px;
+  min-height: 400px;
   position: relative;
+  margin-top: 10px;
 }
 
 /* Social pulse ticker */
