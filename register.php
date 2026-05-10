@@ -64,34 +64,35 @@ $page_title = 'Sign Up';
 </head>
 <body class="auth-page">
 <style>
-/* Modern Auth UI Overrides */
+/* Premium Light Theme Auth UI */
 .auth-page {
   min-height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #0f1115;
+  background: #f0f4f8;
   position: relative;
   overflow: hidden;
   font-family: 'Inter', sans-serif;
-  color: white;
+  color: var(--text-dark);
 }
-/* Glowing Background Shapes */
+/* Soft Glowing Background Shapes */
 .auth-bg-shapes {
   position: absolute;
   inset: 0;
   z-index: 0;
   overflow: hidden;
+  background: linear-gradient(135deg, #e0f2f1 0%, #f0f4f8 100%);
 }
 .shape {
   position: absolute;
   border-radius: 50%;
   filter: blur(80px);
-  opacity: 0.4;
-  animation: floatBG 10s infinite alternate ease-in-out;
+  opacity: 0.6;
+  animation: floatBG 12s infinite alternate ease-in-out;
 }
-.shape-1 { width: 400px; height: 400px; background: var(--primary); top: -100px; left: -100px; }
-.shape-2 { width: 500px; height: 500px; background: var(--secondary); bottom: -150px; right: -100px; animation-delay: -5s; }
+.shape-1 { width: 500px; height: 500px; background: rgba(22, 160, 133, 0.4); top: -150px; left: -100px; }
+.shape-2 { width: 600px; height: 600px; background: rgba(52, 152, 219, 0.3); bottom: -200px; right: -150px; animation-delay: -5s; }
 
 .auth-wrapper {
   position: relative;
@@ -104,20 +105,21 @@ $page_title = 'Sign Up';
   text-align: center;
   margin-bottom: 30px;
 }
-.auth-logo { width: 60px; height: 60px; margin-bottom: 10px; animation: pulseLogo 3s infinite alternate; filter: drop-shadow(0 0 10px rgba(58,134,255,0.5)); }
-.auth-brand h1 { font-family: 'Outfit', sans-serif; font-size: 32px; font-weight: 800; margin: 0; letter-spacing: 1px; }
-.auth-brand .muted { color: rgba(255,255,255,0.6); font-size: 14px; margin-top: 5px; }
+.auth-logo { width: 60px; height: 60px; margin-bottom: 10px; animation: pulseLogo 3s infinite alternate; }
+.auth-brand h1 { font-family: 'Outfit', sans-serif; font-size: 32px; font-weight: 800; margin: 0; letter-spacing: 1px; color: var(--primary-dark); }
+.auth-brand .muted { color: var(--text-muted); font-size: 14px; margin-top: 5px; }
 
 .auth-card {
-  background: rgba(20,22,28,0.7);
+  background: rgba(255, 255, 255, 0.85);
   backdrop-filter: blur(20px);
-  border: 1px solid rgba(255,255,255,0.1);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.5);
   border-radius: 24px;
   padding: 40px;
-  box-shadow: 0 20px 50px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.1);
+  box-shadow: 0 20px 40px rgba(0,0,0,0.08), 0 1px 3px rgba(0,0,0,0.05);
 }
-.auth-card h2 { font-family: 'Outfit', sans-serif; font-size: 26px; margin: 0 0 8px; }
-.auth-card > p.muted { margin-bottom: 24px; color: rgba(255,255,255,0.6); }
+.auth-card h2 { font-family: 'Outfit', sans-serif; font-size: 26px; margin: 0 0 8px; color: var(--text-dark); }
+.auth-card > p.muted { margin-bottom: 24px; color: var(--text-muted); }
 
 .auth-input-group {
   margin-bottom: 20px;
@@ -126,17 +128,17 @@ $page_title = 'Sign Up';
 .auth-input-group label {
   display: block;
   font-size: 13px;
-  font-weight: 600;
-  color: rgba(255,255,255,0.8);
+  font-weight: 700;
+  color: var(--text-body);
   margin-bottom: 8px;
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
 .auth-input {
   width: 100%;
-  background: rgba(0,0,0,0.2);
-  border: 1px solid rgba(255,255,255,0.1);
-  color: white;
+  background: var(--bg-main);
+  border: 1px solid var(--border);
+  color: var(--text-dark);
   padding: 14px 16px;
   border-radius: 12px;
   font-size: 15px;
@@ -146,8 +148,8 @@ $page_title = 'Sign Up';
 .auth-input:focus {
   outline: none;
   border-color: var(--primary);
-  background: rgba(0,0,0,0.4);
-  box-shadow: 0 0 0 4px rgba(58,134,255,0.15);
+  background: #fff;
+  box-shadow: 0 0 0 4px rgba(22, 160, 133, 0.15);
 }
 
 .auth-btn {
@@ -155,35 +157,35 @@ $page_title = 'Sign Up';
   padding: 16px;
   border: none;
   border-radius: 12px;
-  background: linear-gradient(135deg, var(--primary), #2272cc);
+  background: linear-gradient(135deg, var(--primary), var(--primary-light));
   color: white;
   font-size: 16px;
   font-weight: 700;
   cursor: pointer;
   margin-top: 10px;
   transition: all 0.3s;
-  box-shadow: 0 8px 20px rgba(58,134,255,0.3);
+  box-shadow: 0 8px 20px rgba(22, 160, 133, 0.3);
 }
 .auth-btn:hover {
   transform: translateY(-2px);
-  box-shadow: 0 12px 25px rgba(58,134,255,0.5);
+  box-shadow: 0 12px 25px rgba(22, 160, 133, 0.4);
 }
 .auth-footer-text {
   text-align: center;
   margin-top: 24px;
   font-size: 14px;
-  color: rgba(255,255,255,0.6);
+  color: var(--text-muted);
 }
 .auth-footer-text a {
   color: var(--primary);
   text-decoration: none;
-  font-weight: 600;
+  font-weight: 700;
   transition: color 0.2s;
 }
-.auth-footer-text a:hover { color: #5c9eff; }
+.auth-footer-text a:hover { color: var(--primary-dark); }
 
 @keyframes floatBG { 100% { transform: translateY(30px) scale(1.05); } }
-@keyframes pulseLogo { 100% { transform: scale(1.05); filter: drop-shadow(0 0 20px rgba(58,134,255,0.8)); } }
+@keyframes pulseLogo { 100% { transform: scale(1.05); filter: drop-shadow(0 4px 10px rgba(22, 160, 133, 0.3)); } }
 </style>
 
 <div class="auth-bg-shapes">
