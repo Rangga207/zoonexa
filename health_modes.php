@@ -40,7 +40,7 @@ include 'header.php';
 
     <!-- Maintain -->
     <div class="service-card mode-card <?php echo $currentMode === 'maintain' ? 'mode-active' : ''; ?>">
-      <div class="service-icon"><i class="fas fa-balance-scale" style="color: var(--secondary);"></i></div>
+      <div class="service-icon"><i class="fas fa-shield-alt" style="color: var(--secondary);"></i></div>
       <h3>Maintain</h3>
       <p class="muted">Keep your current body composition. Balanced approach for steady health.</p>
       <div class="mode-targets">
@@ -59,7 +59,7 @@ include 'header.php';
 
     <!-- Bulking -->
     <div class="service-card mode-card <?php echo $currentMode === 'bulking' ? 'mode-active' : ''; ?>">
-      <div class="service-icon"><i class="fas fa-running" style="color: var(--primary);"></i></div>
+      <div class="service-icon"><i class="fas fa-arrow-alt-circle-up" style="color: var(--primary);"></i></div>
       <h3>Bulking</h3>
       <p class="muted">Focus on muscle gain. Higher calorie intake and more intense training.</p>
       <div class="mode-targets">
