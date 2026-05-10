@@ -64,14 +64,39 @@ $modeMotivations = [
 ];
 $motivationText = $modeMotivations[$healthMode] ?? "Ready to conquer your health goals today?";
 
-// Fetch Social Pulse (Latest 5 activities)
+// Ensure global_chats table exists
+$mysqli->query("CREATE TABLE IF NOT EXISTS global_chats (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    message VARCHAR(255) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+)");
+
+// Handle Global Chat Submission
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'send_chat') {
+    $chat_msg = trim($_POST['chat_message'] ?? '');
+    if (!empty($chat_msg)) {
+        $stmt = $mysqli->prepare("INSERT INTO global_chats (user_id, message) VALUES (?, ?)");
+        $stmt->bind_param("is", $user_id, $chat_msg);
+        $stmt->execute();
+        $stmt->close();
+        header("Location: index.php");
+        exit;
+    }
+}
+
+// Fetch Social Pulse (Latest 10 activities including chats)
 $stmt = $mysqli->prepare("
     (SELECT u.username, u.avatar_border, 'logged their health data! 🔥' as action, hl.created_at as time
      FROM health_logs hl JOIN users u ON hl.user_id = u.id)
     UNION
     (SELECT u.username, u.avatar_border, CONCAT('reached the ', m.title, ' milestone! 🏆') as action, um.achieved_at as time
      FROM user_milestones um JOIN users u ON um.user_id = u.id JOIN milestones m ON um.milestone_id = m.id)
-    ORDER BY time DESC LIMIT 5
+    UNION
+    (SELECT u.username, u.avatar_border, CONCAT('says: \"', gc.message, '\" 💬') as action, gc.created_at as time
+     FROM global_chats gc JOIN users u ON gc.user_id = u.id)
+    ORDER BY time DESC LIMIT 10
 ");
 $pulseData = [];
 if ($stmt) {
@@ -397,9 +422,7 @@ main.page {
   display: flex;
   align-items: center;
   gap: 12px;
-  overflow: hidden;
   margin-top: 20px;
-  white-space: nowrap;
 }
 .pulse-label {
   color: var(--warning);
@@ -409,15 +432,58 @@ main.page {
   align-items: center;
   gap: 5px;
   flex-shrink: 0;
+  z-index: 2;
+}
+.pulse-ticker-wrap {
+  flex-grow: 1;
+  overflow: hidden;
+  position: relative;
+  /* Fade out text on the left and right edges so it doesn't clip harshly */
+  -webkit-mask-image: linear-gradient(to right, transparent 0%, black 10%, black 90%, transparent 100%);
+  mask-image: linear-gradient(to right, transparent 0%, black 10%, black 90%, transparent 100%);
 }
 .pulse-ticker {
   display: inline-block;
-  animation: ticker 25s linear infinite;
+  white-space: nowrap;
+  animation: ticker 30s linear forwards; /* Run exactly once as requested */
   font-size: 13px;
   color: var(--text-muted);
 }
+.pulse-chat-form {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+.pulse-chat-input {
+  background: var(--bg-main);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 6px 12px;
+  font-size: 12px;
+  color: var(--text-body);
+  width: 150px;
+  transition: width 0.3s;
+}
+.pulse-chat-input:focus {
+  width: 200px;
+  outline: none;
+  border-color: var(--primary);
+}
+.pulse-chat-btn {
+  background: var(--primary);
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
 @keyframes ticker {
-  0% { transform: translateX(60vw); }
+  0% { transform: translateX(100vw); }
   100% { transform: translateX(-100%); }
 }
 @keyframes glow-gold {
@@ -474,7 +540,7 @@ main.page {
     </div>
     <?php if ($canSpin): ?>
     <button class="spin-pill" onclick="openDailyBox()" id="btn-open-box">
-      <i class="fas fa-gift"></i> Daily Box Ready!
+      <i class="fas fa-gift"></i> Daily Box Ready!lal
     </button>
     <?php endif; ?>
   </div>
@@ -604,50 +670,59 @@ main.page {
 
   </div><!-- /dash-grid -->
 
-  <!-- ── Social Pulse Ticker ── -->
+  <!-- ── Social Pulse Ticker & Global Chat ── -->
   <?php if (!empty($pulseData)): ?>
   <div class="pulse-bar">
     <span class="pulse-label"><i class="fas fa-bolt"></i> Live</span>
-    <div class="pulse-ticker">
-      <?php foreach ($pulseData as $p): ?>
-        <?php
-          $pulseColorMap = [
-              'border_gold' => '#FFD700',
-              'border_neon' => '#00ffff',
-              'border_fire' => '#ff4500'
-          ];
-          $pColor = isset($p['avatar_border']) ? ($pulseColorMap[$p['avatar_border']] ?? null) : null;
-        ?>
-        <span style="margin-right:40px; display: inline-flex; align-items: center; gap: 8px;">
-          <!-- Mini Avatar -->
-          <div style="
-            width: 24px; 
-            height: 24px; 
-            border-radius: 50%; 
-            background: var(--bg-card); 
-            display: inline-flex; 
-            align-items: center; 
-            justify-content: center; 
-            font-size: 12px; 
-            font-family: 'Outfit', sans-serif;
-            font-weight: 800; 
-            color: var(--primary);
-            flex-shrink: 0;
-            <?php if ($pColor): ?>
-                border: 2px solid <?php echo $pColor; ?>;
-                box-shadow: 0 0 10px <?php echo $pColor; ?>;
-            <?php else: ?>
-                border: 1px solid var(--border);
-            <?php endif; ?>
-          ">
-            <?php echo strtoupper(substr($p['username'], 0, 1)); ?>
-          </div>
-          
-          <strong style="color:var(--text-body);"><?php echo e($p['username']); ?></strong>
-          <span><?php echo $p['action']; ?></span>
-        </span>
-      <?php endforeach; ?>
+    <div class="pulse-ticker-wrap">
+      <div class="pulse-ticker">
+        <?php foreach ($pulseData as $p): ?>
+          <?php
+            $pulseColorMap = [
+                'border_gold' => '#FFD700',
+                'border_neon' => '#00ffff',
+                'border_fire' => '#ff4500'
+            ];
+            $pColor = isset($p['avatar_border']) ? ($pulseColorMap[$p['avatar_border']] ?? null) : null;
+          ?>
+          <span style="margin-right:40px; display: inline-flex; align-items: center; gap: 8px;">
+            <!-- Mini Avatar -->
+            <div style="
+              width: 24px; 
+              height: 24px; 
+              border-radius: 50%; 
+              background: var(--bg-main); 
+              display: inline-flex; 
+              align-items: center; 
+              justify-content: center; 
+              font-size: 12px; 
+              font-family: 'Outfit', sans-serif;
+              font-weight: 800; 
+              color: var(--primary);
+              flex-shrink: 0;
+              <?php if ($pColor): ?>
+                  border: 2px solid <?php echo $pColor; ?>;
+                  box-shadow: 0 0 10px <?php echo $pColor; ?>;
+              <?php else: ?>
+                  border: 1px solid var(--border);
+              <?php endif; ?>
+            ">
+              <?php echo strtoupper(substr($p['username'], 0, 1)); ?>
+            </div>
+            
+            <strong style="color:var(--text-body);"><?php echo e($p['username']); ?></strong>
+            <span><?php echo $p['action']; ?></span>
+          </span>
+        <?php endforeach; ?>
+      </div>
     </div>
+    
+    <!-- Global Chat Form -->
+    <form method="POST" class="pulse-chat-form">
+      <input type="hidden" name="action" value="send_chat">
+      <input type="text" name="chat_message" class="pulse-chat-input" placeholder="Global chat..." maxlength="100" required autocomplete="off">
+      <button type="submit" class="pulse-chat-btn"><i class="fas fa-paper-plane" style="font-size: 12px;"></i></button>
+    </form>
   </div>
   <?php endif; ?>
 
