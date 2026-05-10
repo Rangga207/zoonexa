@@ -12,34 +12,33 @@ document.addEventListener('DOMContentLoaded', () => {
 // THEME TOGGLE
 // =============================================
 function initThemeToggle() {
-    const body          = document.body;
-    const toggleBtn     = document.getElementById('theme-toggle');
-    const toggleMobile  = document.getElementById('theme-toggle-mobile');
+    const body         = document.body;
+    const toggleBtn    = document.getElementById('theme-toggle');
+    const toggleMobile = document.getElementById('theme-toggle-mobile');
 
-    function applyTheme(isDark) {
-        if (isDark) {
-            body.classList.add('theme-dark');
+    function applyTheme(isLight) {
+        if (isLight) {
+            body.classList.add('theme-light');
+            body.classList.remove('theme-dark');
         } else {
+            body.classList.remove('theme-light');
             body.classList.remove('theme-dark');
         }
-        // Update all toggle button icons
         [toggleBtn, toggleMobile].forEach(btn => {
             if (!btn) return;
             const icon = btn.querySelector('i');
-            if (icon) {
-                icon.className = isDark ? 'fas fa-sun' : 'fas fa-moon';
-            }
+            if (icon) icon.className = isLight ? 'fas fa-moon' : 'fas fa-sun';
         });
     }
 
-    // Apply saved theme on page load — default: dark
+    // Default: dark (no class). Light only if explicitly saved.
     const savedTheme = localStorage.getItem('zoonexa-theme');
-    applyTheme(savedTheme !== 'light'); // dark unless explicitly set to light
+    applyTheme(savedTheme === 'light');
 
     function handleToggle() {
-        const isDark = body.classList.toggle('theme-dark');
-        localStorage.setItem('zoonexa-theme', isDark ? 'dark' : 'light');
-        applyTheme(isDark);
+        const isLight = body.classList.toggle('theme-light');
+        localStorage.setItem('zoonexa-theme', isLight ? 'light' : 'dark');
+        applyTheme(isLight);
     }
 
     if (toggleBtn)    toggleBtn.addEventListener('click', handleToggle);
