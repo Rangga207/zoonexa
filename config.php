@@ -186,34 +186,6 @@ if ($mysqli->connect_error) {
 $mysqli->set_charset('utf8mb4');
 
 // =============================================
-// AUTO-MIGRATE NEW SCHEMA (To prevent 500 errors on production)
-// =============================================
-// Temporarily disable exception mode so ALTER TABLE failures don't kill the page
-mysqli_report(MYSQLI_REPORT_OFF);
-try {
-    $res = @$mysqli->query("SHOW COLUMNS FROM users LIKE 'last_spin_date'");
-    if ($res && $res->num_rows === 0) {
-        @$mysqli->query("ALTER TABLE users ADD COLUMN last_spin_date DATE DEFAULT NULL");
-    }
-    
-    $res = @$mysqli->query("SHOW COLUMNS FROM users LIKE 'avatar_border'");
-    if ($res && $res->num_rows === 0) {
-        @$mysqli->query("ALTER TABLE users ADD COLUMN avatar_border VARCHAR(50) DEFAULT 'default'");
-    }
-    
-    $res = @$mysqli->query("SHOW COLUMNS FROM milestones LIKE 'icon'");
-    if ($res && $row = $res->fetch_assoc()) {
-        if (stripos($row['Type'], 'varchar') === false || (int)preg_replace('/[^0-9]/', '', $row['Type']) < 255) {
-            @$mysqli->query("ALTER TABLE milestones MODIFY icon VARCHAR(255)");
-        }
-    }
-} catch (\Throwable $e) {
-    // Silently ignore ALL migration errors (including mysqli_sql_exception)
-}
-// Re-enable exception mode for rest of app
-mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
-
-// =============================================
 // CSRF TOKEN
 // =============================================
 if (empty($_SESSION['csrf_token'])) {
