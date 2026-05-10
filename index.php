@@ -441,17 +441,6 @@ include 'header.php';
 
   </div><!-- /dash-grid -->
 
-  <!-- ── Quick Nav ── -->
-  <div class="quick-nav">
-    <a href="health_log.php" class="quick-link"><i class="fas fa-clipboard-list"></i><span>Daily Log</span></a>
-    <a href="health_modes.php" class="quick-link"><i class="fas fa-sliders-h"></i><span>Health Mode</span></a>
-    <a href="milestone.php" class="quick-link"><i class="fas fa-trophy"></i><span>Milestones</span></a>
-    <a href="leaderboard.php" class="quick-link"><i class="fas fa-crown"></i><span>Leaderboard</span></a>
-    <a href="tips.php" class="quick-link"><i class="fas fa-lightbulb"></i><span>Tips</span></a>
-    <a href="chatbot.php" class="quick-link"><i class="fas fa-robot"></i><span>AI Chat</span></a>
-    <a href="merchandise.php" class="quick-link"><i class="fas fa-shopping-bag"></i><span>Merch</span></a>
-  </div>
-
   <!-- ── Social Pulse Ticker ── -->
   <?php if (!empty($pulseData)): ?>
   <div class="pulse-bar">
