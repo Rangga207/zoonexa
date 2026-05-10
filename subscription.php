@@ -14,21 +14,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
     if ($subscribed) {
         $error = 'You already have an active subscription.';
     } else {
-        // Generate unique order ID
-        $orderId = 'zoonexa-' . $user_id . '-' . time();
+        $paymentCode = isset($_POST['payment_code']) ? trim($_POST['payment_code']) : '';
         
-        // Simpan pending subscription ke DB
-        $stmt = $mysqli->prepare("
-            INSERT INTO subscriptions (user_id, midtrans_order_id, status, amount_paid, payment_method)
-            VALUES (?, ?, 'pending', 10000, 'qris_manual')
-        ");
-        $stmt->bind_param('is', $user_id, $orderId);
-        $stmt->execute();
-        $stmt->close();
+        if (empty($paymentCode)) {
+            $error = 'Please enter your payment reference code.';
+        } else {
+            // Generate unique order ID
+            $orderId = 'zoonexa-' . $user_id . '-' . time();
+            $paymentMethod = 'qris_manual: ' . e($paymentCode);
+            
+            // Simpan pending subscription ke DB
+            $stmt = $mysqli->prepare("
+                INSERT INTO subscriptions (user_id, midtrans_order_id, status, amount_paid, payment_method)
+                VALUES (?, ?, 'pending', 10000, ?)
+            ");
+            $stmt->bind_param('iss', $user_id, $orderId, $paymentMethod);
+            $stmt->execute();
+            $stmt->close();
 
-        // Redirect ke pending page
-        header('Location: subscription-pending.php?order_id=' . $orderId);
-        exit;
+            // Redirect ke pending page
+            header('Location: subscription-pending.php?order_id=' . $orderId);
+            exit;
+        }
     }
 }
 
@@ -44,6 +51,144 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
 $page_title = 'Subscription';
 include 'header.php';
 ?>
+
+<style>
+/* =============================================
+   PREMIUM SUBSCRIPTION UI
+   ============================================= */
+.sub-pay-section {
+  text-align: center;
+  border-top: 1px solid var(--border);
+  padding-top: 32px;
+  margin-top: 32px;
+}
+
+/* Animated QR Code Scanner Container */
+.qris-container {
+  display: flex;
+  justify-content: center;
+  margin: 30px 0;
+}
+.qris-box {
+  position: relative;
+  width: 240px;
+  height: 240px;
+  background: white;
+  padding: 15px;
+  border-radius: 20px;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.4), 0 0 0 2px rgba(255,255,255,0.05);
+  overflow: hidden;
+}
+.qris-image {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  border-radius: 10px;
+  position: relative;
+  z-index: 2;
+}
+.qris-glow {
+  position: absolute;
+  top: -50%; left: -50%; right: -50%; bottom: -50%;
+  background: conic-gradient(from 0deg, transparent, var(--primary), transparent 30%);
+  animation: spin-glow 4s linear infinite;
+  z-index: 0;
+  opacity: 0.15;
+}
+.qris-scan-line {
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 4px;
+  background: var(--primary);
+  box-shadow: 0 0 15px 4px var(--primary);
+  z-index: 3;
+  animation: scan 2.5s ease-in-out infinite;
+  opacity: 0.8;
+}
+
+/* Premium Form Elements */
+.payment-form {
+  max-width: 400px;
+  margin: 0 auto;
+  text-align: left;
+}
+.input-group label {
+  display: block;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-body);
+  margin-bottom: 8px;
+}
+.payment-input {
+  width: 100%;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.1);
+  color: white;
+  padding: 16px;
+  border-radius: 12px;
+  font-size: 16px;
+  outline: none;
+  transition: all 0.3s;
+  box-sizing: border-box;
+}
+.payment-input:focus {
+  border-color: var(--primary);
+  background: rgba(255,255,255,0.06);
+  box-shadow: 0 0 0 4px rgba(58,134,255,0.15);
+}
+
+/* Epic Confirm Button */
+.btn-confirm-payment {
+  width: 100%;
+  margin-top: 24px;
+  padding: 18px;
+  border-radius: 14px;
+  border: none;
+  background: linear-gradient(135deg, var(--primary), #2272cc);
+  color: white;
+  font-size: 16px;
+  font-weight: 800;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(58,134,255,0.3);
+  transition: transform 0.2s, box-shadow 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.btn-confirm-payment:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 15px 40px rgba(58,134,255,0.5);
+}
+.btn-content {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.btn-flare {
+  position: absolute;
+  top: 0; left: -100%; width: 50%; height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+  transform: skewX(-20deg);
+  z-index: 1;
+  animation: flare 3s infinite;
+}
+
+@keyframes spin-glow { 100% { transform: rotate(360deg); } }
+@keyframes scan {
+  0% { top: 0; }
+  50% { top: 100%; }
+  100% { top: 0; }
+}
+@keyframes flare {
+  0% { left: -100%; }
+  20% { left: 200%; }
+  100% { left: 200%; }
+}
+</style>
 
 <section class="page-section">
   <div class="page-header">
@@ -130,28 +275,44 @@ include 'header.php';
       </div>
     </div>
 
-    <!-- Pay Button -->
-    <div class="sub-pay-section" style="text-align: center; border-top: 1px solid var(--border); padding-top: 20px; margin-top: 20px;">
-      <h3 style="margin-bottom: 15px;">Scan QRIS to Pay</h3>
+    <!-- Pay Button Section -->
+    <div class="sub-pay-section">
+      <h3 style="font-size: 20px; margin-bottom: 8px;">Complete Your Payment</h3>
+      <p class="muted">Scan the QRIS code below using your preferred E-Wallet or Mobile Banking app.</p>
       
-      <div style="background: white; padding: 15px; border-radius: 12px; display: inline-block; margin-bottom: 20px;">
-        <!-- QRIS Image -->
-        <img src="qris.png" alt="QRIS Zoonexa" style="width: 200px; height: 200px; display: block; border-radius: 8px; object-fit: contain; background: white;">
+      <div class="qris-container">
+        <div class="qris-box">
+          <div class="qris-glow"></div>
+          <img src="qris.png" alt="QRIS Zoonexa" class="qris-image">
+          <div class="qris-scan-line"></div>
+        </div>
       </div>
-      <p class="muted" style="margin-bottom: 20px;">Please scan the QR above via Mobile Banking or your preferred E-Wallet (GoPay, OVO, Dana, etc).</p>
 
       <?php if (isset($error)): ?>
-        <div class="alert"><?php echo e($error); ?></div>
+        <div class="alert" style="background: rgba(231,76,60,0.1); border-color: var(--danger); color: #e74c3c; max-width: 400px; margin: 0 auto 20px; text-align: left;">
+          <i class="fas fa-exclamation-triangle" style="margin-right:8px;"></i> <?php echo e($error); ?>
+        </div>
       <?php endif; ?>
 
-      <form method="POST">
+      <form method="POST" class="payment-form">
         <input type="hidden" name="action" value="submit_payment">
-        <button type="submit" class="hero-btn primary" style="width: 100%; justify-content: center;">
-          <i class="fas fa-check-circle" style="margin-right: 8px;"></i> I Have Transferred
+        
+        <div class="input-group">
+          <label for="payment_code">Payment Reference Code</label>
+          <input type="text" id="payment_code" name="payment_code" class="payment-input" placeholder="e.g. OVO-987654321" required>
+          <span class="muted small" style="display:block; margin-top:8px;"><i class="fas fa-info-circle"></i> Enter the transaction ID from your receipt to help us verify faster.</span>
+        </div>
+
+        <button type="submit" class="btn-confirm-payment">
+          <span class="btn-content">
+            <i class="fas fa-check-circle"></i> Confirm Payment
+          </span>
+          <div class="btn-flare"></div>
         </button>
       </form>
-      <p class="muted small" style="margin-top: 12px; text-align: center;">
-        The admin will verify your payment within a maximum of 24 hours.
+      
+      <p class="muted small" style="margin-top: 24px; text-align: center;">
+        <i class="fas fa-shield-alt" style="color: var(--primary);"></i> Secure manual verification. The admin will process your request within 24 hours.
       </p>
     </div>
   </div>
