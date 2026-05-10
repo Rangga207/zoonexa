@@ -1,6 +1,7 @@
 <?php
 // config.php - Database Configuration & Session Management
 session_start();
+date_default_timezone_set('Asia/Jakarta'); // Set timezone ke Waktu Indonesia Barat agar tanggal selalu sinkron
 
 // =============================================
 // LOAD ENVIRONMENT VARIABLES
