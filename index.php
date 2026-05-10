@@ -450,7 +450,6 @@ include 'header.php';
     <a href="tips.php" class="quick-link"><i class="fas fa-lightbulb"></i><span>Tips</span></a>
     <a href="chatbot.php" class="quick-link"><i class="fas fa-robot"></i><span>AI Chat</span></a>
     <a href="merchandise.php" class="quick-link"><i class="fas fa-shopping-bag"></i><span>Merch</span></a>
-    <a href="subscription.php" class="quick-link"><i class="fas fa-gem"></i><span>Pro Plan</span></a>
   </div>
 
   <!-- ── Social Pulse Ticker ── -->
