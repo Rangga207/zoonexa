@@ -82,6 +82,13 @@ include 'header.php';
 /* =============================================
    CLEAN DASHBOARD LAYOUT — Full Screen + Responsive
    ============================================= */
+/* Override global .page wrapper to allow full width */
+main.page {
+  max-width: 100% !important;
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+}
+
 .dash-wrap {
   width: 100%;
   max-width: 1800px;
