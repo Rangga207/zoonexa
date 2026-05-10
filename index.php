@@ -80,12 +80,15 @@ include 'header.php';
 
 <style>
 /* =============================================
-   CLEAN DASHBOARD LAYOUT
+   CLEAN DASHBOARD LAYOUT — Full Screen + Responsive
    ============================================= */
 .dash-wrap {
-  max-width: 1200px;
+  width: 100%;
+  max-width: 1400px;
   margin: 0 auto;
-  padding: 32px 24px;
+  padding: 28px 32px;
+  min-height: calc(100vh - 80px);
+  box-sizing: border-box;
 }
 
 /* Top greeting bar */
@@ -93,45 +96,45 @@ include 'header.php';
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 28px;
+  margin-bottom: 24px;
   flex-wrap: wrap;
   gap: 12px;
 }
 .dash-greeting h1 {
-  font-size: 24px;
-  font-weight: 700;
+  font-size: 26px;
+  font-weight: 800;
   margin: 0;
+  letter-spacing: -0.5px;
 }
 .dash-greeting h1 span { color: var(--primary); }
-.dash-greeting .sub { color: var(--text-muted); font-size: 14px; margin: 2px 0 0; }
+.dash-greeting .sub { color: var(--text-muted); font-size: 14px; margin: 3px 0 0; }
 
-/* Mystery box pill (compact) */
+/* Mystery box pill */
 .spin-pill {
   display: flex;
   align-items: center;
   gap: 10px;
-  background: linear-gradient(135deg, var(--primary), var(--primary-dark, #2272cc));
+  background: linear-gradient(135deg, var(--primary), #2272cc);
   color: white;
-  padding: 10px 18px;
+  padding: 11px 22px;
   border-radius: 50px;
   font-size: 14px;
-  font-weight: 600;
+  font-weight: 700;
   cursor: pointer;
   border: none;
   transition: transform 0.2s, box-shadow 0.2s;
-  box-shadow: 0 4px 16px rgba(58,134,255,0.3);
+  box-shadow: 0 4px 20px rgba(58,134,255,0.35);
+  white-space: nowrap;
 }
-.spin-pill:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(58,134,255,0.4); }
+.spin-pill:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(58,134,255,0.5); }
 
-/* Main 2-column grid */
+/* Main 2-column grid — fills available width */
 .dash-grid {
   display: grid;
-  grid-template-columns: 380px 1fr;
+  grid-template-columns: minmax(320px, 420px) 1fr;
   gap: 20px;
   align-items: start;
-}
-@media (max-width: 900px) {
-  .dash-grid { grid-template-columns: 1fr; }
+  width: 100%;
 }
 
 /* Stat cards row */
@@ -139,19 +142,22 @@ include 'header.php';
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 12px;
-  margin-bottom: 20px;
+  margin-bottom: 16px;
 }
 .stat-item {
   background: var(--bg-card);
   border: 1px solid var(--border);
-  border-radius: 14px;
-  padding: 16px;
+  border-radius: 16px;
+  padding: 18px 12px;
   text-align: center;
-  transition: transform 0.2s;
+  transition: transform 0.2s, box-shadow 0.2s;
 }
-.stat-item:hover { transform: translateY(-2px); }
+.stat-item:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+}
 .stat-item .stat-val {
-  font-size: 22px;
+  font-size: 24px;
   font-weight: 800;
   color: var(--primary);
   display: block;
@@ -161,8 +167,8 @@ include 'header.php';
   font-size: 11px;
   color: var(--text-muted);
   text-transform: uppercase;
-  letter-spacing: 0.5px;
-  margin-top: 4px;
+  letter-spacing: 0.6px;
+  margin-top: 5px;
   display: block;
 }
 
@@ -170,14 +176,15 @@ include 'header.php';
 .activity-card {
   background: var(--bg-card);
   border: 1px solid var(--border);
-  border-radius: 16px;
-  padding: 22px;
+  border-radius: 18px;
+  padding: 24px;
+  flex: 1;
 }
 .activity-card .card-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 20px;
+  margin-bottom: 24px;
 }
 .activity-card .card-title {
   font-size: 15px;
@@ -194,52 +201,70 @@ include 'header.php';
   font-weight: 600;
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: 5px;
+  padding: 6px 14px;
+  border: 1px solid var(--primary);
+  border-radius: 20px;
+  transition: all 0.2s;
 }
-.activity-card .card-action:hover { opacity: 0.8; }
+.activity-card .card-action:hover {
+  background: var(--primary);
+  color: white;
+}
 
-/* Progress rings */
+/* Progress rings — bigger */
 .rings-row {
   display: flex;
-  gap: 24px;
-  justify-content: center;
+  gap: 16px;
+  justify-content: space-around;
+  padding: 0 8px;
 }
-.ring-wrap { text-align: center; }
+.ring-wrap { text-align: center; flex: 1; }
 .ring-circle {
-  width: 90px; height: 90px;
+  width: 110px;
+  height: 110px;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   margin: 0 auto;
+  transition: transform 0.3s;
 }
+.ring-circle:hover { transform: scale(1.05); }
 .ring-inner {
-  width: 70px; height: 70px;
+  width: 86px;
+  height: 86px;
   background: var(--bg-card);
   border-radius: 50%;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 2px;
+  gap: 3px;
+  box-shadow: inset 0 2px 6px rgba(0,0,0,0.15);
 }
-.ring-inner i { font-size: 16px; }
-.ring-inner strong { font-size: 13px; font-weight: 700; }
-.ring-label { font-size: 11px; color: var(--text-muted); margin-top: 8px; font-weight: 600; }
-.ring-sub { font-size: 11px; color: var(--text-muted); }
+.ring-inner i { font-size: 18px; }
+.ring-inner strong { font-size: 14px; font-weight: 800; }
+.ring-label { font-size: 12px; color: var(--text-body); margin-top: 10px; font-weight: 700; }
+.ring-sub { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
 
-/* Chart card */
+/* Chart card — fills right column */
 .chart-card {
   background: var(--bg-card);
   border: 1px solid var(--border);
-  border-radius: 16px;
-  padding: 22px;
+  border-radius: 18px;
+  padding: 24px;
+  height: 100%;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
 }
 .chart-card .card-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
   margin-bottom: 16px;
+  flex-shrink: 0;
 }
 .chart-card .card-title {
   font-size: 15px;
@@ -249,36 +274,11 @@ include 'header.php';
   align-items: center;
   gap: 8px;
 }
-
-/* Quick nav row */
-.quick-nav {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
-  gap: 12px;
-  margin-top: 20px;
+.chart-canvas-wrap {
+  flex: 1;
+  min-height: 300px;
+  position: relative;
 }
-.quick-link {
-  background: var(--bg-card);
-  border: 1px solid var(--border);
-  border-radius: 14px;
-  padding: 16px 12px;
-  text-align: center;
-  text-decoration: none;
-  color: var(--text-body);
-  transition: all 0.2s;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 8px;
-}
-.quick-link:hover {
-  border-color: var(--primary);
-  background: rgba(58,134,255,0.06);
-  transform: translateY(-2px);
-  color: var(--primary);
-}
-.quick-link i { font-size: 20px; color: var(--primary); }
-.quick-link span { font-size: 12px; font-weight: 600; }
 
 /* Social pulse ticker */
 .pulse-bar {
@@ -323,6 +323,36 @@ include 'header.php';
 @keyframes glow-fire {
   from { box-shadow: 0 0 10px 2px rgba(255,69,0,0.5); border-color: #ff4500; }
   to { box-shadow: 0 0 25px 10px rgba(255,0,0,0.8); border-color: #ff0000; }
+}
+
+/* ── Responsive Breakpoints ── */
+@media (max-width: 900px) {
+  .dash-wrap { padding: 20px 16px; }
+  .dash-grid { grid-template-columns: 1fr; }
+  .chart-card { height: auto; }
+  .chart-canvas-wrap { min-height: 260px; }
+}
+@media (max-width: 600px) {
+  .dash-greeting h1 { font-size: 20px; }
+  .stat-item .stat-val { font-size: 20px; }
+  .stat-row { gap: 8px; }
+  .stat-item { padding: 14px 8px; border-radius: 12px; }
+  .rings-row { gap: 8px; padding: 0; }
+  .ring-circle { width: 90px; height: 90px; }
+  .ring-inner { width: 70px; height: 70px; }
+  .ring-inner i { font-size: 15px; }
+  .ring-inner strong { font-size: 12px; }
+  .activity-card { padding: 16px; }
+  .chart-card { padding: 16px; }
+  .chart-canvas-wrap { min-height: 220px; }
+  .pulse-bar { padding: 8px 12px; }
+}
+@media (max-width: 400px) {
+  .rings-row { gap: 4px; }
+  .ring-circle { width: 78px; height: 78px; }
+  .ring-inner { width: 60px; height: 60px; }
+  .ring-label { font-size: 10px; }
+  .stat-item .stat-val { font-size: 18px; }
 }
 </style>
 
@@ -427,7 +457,7 @@ include 'header.php';
         <h3 class="card-title"><i class="fas fa-chart-line" style="color:var(--primary);"></i> Weight Progress</h3>
         <span class="muted" style="font-size:12px;">Last 30 days</span>
       </div>
-      <div style="height: 240px; position: relative;">
+      <div class="chart-canvas-wrap">
         <?php if (count($logData) < 2): ?>
           <div style="position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; background:rgba(0,0,0,0.45); border-radius:10px; backdrop-filter:blur(4px); z-index:5;">
             <i class="fas fa-chart-bar" style="font-size:28px; color:rgba(255,255,255,0.3); margin-bottom:10px;"></i>
