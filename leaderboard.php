@@ -69,7 +69,9 @@ include 'header.php';
                     <i class="fas fa-user"></i>
                 </div>
                 <strong><?php echo e($user['username']); ?></strong>
-                <?php if ($user['subscription_status']): ?>
+                <?php if ($user['role'] === 'admin'): ?>
+                  <span style="background: var(--primary); color: white; padding: 2px 6px; border-radius: 4px; font-size: 10px; font-weight: 700;" title="Administrator">ADMIN</span>
+                <?php elseif ($user['subscription_status']): ?>
                   <span style="background: var(--warning); color: white; padding: 2px 6px; border-radius: 4px; font-size: 10px; font-weight: 700;" title="Pro Subscriber">PRO</span>
                 <?php endif; ?>
                 <?php if ($user['username'] === $_SESSION['username']): ?>
