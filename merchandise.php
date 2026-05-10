@@ -28,6 +28,30 @@ $merchandise = [
     ]
 ];
 
+$digital_merchandise = [
+    [
+        'id' => 'border_gold',
+        'name' => 'Golden Aura Border',
+        'description' => 'A glowing golden border for your profile picture on the Leaderboard.',
+        'css_class' => 'border-gold',
+        'price' => 500
+    ],
+    [
+        'id' => 'border_neon',
+        'name' => 'Cyber Neon Border',
+        'description' => 'A futuristic neon blue border to stand out.',
+        'css_class' => 'border-neon',
+        'price' => 750
+    ],
+    [
+        'id' => 'border_fire',
+        'name' => 'Inferno Border',
+        'description' => 'A blazing red border for top performers.',
+        'css_class' => 'border-fire',
+        'price' => 1000
+    ]
+];
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $action = $_POST['action'] ?? '';
     
@@ -48,7 +72,32 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $error = "You don't have enough points to redeem this item.";
             }
         } else {
-            $error = "Invalid item selected.";
+            // Check digital merch
+            $redeem_digital = null;
+            foreach ($digital_merchandise as $d_item) {
+                if ($d_item['id'] === $item_id) {
+                    $redeem_digital = $d_item;
+                    break;
+                }
+            }
+            if ($redeem_digital) {
+                if ($points >= $redeem_digital['price']) {
+                    if (addPoints(-$redeem_digital['price'])) {
+                        $points -= $redeem_digital['price'];
+                        $stmt = $mysqli->prepare("UPDATE users SET avatar_border = ? WHERE id = ?");
+                        $stmt->bind_param("si", $redeem_digital['id'], $user_id);
+                        $stmt->execute();
+                        $stmt->close();
+                        $success = "Successfully purchased " . e($redeem_digital['name']) . "! It is now equipped on the leaderboard.";
+                    } else {
+                        $error = "Failed to process purchase.";
+                    }
+                } else {
+                    $error = "You don't have enough points.";
+                }
+            } else {
+                $error = "Invalid item selected.";
+            }
         }
     } elseif ($action === 'confirm_redeem') {
         $item_id = $_POST['item_id'] ?? '';
@@ -173,6 +222,38 @@ include 'header.php';
                 <input type="hidden" name="item_id" value="<?php echo e($item['id']); ?>">
                 <button type="submit" class="hero-btn primary" style="padding: 8px 16px; font-size: 14px;" <?php echo ($points < $item['price']) ? 'disabled style="opacity: 0.5; cursor: not-allowed;"' : ''; ?>>
                   Redeem
+                </button>
+              </form>
+            </div>
+          </div>
+        </div>
+      <?php endforeach; ?>
+    </div>
+  <?php endif; ?>
+
+  <?php if (!$show_shipping_form || !$redeem_item): ?>
+    <!-- DIGITAL MERCHANDISE (BORDERS) -->
+    <h2 style="margin-top: 40px; margin-bottom: 20px;"><i class="fas fa-id-badge" style="color: var(--secondary); margin-right: 8px;"></i> Digital Borders</h2>
+    <p class="muted" style="margin-bottom: 24px;">Equip these borders to stand out on the Global Leaderboard!</p>
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 24px;">
+      <?php foreach ($digital_merchandise as $item): ?>
+        <div class="card" style="display: flex; flex-direction: column; overflow: hidden; position: relative;">
+          <div style="padding: 24px; text-align: center; flex: 1;">
+            <div style="width: 80px; height: 80px; margin: 0 auto 16px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 30px; color: var(--text-muted); background: var(--bg-secondary);" class="<?php echo $item['css_class']; ?>">
+              <i class="fas fa-user"></i>
+            </div>
+            <h3 style="margin-bottom: 8px;"><?php echo e($item['name']); ?></h3>
+            <p class="muted" style="font-size: 14px; margin-bottom: 20px;"><?php echo e($item['description']); ?></p>
+            
+            <div style="display: flex; align-items: center; justify-content: space-between; border-top: 1px solid var(--border); padding-top: 20px;">
+              <div style="font-size: 18px; font-weight: 700; color: var(--warning);">
+                <i class="fas fa-star"></i> <?php echo number_format($item['price']); ?>
+              </div>
+              <form method="POST" style="margin: 0;">
+                <input type="hidden" name="action" value="redeem">
+                <input type="hidden" name="item_id" value="<?php echo e($item['id']); ?>">
+                <button type="submit" class="hero-btn primary" style="padding: 6px 12px; font-size: 13px;" <?php echo ($points < $item['price']) ? 'disabled style="opacity: 0.5; cursor: not-allowed;"' : ''; ?>>
+                  Buy
                 </button>
               </form>
             </div>

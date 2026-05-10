@@ -4,7 +4,7 @@ requireLogin();
 
 // Fetch Top 10 Users by Points
 $stmt = $mysqli->prepare("
-    SELECT username, points, health_mode, subscription_status 
+    SELECT username, points, health_mode, subscription_status, avatar_border 
     FROM users 
     ORDER BY points DESC 
     LIMIT 10
@@ -54,7 +54,7 @@ include 'header.php';
                 ?>
               </td>
               <td style="padding: 16px; color: var(--text-body); display: flex; align-items: center; gap: 8px;">
-                <div style="width: 32px; height: 32px; border-radius: 50%; background: var(--border); display: flex; align-items: center; justify-content: center; color: var(--text-muted); font-size: 12px;">
+                <div class="<?php echo e($user['avatar_border'] !== 'default' ? $user['avatar_border'] : ''); ?>" style="width: 32px; height: 32px; border-radius: 50%; background: var(--border); display: flex; align-items: center; justify-content: center; color: var(--text-muted); font-size: 12px; transition: 0.3s ease;">
                     <i class="fas fa-user"></i>
                 </div>
                 <strong><?php echo e($user['username']); ?></strong>

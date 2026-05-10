@@ -18,6 +18,52 @@ $stmt->execute();
 $logData = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
 $stmt->close();
 
+// Fetch spin status
+$stmt = $mysqli->prepare("SELECT last_spin_date FROM users WHERE id = ?");
+$stmt->bind_param("i", $user_id);
+$stmt->execute();
+$userRow = $stmt->get_result()->fetch_assoc();
+$stmt->close();
+$canSpin = (!$userRow['last_spin_date'] || $userRow['last_spin_date'] < date('Y-m-d'));
+
+// Fetch today's log
+$todayLog = null;
+$stmt = $mysqli->prepare("SELECT steps, sleep_hours, weight_kg FROM health_logs WHERE user_id = ? AND log_date = CURDATE()");
+$stmt->bind_param("i", $user_id);
+$stmt->execute();
+$res = $stmt->get_result();
+if ($res->num_rows > 0) {
+    $todayLog = $res->fetch_assoc();
+}
+$stmt->close();
+$targets = getDailyTargets($healthMode);
+
+// Fetch Social Pulse (Latest 5 activities)
+$stmt = $mysqli->prepare("
+    (SELECT u.username, u.avatar_border, 'logged their health data! 🔥' as action, hl.created_at as time
+     FROM health_logs hl JOIN users u ON hl.user_id = u.id)
+    UNION
+    (SELECT u.username, u.avatar_border, CONCAT('reached the ', m.title, ' milestone! 🏆') as action, um.achieved_at as time
+     FROM user_milestones um JOIN users u ON um.user_id = u.id JOIN milestones m ON um.milestone_id = m.id)
+    ORDER BY time DESC LIMIT 5
+");
+$stmt->execute();
+$pulseData = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+$stmt->close();
+
+// Handle Spin Action via AJAX
+if (isset($_GET['action']) && $_GET['action'] === 'spin') {
+    if ($canSpin) {
+        $reward = [5, 10, 15, 20, 50][array_rand([0, 1, 2, 3, 4])]; // Jackpot 50 is rare? No just random for now
+        addPoints($reward);
+        $mysqli->query("UPDATE users SET last_spin_date = CURDATE() WHERE id = $user_id");
+        echo json_encode(['success' => true, 'reward' => $reward]);
+    } else {
+        echo json_encode(['success' => false, 'message' => 'Already spun today!']);
+    }
+    exit;
+}
+
 $page_title = 'Home';
 include 'header.php';
 ?>
@@ -63,6 +109,105 @@ include 'header.php';
           </strong>
           <span class="unit"><?php echo $subscribed ? 'all features' : 'upgrade available'; ?></span>
         </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- =============================================
+     DAILY GAMIFICATION (SPIN BOX)
+     ============================================= -->
+<?php if ($canSpin): ?>
+<section class="home-section" id="daily-spin-section">
+  <div class="card" style="background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%); color: white; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px;">
+    <div>
+      <h2 style="color: white; margin-bottom: 8px;"><i class="fas fa-gift" style="margin-right: 8px;"></i> Daily Mystery Box</h2>
+      <p style="opacity: 0.9; margin: 0;">You have a free daily box to open! Claim your random Health Points now.</p>
+    </div>
+    <button onclick="openDailyBox()" id="btn-open-box" style="background: white; color: var(--primary); font-weight: 800; border: none; padding: 12px 24px; border-radius: 50px; cursor: pointer; transition: transform 0.2s; box-shadow: 0 4px 12px rgba(0,0,0,0.2);">
+      <i class="fas fa-box-open" style="margin-right: 8px;"></i> OPEN BOX
+    </button>
+  </div>
+</section>
+<?php endif; ?>
+
+<!-- =============================================
+     SOCIAL PULSE (LIVE FEED)
+     ============================================= -->
+<section class="home-section">
+  <div class="card" style="padding: 16px 24px; overflow: hidden; white-space: nowrap; border-left: 4px solid var(--warning);">
+    <div style="display: flex; align-items: center;">
+      <strong style="color: var(--warning); margin-right: 16px; display: flex; align-items: center; gap: 6px;">
+        <i class="fas fa-bolt"></i> Live Pulse
+      </strong>
+      <div class="pulse-ticker" style="display: inline-block; animation: ticker 20s linear infinite;">
+        <?php foreach ($pulseData as $pulse): ?>
+          <span style="margin-right: 30px; color: var(--text-muted);">
+            <strong style="color: var(--text-body);"><i class="fas fa-user-circle"></i> <?php echo e($pulse['username']); ?></strong> <?php echo $pulse['action']; ?>
+          </span>
+        <?php endforeach; ?>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+@keyframes ticker {
+  0% { transform: translateX(100%); }
+  100% { transform: translateX(-100%); }
+}
+.progress-ring {
+  width: 100px; height: 100px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  position: relative;
+  background: var(--bg-secondary);
+}
+.progress-ring-inner {
+  width: 80px; height: 80px;
+  background: var(--bg-card);
+  border-radius: 50%;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  z-index: 2;
+}
+</style>
+
+<!-- =============================================
+     TODAY'S PROGRESS RINGS
+     ============================================= -->
+<section class="home-section">
+  <div class="card big-card">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+      <h2 style="margin:0;"><i class="fas fa-bullseye" style="color: var(--danger); margin-right: 8px;"></i> Today's Activity</h2>
+      <a href="health_log.php" class="hero-btn primary" style="padding: 8px 16px; font-size: 14px;">Update</a>
+    </div>
+    
+    <div style="display: flex; gap: 32px; flex-wrap: wrap; justify-content: center;">
+      <?php 
+        $stepsPct = $todayLog ? min(100, round(($todayLog['steps'] / $targets['steps']['target']) * 100)) : 0;
+        $sleepPct = $todayLog ? min(100, round(($todayLog['sleep_hours'] / $targets['sleep']['target']) * 100)) : 0;
+      ?>
+      
+      <!-- Steps Ring -->
+      <div style="text-align: center;">
+        <div class="progress-ring" style="background: conic-gradient(var(--primary) <?php echo $stepsPct; ?>%, var(--bg-secondary) 0);">
+          <div class="progress-ring-inner">
+            <i class="fas fa-walking" style="color: var(--primary); font-size: 20px;"></i>
+            <strong style="margin-top: 4px;"><?php echo $stepsPct; ?>%</strong>
+          </div>
+        </div>
+        <p class="muted small" style="margin-top: 12px; font-weight: bold;"><?php echo $todayLog ? number_format($todayLog['steps']) : 0; ?> / <?php echo number_format($targets['steps']['target']); ?></p>
+      </div>
+
+      <!-- Sleep Ring -->
+      <div style="text-align: center;">
+        <div class="progress-ring" style="background: conic-gradient(#3498db <?php echo $sleepPct; ?>%, var(--bg-secondary) 0);">
+          <div class="progress-ring-inner">
+            <i class="fas fa-bed" style="color: #3498db; font-size: 20px;"></i>
+            <strong style="margin-top: 4px;"><?php echo $sleepPct; ?>%</strong>
+          </div>
+        </div>
+        <p class="muted small" style="margin-top: 12px; font-weight: bold;"><?php echo $todayLog ? $todayLog['sleep_hours'] : 0; ?> / <?php echo $targets['sleep']['target']; ?> hrs</p>
       </div>
     </div>
   </div>
@@ -296,6 +441,40 @@ include 'header.php';
         }
     });
   })();
+
+  function openDailyBox() {
+    const btn = document.getElementById('btn-open-box');
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> OPENING...';
+    btn.style.pointerEvents = 'none';
+
+    fetch('index.php?action=spin')
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) {
+          btn.innerHTML = `<i class="fas fa-check-circle"></i> +${data.reward} POINTS!`;
+          btn.style.background = 'var(--success)';
+          btn.style.color = 'white';
+          
+          if (typeof confetti !== 'undefined') {
+              confetti({
+                  particleCount: 150,
+                  spread: 80,
+                  origin: { y: 0.6 },
+                  colors: ['#ffd700', '#ff8c00', '#16a085']
+              });
+          }
+          
+          // Hide section after 3 seconds
+          setTimeout(() => {
+              document.getElementById('daily-spin-section').style.display = 'none';
+              // Reload to update total points
+              window.location.reload();
+          }, 2500);
+        } else {
+          btn.innerHTML = 'Already Claimed!';
+        }
+      });
+  }
 </script>
 
 <?php include 'footer.php'; ?>

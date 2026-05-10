@@ -2158,3 +2158,36 @@ button:disabled {
 :root[data-theme="dark"] .feature-item {
     background: var(--bg-secondary);
 }
+
+/* =========================================
+   AVATAR BORDERS
+   ========================================= */
+.border-gold {
+  box-shadow: 0 0 15px 5px rgba(255, 215, 0, 0.4), inset 0 0 10px rgba(255, 215, 0, 0.2);
+  border: 3px solid #ffd700;
+  animation: glow-gold 3s infinite alternate;
+}
+@keyframes glow-gold {
+  from { box-shadow: 0 0 10px 2px rgba(255, 215, 0, 0.4), inset 0 0 5px rgba(255, 215, 0, 0.2); }
+  to { box-shadow: 0 0 20px 8px rgba(255, 215, 0, 0.7), inset 0 0 15px rgba(255, 215, 0, 0.5); }
+}
+
+.border-neon {
+  box-shadow: 0 0 15px 5px rgba(0, 255, 255, 0.4), inset 0 0 10px rgba(0, 255, 255, 0.2);
+  border: 3px solid #00ffff;
+  animation: glow-neon 2s infinite alternate;
+}
+@keyframes glow-neon {
+  from { box-shadow: 0 0 10px 2px rgba(0, 255, 255, 0.4), inset 0 0 5px rgba(0, 255, 255, 0.2); }
+  to { box-shadow: 0 0 20px 8px rgba(0, 255, 255, 0.8), inset 0 0 15px rgba(0, 255, 255, 0.5); }
+}
+
+.border-fire {
+  box-shadow: 0 0 15px 5px rgba(255, 69, 0, 0.4), inset 0 0 10px rgba(255, 69, 0, 0.2);
+  border: 3px solid #ff4500;
+  animation: glow-fire 1.5s infinite alternate;
+}
+@keyframes glow-fire {
+  from { box-shadow: 0 0 10px 2px rgba(255, 69, 0, 0.5), inset 0 0 5px rgba(255, 69, 0, 0.3); border-color: #ff4500; }
+  to { box-shadow: 0 0 25px 10px rgba(255, 0, 0, 0.8), inset 0 0 20px rgba(255, 0, 0, 0.6); border-color: #ff0000; }
+}
