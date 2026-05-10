@@ -144,7 +144,7 @@ include 'header.php';
     <form method="post" class="form" id="health-form" enctype="multipart/form-data">
       <div class="form-grid">
         <label>
-          Date <span class="muted small">(Locked to Today)</span>
+          <span style="white-space: nowrap;">Date <span class="muted small" style="font-weight:normal; margin-left:4px;"><i class="fas fa-lock"></i> Today</span></span>
           <input type="date" name="log_date" id="log_date"
                  value="<?php echo date('Y-m-d'); ?>" readonly style="background: rgba(255,255,255,0.02); color: var(--text-muted); cursor: not-allowed; border-color: rgba(255,255,255,0.05);">
         </label>
