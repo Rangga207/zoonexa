@@ -188,8 +188,9 @@ $mysqli->set_charset('utf8mb4');
 // =============================================
 // AUTO-MIGRATE NEW SCHEMA (To prevent 500 errors on production)
 // =============================================
+// Temporarily disable exception mode so ALTER TABLE failures don't kill the page
+mysqli_report(MYSQLI_REPORT_OFF);
 try {
-    // Suppress warnings in case of query failures due to permissions
     $res = @$mysqli->query("SHOW COLUMNS FROM users LIKE 'last_spin_date'");
     if ($res && $res->num_rows === 0) {
         @$mysqli->query("ALTER TABLE users ADD COLUMN last_spin_date DATE DEFAULT NULL");
@@ -206,9 +207,11 @@ try {
             @$mysqli->query("ALTER TABLE milestones MODIFY icon VARCHAR(255)");
         }
     }
-} catch (Exception $e) {
-    // Silently ignore migration errors to not disrupt the app
+} catch (\Throwable $e) {
+    // Silently ignore ALL migration errors (including mysqli_sql_exception)
 }
+// Re-enable exception mode for rest of app
+mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
 
 // =============================================
 // CSRF TOKEN
