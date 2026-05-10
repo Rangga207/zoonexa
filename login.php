@@ -59,6 +59,133 @@ $page_title = 'Login';
   <link rel="stylesheet" href="style.css">
 </head>
 <body class="auth-page">
+<style>
+/* Modern Auth UI Overrides */
+.auth-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #0f1115;
+  position: relative;
+  overflow: hidden;
+  font-family: 'Inter', sans-serif;
+  color: white;
+}
+/* Glowing Background Shapes */
+.auth-bg-shapes {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+}
+.shape {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+  opacity: 0.4;
+  animation: floatBG 10s infinite alternate ease-in-out;
+}
+.shape-1 { width: 400px; height: 400px; background: var(--primary); top: -100px; left: -100px; }
+.shape-2 { width: 500px; height: 500px; background: var(--secondary); bottom: -150px; right: -100px; animation-delay: -5s; }
+
+.auth-wrapper {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  max-width: 420px;
+  padding: 20px;
+}
+.auth-brand {
+  text-align: center;
+  margin-bottom: 30px;
+}
+.auth-logo { width: 60px; height: 60px; margin-bottom: 10px; animation: pulseLogo 3s infinite alternate; filter: drop-shadow(0 0 10px rgba(58,134,255,0.5)); }
+.auth-brand h1 { font-family: 'Outfit', sans-serif; font-size: 32px; font-weight: 800; margin: 0; letter-spacing: 1px; }
+.auth-brand .muted { color: rgba(255,255,255,0.6); font-size: 14px; margin-top: 5px; }
+
+.auth-card {
+  background: rgba(20,22,28,0.7);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 24px;
+  padding: 40px;
+  box-shadow: 0 20px 50px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.1);
+}
+.auth-card h2 { font-family: 'Outfit', sans-serif; font-size: 26px; margin: 0 0 8px; }
+.auth-card > p.muted { margin-bottom: 24px; color: rgba(255,255,255,0.6); }
+
+.auth-input-group {
+  margin-bottom: 20px;
+  text-align: left;
+}
+.auth-input-group label {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  color: rgba(255,255,255,0.8);
+  margin-bottom: 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.auth-input {
+  width: 100%;
+  background: rgba(0,0,0,0.2);
+  border: 1px solid rgba(255,255,255,0.1);
+  color: white;
+  padding: 14px 16px;
+  border-radius: 12px;
+  font-size: 15px;
+  transition: all 0.3s;
+  box-sizing: border-box;
+}
+.auth-input:focus {
+  outline: none;
+  border-color: var(--primary);
+  background: rgba(0,0,0,0.4);
+  box-shadow: 0 0 0 4px rgba(58,134,255,0.15);
+}
+
+.auth-btn {
+  width: 100%;
+  padding: 16px;
+  border: none;
+  border-radius: 12px;
+  background: linear-gradient(135deg, var(--primary), #2272cc);
+  color: white;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  margin-top: 10px;
+  transition: all 0.3s;
+  box-shadow: 0 8px 20px rgba(58,134,255,0.3);
+}
+.auth-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 25px rgba(58,134,255,0.5);
+}
+.auth-footer-text {
+  text-align: center;
+  margin-top: 24px;
+  font-size: 14px;
+  color: rgba(255,255,255,0.6);
+}
+.auth-footer-text a {
+  color: var(--primary);
+  text-decoration: none;
+  font-weight: 600;
+  transition: color 0.2s;
+}
+.auth-footer-text a:hover { color: #5c9eff; }
+
+@keyframes floatBG { 100% { transform: translateY(30px) scale(1.05); } }
+@keyframes pulseLogo { 100% { transform: scale(1.05); filter: drop-shadow(0 0 20px rgba(58,134,255,0.8)); } }
+</style>
+
+<div class="auth-bg-shapes">
+  <div class="shape shape-1"></div>
+  <div class="shape shape-2"></div>
+</div>
 
 <div class="auth-wrapper">
   <!-- Branding -->
@@ -69,32 +196,31 @@ $page_title = 'Login';
   </div>
 
   <!-- Login Form -->
-  <div class="card auth-card">
+  <div class="auth-card">
     <h2>Welcome Back</h2>
     <p class="muted">Sign in to continue your health journey.</p>
 
     <?php if ($registered): ?>
-      <div class="alert success">Account created successfully! You can now log in.</div>
+      <div class="alert success" style="margin-bottom: 20px;">Account created successfully! You can now log in.</div>
     <?php endif; ?>
 
     <?php if ($error): ?>
-      <div class="alert"><?php echo e($error); ?></div>
+      <div class="alert" style="margin-bottom: 20px; background: rgba(231,76,60,0.1); border-color: var(--danger); color: #e74c3c;"><?php echo e($error); ?></div>
     <?php endif; ?>
 
-    <form method="post" class="form">
-      <label>
-        Username
-        <input type="text" name="username" value="<?php echo e($username); ?>"
-               placeholder="Enter your username" required autofocus>
-      </label>
-      <label>
-        Password
-        <input type="password" name="password" placeholder="Enter your password" required>
-      </label>
-      <button type="submit">Sign In</button>
+    <form method="post">
+      <div class="auth-input-group">
+        <label>Username</label>
+        <input type="text" name="username" value="<?php echo e($username); ?>" class="auth-input" placeholder="Enter your username" required autofocus>
+      </div>
+      <div class="auth-input-group">
+        <label>Password</label>
+        <input type="password" name="password" class="auth-input" placeholder="Enter your password" required>
+      </div>
+      <button type="submit" class="auth-btn">Sign In</button>
     </form>
 
-    <p class="muted auth-footer-text">
+    <p class="auth-footer-text">
       Don't have an account? <a href="register.php">Sign up here</a>
     </p>
   </div>
