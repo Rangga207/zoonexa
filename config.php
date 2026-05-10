@@ -6,10 +6,11 @@ session_start();
 // LOAD ENVIRONMENT VARIABLES
 // =============================================
 function loadEnv($path) {
-    if (!file_exists($path)) return;
+    if (!file_exists($path)) return false;
     $lines = file($path, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
     foreach ($lines as $line) {
         if (strpos(trim($line), '#') === 0) continue;
+        if (strpos($line, '=') === false) continue;
         list($name, $value) = explode('=', $line, 2);
         $name = trim($name);
         $value = trim($value, " \t\n\r\0\x0B\"");
@@ -19,8 +20,21 @@ function loadEnv($path) {
             $_SERVER[$name] = $value;
         }
     }
+    return true;
 }
-loadEnv(__DIR__ . '/.env');
+
+// Coba load .env dari beberapa lokasi
+$envLoaded = loadEnv(__DIR__ . '/.env');
+if (!$envLoaded) {
+    // Fallback: coba satu level di atas (untuk beberapa konfigurasi hosting)
+    $envLoaded = loadEnv(dirname(__DIR__) . '/.env');
+}
+
+// Fallback terakhir: load db.secret.php jika .env tidak ditemukan
+// File ini bisa dibuat manual di server tanpa perlu push ke git
+if (!$envLoaded && file_exists(__DIR__ . '/db.secret.php')) {
+    require_once __DIR__ . '/db.secret.php';
+}
 
 // =============================================
 // DATABASE CONFIG
@@ -40,13 +54,133 @@ define('GROQ_API_KEY', getenv('GROQ_API_KEY') ?: 'YOUR_GROQ_API_KEY_HERE');
 define('GROQ_API_URL', getenv('GROQ_API_URL') ?: 'https://api.groq.com/openai/v1/chat/completions');
 
 // =============================================
+// MYSQLND COMPATIBILITY LAYER
+// Beberapa shared hosting tidak punya ekstensi mysqlnd,
+// sehingga $stmt->get_result() tidak tersedia.
+// Wrapper ini mengemulasi get_result() tanpa mysqlnd.
+// Tidak perlu mengubah file PHP lainnya.
+// =============================================
+
+class CompatMysqliResult {
+    public $data = [];
+    private $pos  = 0;
+
+    public function fetch_assoc() {
+        if ($this->pos >= count($this->data)) return null;
+        return $this->data[$this->pos++];
+    }
+
+    public function fetch_all($mode = MYSQLI_ASSOC) {
+        return $this->data;
+    }
+
+    public function num_rows() {
+        return count($this->data);
+    }
+}
+
+class CompatMysqliStmt {
+    private $inner;
+
+    public function __construct(mysqli_stmt $stmt) {
+        $this->inner = $stmt;
+    }
+
+    // Forward property reads (e.g. $stmt->num_rows, $stmt->affected_rows)
+    public function __get($name) {
+        return $this->inner->$name;
+    }
+
+    public function __set($name, $value) {
+        $this->inner->$name = $value;
+    }
+
+    // Forward method calls (execute, close, store_result, etc.)
+    public function __call($method, $args) {
+        return call_user_func_array([$this->inner, $method], $args);
+    }
+
+    // bind_param harus pakai referensi
+    public function bind_param($types, &...$vars) {
+        $params = [$types];
+        foreach ($vars as &$var) {
+            $params[] = &$var;
+        }
+        return call_user_func_array([$this->inner, 'bind_param'], $params);
+    }
+
+    // Emulasi get_result() tanpa mysqlnd
+    public function get_result() {
+        $this->inner->store_result();
+        $meta   = $this->inner->result_metadata();
+        $result = new CompatMysqliResult();
+
+        if (!$meta) return $result;
+
+        // Ambil nama kolom
+        $row = [];
+        while ($field = $meta->fetch_field()) {
+            $row[$field->name] = null;
+        }
+        $meta->free();
+
+        // Bind kolom ke $row by reference
+        $refs = [];
+        foreach (array_keys($row) as $col) {
+            $refs[] = &$row[$col];
+        }
+        call_user_func_array([$this->inner, 'bind_result'], $refs);
+
+        // Fetch semua baris
+        while ($this->inner->fetch()) {
+            $copy = [];
+            foreach ($row as $k => $v) {
+                $copy[$k] = $v;
+            }
+            $result->data[] = $copy;
+        }
+
+        return $result;
+    }
+}
+
+class CompatMysqli extends mysqli {
+    // Override prepare() agar mengembalikan CompatMysqliStmt
+    #[\ReturnTypeWillChange]
+    public function prepare($query) {
+        $stmt = parent::prepare($query);
+        if ($stmt === false) return false;
+        return new CompatMysqliStmt($stmt);
+    }
+}
+
+// =============================================
 // DATABASE CONNECTION
 // =============================================
-$mysqli = new mysqli(DB_HOST, DB_USER, DB_PASS, DB_NAME);
+$mysqli = new CompatMysqli(DB_HOST, DB_USER, DB_PASS, DB_NAME);
 
 if ($mysqli->connect_error) {
-    error_log('Database connection failed: ' . $mysqli->connect_error);
-    die('Connection failed. Please try again later.');
+    $errMsg = $mysqli->connect_error;
+    error_log('Database connection failed: ' . $errMsg);
+    // Tampilkan pesan yang lebih informatif (tanpa expose credentials)
+    $isEnvMissing = !file_exists(__DIR__ . '/.env') && !file_exists(__DIR__ . '/db.secret.php');
+    http_response_code(500);
+    echo '<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Database Error · Zoonexa</title>'
+        . '<style>body{font-family:sans-serif;background:#0d1117;color:#e6edf3;display:flex;align-items:center;justify-content:center;min-height:100vh;margin:0}'
+        . '.box{background:#161b22;border:1px solid #30363d;border-radius:12px;padding:32px 40px;max-width:480px;text-align:center}'
+        . 'h2{color:#f85149;margin-top:0}code{background:#21262d;padding:2px 8px;border-radius:6px;font-size:0.9em}'
+        . 'p{color:#8b949e;line-height:1.6}</style></head><body><div class="box">'
+        . '<h2>⚠️ Database Connection Error</h2>';
+    if ($isEnvMissing) {
+        echo '<p>File <code>.env</code> atau <code>db.secret.php</code> <strong>tidak ditemukan</strong> di server.</p>'
+            . '<p>Silakan buat file <code>db.secret.php</code> di root folder dengan kredensial database production Anda.</p>'
+            . '<p style="color:#58a6ff">Lihat <code>db.secret.php.example</code> untuk template.</p>';
+    } else {
+        echo '<p>Gagal terhubung ke database. Periksa kredensial di file <code>.env</code> atau <code>db.secret.php</code>.</p>'
+            . '<p><code>' . htmlspecialchars($errMsg) . '</code></p>';
+    }
+    echo '</div></body></html>';
+    exit;
 }
 
 $mysqli->set_charset('utf8mb4');
