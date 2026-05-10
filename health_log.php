@@ -175,29 +175,58 @@ include 'header.php';
       </div>
 
       <!-- Bonus Missions -->
-      <div style="background: var(--bg-secondary); padding: 20px; border-radius: 12px; margin-top: 20px; border: 1px solid var(--border);">
-        <h3 style="margin-bottom: 16px; font-size: 16px;"> Bonus Missions</h3>
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; align-items: start;">
-          <!-- Jogging -->
-          <div>
-            <label style="display: flex; align-items: center; gap: 10px; cursor: pointer; margin: 0; padding-top: 25px;">
-              <input type="checkbox" name="jogging_mission" style="width: 20px; height: 20px; border-radius: 4px; border: 1px solid var(--border); accent-color: var(--primary);">
-              <span style="font-weight: normal; color: var(--text-body);">🏃‍♂️ Jogging (Medium Task, +3 pts)</span>
-            </label>
-          </div>
+      <div class="bonus-missions-wrap">
+        <div class="bonus-missions-header">
+          <i class="fas fa-bolt" style="color: var(--warning);"></i>
+          <span>Bonus Missions</span>
+          <span class="bonus-badge">Earn Extra Points</span>
+        </div>
 
-          <!-- Strava Proof -->
-          <div>
-            <span style="display: block; margin-bottom: 8px; color: var(--text-body); font-size: 14px; font-weight: 600;">Upload Strava Proof (Hardest Task, +5 pts)</span>
-            <div style="border: 2px dashed var(--border); padding: 15px; border-radius: 10px; background: var(--bg-card); display: flex; align-items: center;">
-              <input type="file" name="strava_proof" accept="image/*" style="width: 100%; border: none; padding: 0; background: transparent; font-size: 14px;">
+        <div class="bonus-grid">
+          <!-- Jogging Toggle Card -->
+          <label class="mission-card" for="jogging_mission" id="jogging-label">
+            <input type="checkbox" name="jogging_mission" id="jogging_mission"
+                   onchange="toggleMissionCard(this, 'jogging-label')" hidden>
+            <div class="mission-icon-wrap" style="background: rgba(231,76,60,0.12);">
+              <i class="fas fa-running" style="color: #e74c3c;"></i>
             </div>
+            <div class="mission-info">
+              <strong>Morning Jog</strong>
+              <span>Complete a jogging session today</span>
+            </div>
+            <div class="mission-pts">
+              <span class="pts-badge">+3 pts</span>
+              <div class="mission-check"><i class="fas fa-check"></i></div>
+            </div>
+          </label>
+
+          <!-- Strava Upload Card -->
+          <div class="mission-card strava-card" id="strava-drop-zone">
+            <div class="mission-icon-wrap" style="background: rgba(52,152,219,0.12);">
+              <i class="fas fa-route" style="color: #3498db;"></i>
+            </div>
+            <div class="mission-info">
+              <strong>Strava Proof</strong>
+              <span id="strava-label-text">Tap to upload your route screenshot</span>
+            </div>
+            <div class="mission-pts">
+              <span class="pts-badge" style="background: rgba(52,152,219,0.15); color: #3498db;">+5 pts</span>
+              <label for="strava_proof" class="strava-upload-btn">
+                <i class="fas fa-cloud-upload-alt"></i>
+              </label>
+            </div>
+            <input type="file" name="strava_proof" id="strava_proof" accept="image/*,application/pdf"
+                   style="display:none;"
+                   onchange="handleStravaFile(this)">
           </div>
         </div>
       </div>
 
-      <button type="submit" style="margin-top: 20px;">Save Log</button>
+      <button type="submit" class="btn-save-log">
+        <i class="fas fa-save"></i> Save Log
+      </button>
     </form>
+
   </div>
 
   <!-- Logs Table -->
@@ -242,4 +271,200 @@ include 'header.php';
   </div>
 </section>
 
+<style>
+/* ── Bonus Missions Modern UI ── */
+.bonus-missions-wrap {
+  margin-top: 24px;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 20px;
+}
+.bonus-missions-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 15px;
+  font-weight: 700;
+  margin-bottom: 16px;
+  color: var(--text-body);
+}
+.bonus-badge {
+  margin-left: auto;
+  font-size: 11px;
+  font-weight: 600;
+  background: rgba(241,196,15,0.15);
+  color: var(--warning);
+  padding: 3px 10px;
+  border-radius: 20px;
+  letter-spacing: 0.3px;
+}
+.bonus-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+@media (max-width: 600px) {
+  .bonus-grid { grid-template-columns: 1fr; }
+}
+
+/* Mission Card */
+.mission-card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  background: var(--bg-card);
+  border: 2px solid var(--border);
+  border-radius: 14px;
+  padding: 16px;
+  cursor: pointer;
+  transition: border-color 0.2s, background 0.2s, transform 0.15s;
+  user-select: none;
+  position: relative;
+}
+.mission-card:hover {
+  border-color: var(--primary);
+  background: rgba(58,134,255,0.04);
+  transform: translateY(-1px);
+}
+.mission-card.active {
+  border-color: var(--success);
+  background: rgba(22,160,133,0.08);
+}
+.mission-icon-wrap {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-size: 20px;
+}
+.mission-info {
+  flex: 1;
+  min-width: 0;
+}
+.mission-info strong {
+  display: block;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text-body);
+  margin-bottom: 2px;
+}
+.mission-info span {
+  font-size: 12px;
+  color: var(--text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: block;
+}
+.mission-pts {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 8px;
+  flex-shrink: 0;
+}
+.pts-badge {
+  font-size: 12px;
+  font-weight: 700;
+  background: rgba(22,160,133,0.15);
+  color: var(--success);
+  padding: 3px 10px;
+  border-radius: 20px;
+  white-space: nowrap;
+}
+.mission-check {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  border: 2px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: transparent;
+  font-size: 11px;
+  transition: all 0.25s;
+}
+.mission-card.active .mission-check {
+  background: var(--success);
+  border-color: var(--success);
+  color: white;
+}
+
+/* Strava Upload Button */
+.strava-upload-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: rgba(52,152,219,0.15);
+  color: #3498db;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 15px;
+  transition: background 0.2s;
+}
+.strava-upload-btn:hover {
+  background: rgba(52,152,219,0.3);
+}
+.strava-card.uploaded {
+  border-color: #3498db;
+  background: rgba(52,152,219,0.06);
+}
+
+/* Save Log Button */
+.btn-save-log {
+  margin-top: 24px;
+  width: 100%;
+  padding: 14px;
+  background: linear-gradient(135deg, var(--primary), #2272cc);
+  color: white;
+  font-size: 15px;
+  font-weight: 700;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  letter-spacing: 0.3px;
+  box-shadow: 0 4px 16px rgba(58,134,255,0.3);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.btn-save-log:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(58,134,255,0.45);
+}
+.btn-save-log:active {
+  transform: translateY(0);
+}
+</style>
+
+<script>
+function toggleMissionCard(checkbox, labelId) {
+  const label = document.getElementById(labelId);
+  if (checkbox.checked) {
+    label.classList.add('active');
+  } else {
+    label.classList.remove('active');
+  }
+}
+
+function handleStravaFile(input) {
+  const zone = document.getElementById('strava-drop-zone');
+  const labelText = document.getElementById('strava-label-text');
+  if (input.files && input.files[0]) {
+    const name = input.files[0].name;
+    zone.classList.add('uploaded');
+    labelText.textContent = '✓ ' + name;
+  }
+}
+</script>
+
 <?php include 'footer.php'; ?>
+
