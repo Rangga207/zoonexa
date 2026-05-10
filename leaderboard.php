@@ -4,7 +4,7 @@ requireLogin();
 
 // Fetch Top 10 Users by Points
 $stmt = $mysqli->prepare("
-    SELECT username, points, health_mode, subscription_status, avatar_border 
+    SELECT username, points, health_mode, subscription_status, avatar_border, role
     FROM users 
     ORDER BY points DESC 
     LIMIT 10
@@ -16,7 +16,7 @@ if ($stmt) {
     $stmt->close();
 } else {
     // Fallback if avatar_border column doesn't exist
-    $stmt = $mysqli->prepare("SELECT username, points, health_mode, subscription_status, 'default' as avatar_border FROM users ORDER BY points DESC LIMIT 10");
+    $stmt = $mysqli->prepare("SELECT username, points, health_mode, subscription_status, 'default' as avatar_border, role FROM users ORDER BY points DESC LIMIT 10");
     if ($stmt) {
         $stmt->execute();
         $leaderboard = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
@@ -80,7 +80,7 @@ include 'header.php';
                 <?php echo e($user['health_mode']); ?>
               </td>
               <td style="padding: 16px; text-align: right; font-weight: bold; color: var(--primary); font-size: 16px;">
-                <?php echo number_format($user['points']); ?> <span style="font-size: 12px; color: var(--text-muted); font-weight: normal;">pts</span>
+                <?php echo ($user['role'] === 'admin') ? '&infin;' : number_format($user['points']); ?> <span style="font-size: 12px; color: var(--text-muted); font-weight: normal;">pts</span>
               </td>
             </tr>
             <?php endforeach; ?>

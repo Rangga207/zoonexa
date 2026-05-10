@@ -487,7 +487,7 @@ main.page {
       <!-- Stat Row -->
       <div class="stat-row">
         <div class="stat-item">
-          <span class="stat-val"><?php echo number_format($points); ?></span>
+          <span class="stat-val"><?php echo isAdmin() ? '&infin;' : number_format($points); ?></span>
           <span class="stat-lbl">Points</span>
         </div>
         <div class="stat-item">
