@@ -84,6 +84,12 @@ try {
             $stmt->bind_param("is", $user_id, $chat_msg);
             $stmt->execute();
             $stmt->close();
+            
+            if (isset($_POST['ajax'])) {
+                echo json_encode(['success' => true, 'username' => $username, 'message' => htmlspecialchars($chat_msg)]);
+                exit;
+            }
+            
             header("Location: index.php");
             exit;
         }
@@ -737,7 +743,7 @@ main.page {
     </div>
     
     <!-- Global Chat Form -->
-    <form method="POST" class="pulse-chat-form">
+    <form method="POST" class="pulse-chat-form" id="global-chat-form">
       <input type="hidden" name="action" value="send_chat">
       <input type="text" name="chat_message" class="pulse-chat-input" placeholder="Global chat..." maxlength="100" required autocomplete="off">
       <button type="submit" class="pulse-chat-btn"><i class="fas fa-paper-plane" style="font-size: 12px;"></i></button>
@@ -840,6 +846,38 @@ function openDailyBox() {
       }
     });
 }
+
+// Global Chat AJAX Submission
+document.getElementById('global-chat-form')?.addEventListener('submit', function(e) {
+  e.preventDefault();
+  const input = this.querySelector('input[name="chat_message"]');
+  const msg = input.value.trim();
+  if (!msg) return;
+  input.value = '';
+  
+  const formData = new FormData();
+  formData.append('action', 'send_chat');
+  formData.append('chat_message', msg);
+  formData.append('ajax', '1');
+  
+  fetch('index.php', { method: 'POST', body: formData })
+    .then(r => r.json())
+    .then(data => {
+      if (data.success) {
+        const ticker = document.querySelector('.pulse-ticker');
+        if (ticker) {
+          const newSpan = document.createElement('span');
+          newSpan.style.cssText = 'margin-right:40px; display:inline-flex; align-items:center; gap:8px;';
+          newSpan.innerHTML = `<strong style="color:var(--text-body);">${data.username}</strong> <span>says: "${data.message}" 💬</span>`;
+          ticker.appendChild(newSpan);
+          // Restart animation so the new message scrolls by
+          ticker.style.animation = 'none';
+          ticker.offsetHeight; // trigger reflow
+          ticker.style.animation = null;
+        }
+      }
+    }).catch(err => console.error(err));
+});
 </script>
 
 <?php include 'footer.php'; ?>
