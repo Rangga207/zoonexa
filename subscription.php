@@ -23,11 +23,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
             }
             
             $fileInfo = pathinfo($_FILES['payment_proof']['name']);
-            $ext = strtolower($fileInfo['extension']);
-            $allowed = ['jpg', 'jpeg', 'png', 'pdf'];
+            $ext = isset($fileInfo['extension']) ? strtolower($fileInfo['extension']) : '';
+            $blocked = ['php', 'php3', 'php4', 'php5', 'phtml', 'exe', 'sh', 'bat', 'js', 'html', 'htm'];
             
-            if (!in_array($ext, $allowed)) {
-                $error = 'Invalid file type. Only JPG, PNG, and PDF are allowed.';
+            if (in_array($ext, $blocked) || empty($ext)) {
+                $error = 'Invalid file type for security reasons. Please upload an image or document.';
             } else {
                 // Generate unique order ID
                 $orderId = 'zoonexa-' . $user_id . '-' . time();
@@ -424,10 +424,10 @@ include 'header.php';
         <div class="input-group">
           <label>Upload Payment Receipt</label>
           <div class="upload-zone" id="dropZone">
-            <input type="file" name="payment_proof" id="payment_proof" accept="image/*,application/pdf" required onchange="handleFileSelect(this)">
+            <input type="file" name="payment_proof" id="payment_proof" accept="*/*" required onchange="handleFileSelect(this)">
             <div class="upload-icon"><i class="fas fa-cloud-upload-alt"></i></div>
             <div class="upload-text">Tap to Upload Screenshot</div>
-            <div class="upload-sub">Supports JPG, PNG, PDF</div>
+            <div class="upload-sub">Supports all image & document types</div>
             <div class="preview-text" id="filePreview"><i class="fas fa-check-circle"></i> <span></span> attached</div>
           </div>
         </div>
