@@ -148,25 +148,32 @@ a:hover {
 .header-inner {
     max-width: 1200px;
     margin: 0 auto;
-    padding: 12px 20px;
+    padding: 10px 24px;
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: 16px;
+    height: 64px;
 }
 
 .logo {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 8px;
     text-decoration: none;
     flex-shrink: 0;
+    transition: opacity 0.2s;
+}
+
+.logo:hover {
+    opacity: 0.8;
 }
 
 .logo-large {
     display: flex;
     align-items: center;
     gap: 8px;
+
 }
 
 .logo-image {
@@ -476,7 +483,7 @@ a:hover {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 18px 20px;
+    padding: 24px 20px 20px;
     border-bottom: 1px solid var(--border);
 }
 
@@ -1853,8 +1860,20 @@ body.theme-dark .milestone-achieved {
         padding: 10px 16px;
     }
 
+    /* Fixed mobile overlay stacking for full screen drawer */
+    .mobile-drawer {
+        width: 85vw;
+        max-width: 320px;
+        box-shadow: -10px 0 40px rgba(0,0,0,0.15);
+    }
+    
+    body.theme-dark .mobile-drawer {
+        box-shadow: -10px 0 40px rgba(0,0,0,0.5);
+    }
+
     .page {
         padding: 24px 16px;
+        min-height: calc(100vh - 120px);
     }
 
     .home-hero {

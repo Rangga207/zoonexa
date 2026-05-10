@@ -16,29 +16,29 @@ function initThemeToggle() {
     const toggleBtn    = document.getElementById('theme-toggle');
     const toggleMobile = document.getElementById('theme-toggle-mobile');
 
-    function applyTheme(isLight) {
-        if (isLight) {
-            body.classList.add('theme-light');
-            body.classList.remove('theme-dark');
-        } else {
+    function applyTheme(isDark) {
+        if (isDark) {
+            body.classList.add('theme-dark');
             body.classList.remove('theme-light');
+        } else {
             body.classList.remove('theme-dark');
+            body.classList.remove('theme-light');
         }
         [toggleBtn, toggleMobile].forEach(btn => {
             if (!btn) return;
             const icon = btn.querySelector('i');
-            if (icon) icon.className = isLight ? 'fas fa-moon' : 'fas fa-sun';
+            if (icon) icon.className = isDark ? 'fas fa-sun' : 'fas fa-moon';
         });
     }
 
-    // Default: dark (no class). Light only if explicitly saved.
+    // Default: light (no class). Dark only if explicitly saved.
     const savedTheme = localStorage.getItem('zoonexa-theme');
-    applyTheme(savedTheme === 'light');
+    applyTheme(savedTheme === 'dark');
 
     function handleToggle() {
-        const isLight = body.classList.toggle('theme-light');
-        localStorage.setItem('zoonexa-theme', isLight ? 'light' : 'dark');
-        applyTheme(isLight);
+        const isDark = body.classList.toggle('theme-dark');
+        localStorage.setItem('zoonexa-theme', isDark ? 'dark' : 'light');
+        applyTheme(isDark);
     }
 
     if (toggleBtn)    toggleBtn.addEventListener('click', handleToggle);

@@ -39,12 +39,7 @@
 <body>
 
 <header class="site-header mac-window-header">
-  <!-- macOS Traffic Lights -->
-  <div class="mac-traffic-lights">
-    <div class="mac-btn close"></div>
-    <div class="mac-btn minimize"></div>
-    <div class="mac-btn maximize"></div>
-  </div>
+
   <div class="header-inner">
 
     <!-- Logo -->
