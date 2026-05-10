@@ -44,6 +44,26 @@ if ($stmt) {
 }
 $targets = getDailyTargets($healthMode);
 
+// Dynamic Greeting Logic
+$hour = (int)date('H');
+if ($hour >= 5 && $hour < 12) {
+    $timeGreeting = 'Good morning';
+    $timeEmoji = '🌅';
+} elseif ($hour >= 12 && $hour < 18) {
+    $timeGreeting = 'Good afternoon';
+    $timeEmoji = '☀️';
+} else {
+    $timeGreeting = 'Good evening';
+    $timeEmoji = '🌙';
+}
+
+$modeMotivations = [
+    'bulking' => "Ready to crush your calorie goals and build muscle today?",
+    'cutting' => "Stay sharp! Let's burn some fat and hit those steps today.",
+    'maintain' => "Keep up the great balance. Consistency is key!"
+];
+$motivationText = $modeMotivations[$healthMode] ?? "Ready to conquer your health goals today?";
+
 // Fetch Social Pulse (Latest 5 activities)
 $stmt = $mysqli->prepare("
     (SELECT u.username, u.avatar_border, 'logged their health data! 🔥' as action, hl.created_at as time
@@ -390,8 +410,8 @@ main.page {
   <!-- ── Greeting Bar ── -->
   <div class="dash-greeting">
     <div>
-      <h1>Hey, <span><?php echo e($username); ?></span> 👋</h1>
-      <p class="sub"><?php echo date('l, F j, Y'); ?></p>
+      <h1><?php echo $timeGreeting; ?>, <span><?php echo e($username); ?></span> <?php echo $timeEmoji; ?></h1>
+      <p class="sub"><?php echo $motivationText; ?> • <span style="opacity:0.7; font-size: 13px;"><?php echo date('l, F j'); ?></span></p>
     </div>
     <?php if ($canSpin): ?>
     <button class="spin-pill" onclick="openDailyBox()" id="btn-open-box">
