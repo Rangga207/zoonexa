@@ -116,7 +116,9 @@ include 'header.php';
         <p><strong>Health Points:</strong> <span class="accent-text"><?php echo isAdmin() ? '&infin;' : number_format($user['points']); ?></span></p>
         <p>
           <strong>Subscription:</strong>
-          <?php if ($user['subscription_status']): ?>
+          <?php if (isAdmin()): ?>
+            <span style="color: var(--primary); font-weight: 600;">👑 Admin Privileges</span>
+          <?php elseif ($user['subscription_status']): ?>
             <span style="color: var(--success); font-weight: 600;">✓ Active</span>
             <?php if ($subscription): ?>
               <span class="small muted">(expires <?php echo date('M j, Y', strtotime($subscription['end_date'])); ?>)</span>

@@ -561,8 +561,8 @@ main.page {
           <span class="stat-lbl">Mode</span>
         </div>
         <div class="stat-item">
-          <span class="stat-val" style="color:<?php echo $subscribed ? 'var(--success)' : 'var(--warning)'; ?>; font-size:16px;">
-            <?php echo $subscribed ? 'Pro' : 'Free'; ?>
+          <span class="stat-val" style="color:<?php echo isAdmin() ? 'var(--primary)' : ($subscribed ? 'var(--success)' : 'var(--warning)'); ?>; font-size:16px;">
+            <?php echo isAdmin() ? 'Admin' : ($subscribed ? 'Pro' : 'Free'); ?>
           </span>
           <span class="stat-lbl">Status</span>
         </div>
