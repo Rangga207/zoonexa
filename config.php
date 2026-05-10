@@ -63,7 +63,13 @@ define('GROQ_API_URL', getenv('GROQ_API_URL') ?: 'https://api.groq.com/openai/v1
 
 class CompatMysqliResult {
     public $data = [];
-    private $pos  = 0;
+    public $num_rows = 0; // public property to match real mysqli_result interface
+    private $pos = 0;
+
+    public function __construct(array $data) {
+        $this->data    = $data;
+        $this->num_rows = count($data);
+    }
 
     public function fetch_assoc() {
         if ($this->pos >= count($this->data)) return null;
@@ -72,10 +78,6 @@ class CompatMysqliResult {
 
     public function fetch_all($mode = MYSQLI_ASSOC) {
         return $this->data;
-    }
-
-    public function num_rows() {
-        return count($this->data);
     }
 }
 
@@ -112,10 +114,9 @@ class CompatMysqliStmt {
     // Emulasi get_result() tanpa mysqlnd
     public function get_result() {
         $this->inner->store_result();
-        $meta   = $this->inner->result_metadata();
-        $result = new CompatMysqliResult();
+        $meta = $this->inner->result_metadata();
 
-        if (!$meta) return $result;
+        if (!$meta) return new CompatMysqliResult([]);
 
         // Ambil nama kolom
         $row = [];
@@ -131,16 +132,17 @@ class CompatMysqliStmt {
         }
         call_user_func_array([$this->inner, 'bind_result'], $refs);
 
-        // Fetch semua baris
+        // Fetch semua baris ke array sementara
+        $data = [];
         while ($this->inner->fetch()) {
             $copy = [];
             foreach ($row as $k => $v) {
                 $copy[$k] = $v;
             }
-            $result->data[] = $copy;
+            $data[] = $copy;
         }
 
-        return $result;
+        return new CompatMysqliResult($data);
     }
 }
 
