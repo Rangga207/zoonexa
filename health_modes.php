@@ -130,7 +130,7 @@ include 'header.php';
     <p>
       Modes set your daily health targets. When you log your data each day, the system tracks how well you're hitting
       your targets. You earn <strong>Health Points</strong> for meeting or exceeding your goals. You can switch modes
-      at any time — there's no penalty or cooldown.
+      at any time there's no penalty or cooldown.
     </p>
   </div>
 </section>

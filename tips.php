@@ -10,7 +10,7 @@ include 'header.php';
   <div class="page-header">
     <div>
       <h1>Health Tips</h1>
-      <p class="muted">Simple, practical advice to help you build healthier habits — no fluff.</p>
+      <p class="muted">Simple, practical advice to help you build healthier habits no fluff.</p>
     </div>
   </div>
 

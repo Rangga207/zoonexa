@@ -105,8 +105,8 @@ if (isset($_SESSION['show_welcome_anim']) && $_SESSION['show_welcome_anim'] === 
 ?>
 <div id="welcome-overlay">
   <div class="welcome-content">
-    <div class="welcome-icon">✨</div>
-    <h1 class="welcome-text">Welcome to the most health tracking web in indonesia</h1>
+    <div class="welcome-icon"></div>
+    <h1 class="welcome-text">Welcome to the Most Health Tracking Web in Indonesia</h1>
   </div>
 </div>
 <style>
