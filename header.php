@@ -18,7 +18,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
 
   <!-- Styles -->
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style.css?v=<?php echo time(); ?>">
 
   <!-- PWA Manifest & Meta -->
   <link rel="manifest" href="manifest.json">
@@ -26,7 +26,7 @@
   <link rel="apple-touch-icon" href="zoonexa-logo.png">
 
   <!-- Scripts -->
-  <script defer src="script.js"></script>
+  <script defer src="script.js?v=<?php echo time(); ?>"></script>
   <script>
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
