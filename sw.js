@@ -1,8 +1,8 @@
-const CACHE_NAME = 'zoonexa-v1';
+const CACHE_NAME = 'zoonexa-v3';
 const ASSETS_TO_CACHE = [
-  '/zoonexa/style.css',
-  '/zoonexa/script.js',
-  '/zoonexa/zoonexa-logo.png',
+  './style.css',
+  './script.js',
+  './zoonexa-logo.png',
   'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css',
   'https://cdn.jsdelivr.net/npm/chart.js'
 ];
