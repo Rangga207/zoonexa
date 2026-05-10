@@ -99,7 +99,7 @@ include 'header.php';
 <section class="page-section">
   <div class="page-header">
     <div>
-      <h1>🛍️ Merchandise</h1>
+      <h1><i class="fas fa-shopping-bag" style="color: var(--primary); margin-right: 8px;"></i> Merchandise</h1>
       <p class="muted">Redeem your hard-earned Health Points for exclusive Zoonexa merchandise.</p>
     </div>
   </div>
@@ -166,7 +166,7 @@ include 'header.php';
             
             <div style="display: flex; align-items: center; justify-content: space-between; border-top: 1px solid var(--border); padding-top: 20px; margin-top: auto;">
               <div style="font-size: 20px; font-weight: 700; color: var(--warning);">
-                ⭐ <?php echo number_format($item['price']); ?>
+                <i class="fas fa-star" style="color: var(--warning);"></i> <?php echo number_format($item['price']); ?>
               </div>
               <form method="POST" style="margin: 0;">
                 <input type="hidden" name="action" value="redeem">
@@ -183,7 +183,7 @@ include 'header.php';
   <?php endif; ?>
 
   <div class="info-card" style="margin-top: 24px;">
-    <h3>💡 How it works</h3>
+    <h3><i class="fas fa-lightbulb" style="color: #f1c40f; margin-right: 8px;"></i> How it works</h3>
     <p>
       You must have an active <strong>Zoonexa Pro</strong> subscription to redeem merchandise. Once you redeem an item, your points will be deducted immediately, and our team will reach out to the email associated with your account within 1-2 business days to confirm your shipping address.
     </p>

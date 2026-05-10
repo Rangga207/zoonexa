@@ -139,20 +139,20 @@ include 'header.php';
 
   <div class="service-grid">
     <a class="service-card <?php echo !$subscribed ? 'card-locked' : ''; ?>" href="milestone.php">
-      <div class="service-icon">🏆</div>
-      <h3>Milestones <?php echo !$subscribed ? '<span class="lock-badge">🔒 Pro</span>' : ''; ?></h3>
+      <div class="service-icon"><i class="fas fa-trophy" style="color: var(--warning);"></i></div>
+      <h3>Milestones <?php echo !$subscribed ? '<span class="lock-badge"><i class="fas fa-lock"></i> Pro</span>' : ''; ?></h3>
       <p class="muted">Earn achievements based on your health activity. Collect points and unlock rewards.</p>
     </a>
 
     <a class="service-card" href="chatbot.php">
-      <div class="service-icon">🤖</div>
+      <div class="service-icon"><i class="fas fa-robot" style="color: var(--primary);"></i></div>
       <h3>AI Assistant</h3>
       <p class="muted">Ask questions about your health goals, modes, points, and get personalized guidance.</p>
     </a>
 
     <a class="service-card <?php echo !$subscribed ? 'card-locked' : ''; ?>" href="subscription.php">
-      <div class="service-icon">💎</div>
-      <h3>Subscription <?php echo !$subscribed ? '<span class="lock-badge">🔒</span>' : '<span class="lock-badge" style="background: var(--success); color: white;">✓ Active</span>'; ?></h3>
+      <div class="service-icon"><i class="fas fa-gem" style="color: var(--secondary);"></i></div>
+      <h3>Subscription <?php echo !$subscribed ? '<span class="lock-badge"><i class="fas fa-lock"></i></span>' : '<span class="lock-badge" style="background: var(--success); color: white;"><i class="fas fa-check"></i> Active</span>'; ?></h3>
       <p class="muted">
         <?php if ($subscribed): ?>
           Your subscription is active. Enjoy all premium features!
@@ -163,7 +163,7 @@ include 'header.php';
     </a>
 
     <a class="service-card" href="profile.php">
-      <div class="service-icon">⭐</div>
+      <div class="service-icon"><i class="fas fa-star" style="color: #f1c40f;"></i></div>
       <h3>Health Points</h3>
       <p class="muted">You have <strong><?php echo number_format($points); ?></strong> points. Earn more by logging daily and hitting your targets.</p>
     </a>
@@ -175,13 +175,13 @@ include 'header.php';
      ============================================= -->
 <section class="home-section">
   <div class="info-card">
-    <h3>🤖 Try the Zoonexa AI Assistant</h3>
+    <h3><i class="fas fa-robot" style="color: var(--primary); margin-right: 8px;"></i> Try the Zoonexa AI Assistant</h3>
     <p>
       Not sure what to do? Ask the AI! It can help with your daily targets, explain health modes, 
       tell you how to earn points, and answer questions about your subscription benefits. Available 24/7.
     </p>
     <a href="chatbot.php" class="hero-btn primary" style="display: inline-flex; margin-top: 14px;">
-      🤖 Chat Now
+      <i class="fas fa-comment-dots" style="margin-right: 6px;"></i> Chat Now
     </a>
   </div>
 </section>

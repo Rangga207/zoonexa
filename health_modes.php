@@ -40,14 +40,14 @@ include 'header.php';
 
     <!-- Maintain -->
     <div class="service-card mode-card <?php echo $currentMode === 'maintain' ? 'mode-active' : ''; ?>">
-      <div class="service-icon">⚖️</div>
+      <div class="service-icon"><i class="fas fa-balance-scale" style="color: var(--secondary);"></i></div>
       <h3>Maintain</h3>
       <p class="muted">Keep your current body composition. Balanced approach for steady health.</p>
       <div class="mode-targets">
-        <span>🚶 8,000 steps</span>
-        <span>😴 7 hrs sleep</span>
-        <span>💧 8 glasses water</span>
-        <span>🏋️ 30 min exercise</span>
+        <span><i class="fas fa-walking" style="color: var(--primary); width: 16px;"></i> 8,000 steps</span>
+        <span><i class="fas fa-bed" style="color: #3498db; width: 16px;"></i> 7 hrs sleep</span>
+        <span><i class="fas fa-tint" style="color: #00a8ff; width: 16px;"></i> 8 glasses water</span>
+        <span><i class="fas fa-dumbbell" style="color: #e74c3c; width: 16px;"></i> 30 min exercise</span>
       </div>
       <form method="post">
         <input type="hidden" name="health_mode" value="maintain">
@@ -59,15 +59,15 @@ include 'header.php';
 
     <!-- Bulking -->
     <div class="service-card mode-card <?php echo $currentMode === 'bulking' ? 'mode-active' : ''; ?>">
-      <div class="service-icon">💪</div>
+      <div class="service-icon"><i class="fas fa-running" style="color: var(--primary);"></i></div>
       <h3>Bulking</h3>
       <p class="muted">Focus on muscle gain. Higher calorie intake and more intense training.</p>
       <div class="mode-targets">
-        <span>🚶 10,000 steps</span>
-        <span>😴 8 hrs sleep</span>
-        <span>💧 10 glasses water</span>
-        <span>🏋️ 45 min exercise</span>
-        <span>🍽️ 2,500 kcal/day</span>
+        <span><i class="fas fa-walking" style="color: var(--primary); width: 16px;"></i> 10,000 steps</span>
+        <span><i class="fas fa-bed" style="color: #3498db; width: 16px;"></i> 8 hrs sleep</span>
+        <span><i class="fas fa-tint" style="color: #00a8ff; width: 16px;"></i> 10 glasses water</span>
+        <span><i class="fas fa-dumbbell" style="color: #e74c3c; width: 16px;"></i> 45 min exercise</span>
+        <span><i class="fas fa-utensils" style="color: #f39c12; width: 16px;"></i> 2,500 kcal/day</span>
       </div>
       <form method="post">
         <input type="hidden" name="health_mode" value="bulking">
@@ -79,15 +79,15 @@ include 'header.php';
 
     <!-- Cutting -->
     <div class="service-card mode-card <?php echo $currentMode === 'cutting' ? 'mode-active' : ''; ?>">
-      <div class="service-icon">🔥</div>
+      <div class="service-icon"><i class="fas fa-fire" style="color: var(--danger);"></i></div>
       <h3>Cutting</h3>
       <p class="muted">Focus on fat loss. Lower calorie intake with higher activity levels.</p>
       <div class="mode-targets">
-        <span>🚶 12,000 steps</span>
-        <span>😴 7 hrs sleep</span>
-        <span>💧 10 glasses water</span>
-        <span>🏋️ 60 min exercise</span>
-        <span>🍽️ 1,800 kcal/day</span>
+        <span><i class="fas fa-walking" style="color: var(--primary); width: 16px;"></i> 12,000 steps</span>
+        <span><i class="fas fa-bed" style="color: #3498db; width: 16px;"></i> 7 hrs sleep</span>
+        <span><i class="fas fa-tint" style="color: #00a8ff; width: 16px;"></i> 10 glasses water</span>
+        <span><i class="fas fa-dumbbell" style="color: #e74c3c; width: 16px;"></i> 60 min exercise</span>
+        <span><i class="fas fa-utensils" style="color: #f39c12; width: 16px;"></i> 1,800 kcal/day</span>
       </div>
       <form method="post">
         <input type="hidden" name="health_mode" value="cutting">
@@ -117,7 +117,7 @@ include 'header.php';
 
   <!-- Info Card -->
   <div class="info-card" style="margin-top: 24px;">
-    <h3>💡 How do modes work?</h3>
+    <h3><i class="fas fa-lightbulb" style="color: #f1c40f; margin-right: 8px;"></i> How do modes work?</h3>
     <p>
       Modes set your daily health targets. When you log your data each day, the system tracks how well you're hitting 
       your targets. You earn <strong>Health Points</strong> for meeting or exceeding your goals. You can switch modes 

@@ -17,7 +17,7 @@ include 'header.php';
   <!-- Steps -->
   <div class="card tips-card">
     <div class="tips-header">
-      <span class="tips-icon">🚶</span>
+      <span class="tips-icon"><i class="fas fa-walking" style="color: var(--primary);"></i></span>
       <h2>Steps & Walking</h2>
     </div>
     <div class="tips-list">
@@ -43,7 +43,7 @@ include 'header.php';
   <!-- Sleep -->
   <div class="card tips-card" style="margin-top: 24px;">
     <div class="tips-header">
-      <span class="tips-icon">😴</span>
+      <span class="tips-icon"><i class="fas fa-bed" style="color: #3498db;"></i></span>
       <h2>Sleep</h2>
     </div>
     <div class="tips-list">
@@ -69,7 +69,7 @@ include 'header.php';
   <!-- Hydration -->
   <div class="card tips-card" style="margin-top: 24px;">
     <div class="tips-header">
-      <span class="tips-icon">💧</span>
+      <span class="tips-icon"><i class="fas fa-tint" style="color: #00a8ff;"></i></span>
       <h2>Hydration</h2>
     </div>
     <div class="tips-list">
@@ -95,7 +95,7 @@ include 'header.php';
   <!-- Exercise -->
   <div class="card tips-card" style="margin-top: 24px;">
     <div class="tips-header">
-      <span class="tips-icon">🏋️</span>
+      <span class="tips-icon"><i class="fas fa-dumbbell" style="color: #e74c3c;"></i></span>
       <h2>Exercise</h2>
     </div>
     <div class="tips-list">
@@ -121,7 +121,7 @@ include 'header.php';
   <!-- BMI -->
   <div class="card tips-card" style="margin-top: 24px;">
     <div class="tips-header">
-      <span class="tips-icon">📏</span>
+      <span class="tips-icon"><i class="fas fa-ruler" style="color: #f39c12;"></i></span>
       <h2>Understanding BMI</h2>
     </div>
     <div class="tips-list">

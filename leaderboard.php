@@ -20,7 +20,7 @@ include 'header.php';
 <section class="page-section">
   <div class="page-header" style="text-align: center; justify-content: center; margin-bottom: 40px;">
     <div>
-      <h1>🏆 Global Leaderboard</h1>
+      <h1><i class="fas fa-trophy" style="color: var(--warning); margin-right: 8px;"></i> Global Leaderboard</h1>
       <p class="muted">The most consistent and dedicated Zoonexa users.</p>
     </div>
   </div>
@@ -47,9 +47,9 @@ include 'header.php';
                 else echo 'var(--text-muted)';
               ?>;">
                 <?php 
-                  if ($index == 0) echo '🥇';
-                  elseif ($index == 1) echo '🥈';
-                  elseif ($index == 2) echo '🥉';
+                  if ($index == 0) echo '<i class="fas fa-medal" style="color: #ffd700;"></i>';
+                  elseif ($index == 1) echo '<i class="fas fa-medal" style="color: #c0c0c0;"></i>';
+                  elseif ($index == 2) echo '<i class="fas fa-medal" style="color: #cd7f32;"></i>';
                   else echo '#' . ($index + 1);
                 ?>
               </td>

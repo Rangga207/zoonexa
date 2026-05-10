@@ -45,7 +45,7 @@ include 'header.php';
 <section class="page-section">
   <div class="page-header">
     <div>
-      <h1>🏆 Milestones</h1>
+      <h1><i class="fas fa-trophy" style="color: var(--warning); margin-right: 8px;"></i> Milestones</h1>
       <p class="muted">Earn achievements by hitting your health goals. Each milestone rewards you with Health Points.</p>
     </div>
   </div>
@@ -91,14 +91,14 @@ include 'header.php';
         <h3><?php echo e($m['title']); ?></h3>
         <p class="muted"><?php echo e($m['description']); ?></p>
         <div class="milestone-card-footer">
-          <span class="milestone-reward">⭐ <?php echo $m['reward_points']; ?> pts</span>
+          <span class="milestone-reward"><i class="fas fa-star" style="color: #f1c40f;"></i> <?php echo $m['reward_points']; ?> pts</span>
           <?php if ($achieved): ?>
-            <span class="milestone-badge achieved">✓ Achieved</span>
+            <span class="milestone-badge achieved"><i class="fas fa-check-circle"></i> Achieved</span>
             <span class="milestone-date small muted">
               <?php echo date('M j, Y', strtotime($achievedMap[$m['id']])); ?>
             </span>
           <?php else: ?>
-            <span class="milestone-badge locked">🔒 Locked</span>
+            <span class="milestone-badge locked"><i class="fas fa-lock"></i> Locked</span>
           <?php endif; ?>
         </div>
       </div>
@@ -108,7 +108,7 @@ include 'header.php';
 
   <!-- Info Card -->
   <div class="info-card" style="margin-top: 24px;">
-    <h3>💡 How to Earn Milestones</h3>
+    <h3><i class="fas fa-lightbulb" style="color: #f1c40f; margin-right: 8px;"></i> How to Earn Milestones</h3>
     <p>
       Milestones are earned automatically based on your health activity. Log your data daily in the 
       <a href="health_log.php">Daily Log</a>, hit your step and sleep targets, and keep your streak going. 

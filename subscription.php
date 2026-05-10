@@ -57,7 +57,7 @@ include 'header.php';
   <?php if ($subscribed): ?>
   <div class="card big-card">
     <div class="sub-active-banner">
-      <div class="sub-active-icon">✅</div>
+      <div class="sub-active-icon"><i class="fas fa-check-circle" style="color: var(--success);"></i></div>
       <div>
         <h2 style="color: var(--success);">Your Subscription is Active</h2>
         <p class="muted">You have full access to all Zoonexa Pro features.</p>
@@ -103,12 +103,12 @@ include 'header.php';
   <div class="card big-card">
     <?php if ($locked): ?>
       <div class="alert info">
-        🔒 This feature requires a subscription. Upgrade below to unlock all premium features.
+        <i class="fas fa-lock" style="margin-right: 6px;"></i> This feature requires a subscription. Upgrade below to unlock all premium features.
       </div>
     <?php endif; ?>
 
     <div class="sub-hero">
-      <div class="sub-hero-icon">💎</div>
+      <div class="sub-hero-icon"><i class="fas fa-gem" style="color: var(--secondary);"></i></div>
       <h2>Zoonexa Pro</h2>
       <p class="muted">Get the most out of your health tracking experience.</p>
       <div class="sub-price">
@@ -121,12 +121,12 @@ include 'header.php';
     <div class="sub-features">
       <h3>What's Included</h3>
       <div class="features-grid">
-        <div class="feature-item"><span>🏆</span> Milestone Achievements</div>
-        <div class="feature-item"><span>🤖</span> AI Health Assistant (Advanced)</div>
-        <div class="feature-item"><span>⭐</span> Health Points & Rewards</div>
-        <div class="feature-item"><span>📊</span> Detailed Progress Analysis</div>
-        <div class="feature-item"><span>🎯</span> All Health Modes & Targets</div>
-        <div class="feature-item"><span>💬</span> Priority Support</div>
+        <div class="feature-item"><span><i class="fas fa-trophy" style="color: var(--warning);"></i></span> Milestone Achievements</div>
+        <div class="feature-item"><span><i class="fas fa-robot" style="color: var(--primary);"></i></span> AI Health Assistant (Advanced)</div>
+        <div class="feature-item"><span><i class="fas fa-star" style="color: #f1c40f;"></i></span> Health Points & Rewards</div>
+        <div class="feature-item"><span><i class="fas fa-chart-bar" style="color: #9b59b6;"></i></span> Detailed Progress Analysis</div>
+        <div class="feature-item"><span><i class="fas fa-bullseye" style="color: var(--danger);"></i></span> All Health Modes & Targets</div>
+        <div class="feature-item"><span><i class="fas fa-comments" style="color: #1abc9c;"></i></span> Priority Support</div>
       </div>
     </div>
 
@@ -147,7 +147,7 @@ include 'header.php';
       <form method="POST">
         <input type="hidden" name="action" value="submit_payment">
         <button type="submit" class="hero-btn primary" style="width: 100%; justify-content: center;">
-          ✅ I Have Transferred
+          <i class="fas fa-check-circle" style="margin-right: 8px;"></i> I Have Transferred
         </button>
       </form>
       <p class="muted small" style="margin-top: 12px; text-align: center;">
