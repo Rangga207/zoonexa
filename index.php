@@ -64,46 +64,65 @@ $modeMotivations = [
 ];
 $motivationText = $modeMotivations[$healthMode] ?? "Ready to conquer your health goals today?";
 
-// Ensure global_chats table exists
-$mysqli->query("CREATE TABLE IF NOT EXISTS global_chats (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    user_id INT NOT NULL,
-    message VARCHAR(255) NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
-)");
-
-// Handle Global Chat Submission
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'send_chat') {
-    $chat_msg = trim($_POST['chat_message'] ?? '');
-    if (!empty($chat_msg)) {
-        $stmt = $mysqli->prepare("INSERT INTO global_chats (user_id, message) VALUES (?, ?)");
-        $stmt->bind_param("is", $user_id, $chat_msg);
-        $stmt->execute();
-        $stmt->close();
-        header("Location: index.php");
-        exit;
-    }
-}
-
-// Fetch Social Pulse (Latest 10 activities including chats)
-$stmt = $mysqli->prepare("
-    (SELECT u.username, u.avatar_border, 'logged their health data! 🔥' as action, hl.created_at as time
-     FROM health_logs hl JOIN users u ON hl.user_id = u.id)
-    UNION
-    (SELECT u.username, u.avatar_border, CONCAT('reached the ', m.title, ' milestone! 🏆') as action, um.achieved_at as time
-     FROM user_milestones um JOIN users u ON um.user_id = u.id JOIN milestones m ON um.milestone_id = m.id)
-    UNION
-    (SELECT u.username, u.avatar_border, CONCAT('says: \"', gc.message, '\" 💬') as action, gc.created_at as time
-     FROM global_chats gc JOIN users u ON gc.user_id = u.id)
-    ORDER BY time DESC LIMIT 10
-");
+// ── FETCH PULSE DATA ──
 $pulseData = [];
-if ($stmt) {
-    $stmt->execute();
-    $res = $stmt->get_result();
-    $pulseData = $res ? $res->fetch_all(MYSQLI_ASSOC) : [];
-    $stmt->close();
+try {
+    // Ensure global_chats table exists (fails silently if no CREATE privileges)
+    $mysqli->query("CREATE TABLE IF NOT EXISTS global_chats (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        user_id INT NOT NULL,
+        message VARCHAR(255) NOT NULL,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+    )");
+
+    // Handle Global Chat Submission
+    if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'send_chat') {
+        $chat_msg = trim($_POST['chat_message'] ?? '');
+        if (!empty($chat_msg)) {
+            $stmt = $mysqli->prepare("INSERT INTO global_chats (user_id, message) VALUES (?, ?)");
+            $stmt->bind_param("is", $user_id, $chat_msg);
+            $stmt->execute();
+            $stmt->close();
+            header("Location: index.php");
+            exit;
+        }
+    }
+
+    // Fetch Social Pulse (Latest 10 activities including chats)
+    $stmt = $mysqli->prepare("
+        (SELECT u.username, u.avatar_border, 'logged their health data! 🔥' as action, hl.created_at as time
+         FROM health_logs hl JOIN users u ON hl.user_id = u.id)
+        UNION
+        (SELECT u.username, u.avatar_border, CONCAT('reached the ', m.title, ' milestone! 🏆') as action, um.achieved_at as time
+         FROM user_milestones um JOIN users u ON um.user_id = u.id JOIN milestones m ON um.milestone_id = m.id)
+        UNION
+        (SELECT u.username, u.avatar_border, CONCAT('says: \"', gc.message, '\" 💬') as action, gc.created_at as time
+         FROM global_chats gc JOIN users u ON gc.user_id = u.id)
+        ORDER BY time DESC LIMIT 10
+    ");
+    if ($stmt) {
+        $stmt->execute();
+        $res = $stmt->get_result();
+        $pulseData = $res ? $res->fetch_all(MYSQLI_ASSOC) : [];
+        $stmt->close();
+    }
+} catch (Exception $e) {
+    // Fallback if global_chats fails
+    $stmt = $mysqli->prepare("
+        (SELECT u.username, u.avatar_border, 'logged their health data! 🔥' as action, hl.created_at as time
+         FROM health_logs hl JOIN users u ON hl.user_id = u.id)
+        UNION
+        (SELECT u.username, u.avatar_border, CONCAT('reached the ', m.title, ' milestone! 🏆') as action, um.achieved_at as time
+         FROM user_milestones um JOIN users u ON um.user_id = u.id JOIN milestones m ON um.milestone_id = m.id)
+        ORDER BY time DESC LIMIT 5
+    ");
+    if ($stmt) {
+        $stmt->execute();
+        $res = $stmt->get_result();
+        $pulseData = $res ? $res->fetch_all(MYSQLI_ASSOC) : [];
+        $stmt->close();
+    }
 }
 
 // Handle Spin Action via AJAX
