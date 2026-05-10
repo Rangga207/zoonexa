@@ -3,17 +3,17 @@
    ============================================= */
 :root {
     /* Premium Palette: Emerald + Indigo */
-    --primary:       #10b981; /* Emerald 500 */
-    --primary-dark:  #059669; /* Emerald 600 */
-    --primary-light: #34d399; /* Emerald 400 */
-    --secondary:     #6366f1; /* Indigo 500 */
-    --accent:        #38bdf8; /* Sky 400 */
+    --primary:       #10b981;
+    --primary-dark:  #059669;
+    --primary-light: #34d399;
+    --secondary:     #6366f1;
+    --accent:        #38bdf8;
 
-    /* Deep Space Dark Backgrounds */
-    --bg-wall:       #08090f;   /* Deep space black */
-    --bg-window:     rgba(14, 16, 26, 0.80);
-    --bg-sidebar:    rgba(12, 14, 22, 0.85);
-    --bg-toolbar:    rgba(8, 9, 15, 0.82);  /* iOS nav glass */
+    /* Dark backgrounds */
+    --bg-wall:       #111111;
+    --bg-window:     rgba(20, 20, 20, 0.85);
+    --bg-sidebar:    rgba(18, 18, 18, 0.90);
+    --bg-toolbar:    rgba(15, 15, 15, 0.92);
     --bg-card:       rgba(255, 255, 255, 0.04);
     --bg-secondary:  rgba(255, 255, 255, 0.06);
     --bg-main:       transparent;
@@ -108,7 +108,7 @@ body {
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
-    background: #0a0b14;
+    background: #111111;
     color: var(--text-body);
     line-height: 1.55;
     font-size: 14px;
@@ -178,12 +178,12 @@ body.theme-dark .text-vibrant { mix-blend-mode: plus-lighter; }
    HEADER — Full-Width Top Navigation
    ============================================= */
 .mac-window-header {
-    background: rgba(10, 11, 18, 0.95);
-    backdrop-filter: blur(24px) saturate(180%);
-    -webkit-backdrop-filter: blur(24px) saturate(180%);
+    background: rgba(17, 17, 17, 0.96);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
     border-radius: 0;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.07);
-    box-shadow: 0 1px 0 rgba(255,255,255,0.03), 0 4px 24px rgba(0,0,0,0.4);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    box-shadow: 0 1px 0 rgba(255,255,255,0.02), 0 4px 20px rgba(0,0,0,0.5);
     position: fixed;
     top: 0;
     left: 0;
@@ -969,21 +969,14 @@ body.theme-dark .alert.success { color: var(--success); }
    HOME — HERO (Deep Forest → Midnight Premium Gradient)
    ============================================= */
 .home-hero {
-    /* Premium: Deep Emerald Forest → Midnight Indigo */
-    background: linear-gradient(
-        135deg,
-        #022c22 0%,
-        #064e3b 20%,
-        #065f46 40%,
-        #0e4165 65%,
-        #1e1b4b 100%
-    );
+    /* Vibrant teal → blue-teal (matches reference design) */
+    background: linear-gradient(135deg, #00b09b 0%, #00688b 100%);
     margin: -64px -24px 0;
-    padding: 96px 24px 60px;
+    padding: 96px 24px 56px;
     position: relative;
     overflow: hidden;
-    border-radius: 0 0 var(--radius-xl) var(--radius-xl);
-    box-shadow: 0 8px 48px rgba(0,0,0,0.6);
+    border-radius: 0 0 20px 20px;
+    box-shadow: 0 8px 40px rgba(0,0,0,0.5);
     border-bottom: none;
 }
 
