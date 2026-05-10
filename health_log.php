@@ -48,6 +48,38 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 // Award points for logging (10 points per log)
                 addPoints(10);
 
+                // Handle Bonus Missions
+                // 1. Jogging
+                if (isset($_POST['jogging_mission']) && $_POST['jogging_mission'] === 'on') {
+                    $bm_stmt = $mysqli->prepare("INSERT INTO bonus_missions (user_id, log_date, mission_type, points_awarded, status) VALUES (?, ?, 'jogging', 3, 'approved')");
+                    $bm_stmt->bind_param("is", $user_id, $log_date);
+                    $bm_stmt->execute();
+                    $bm_stmt->close();
+                    addPoints(3); // Auto approve jogging
+                    $success .= ' +3 points for Jogging!';
+                }
+
+                // 2. Strava Proof Upload
+                if (isset($_FILES['strava_proof']) && $_FILES['strava_proof']['error'] === UPLOAD_ERR_OK) {
+                    $upload_dir = 'uploads/';
+                    $file_ext = strtolower(pathinfo($_FILES['strava_proof']['name'], PATHINFO_EXTENSION));
+                    $allowed_exts = ['jpg', 'jpeg', 'png', 'pdf'];
+                    
+                    if (in_array($file_ext, $allowed_exts)) {
+                        $new_filename = 'strava_' . $user_id . '_' . time() . '.' . $file_ext;
+                        if (move_uploaded_file($_FILES['strava_proof']['tmp_name'], $upload_dir . $new_filename)) {
+                            $bm_stmt = $mysqli->prepare("INSERT INTO bonus_missions (user_id, log_date, mission_type, proof_path, points_awarded, status) VALUES (?, ?, 'strava', ?, 5, 'pending')");
+                            $path = $upload_dir . $new_filename;
+                            $bm_stmt->bind_param("iss", $user_id, $log_date, $path);
+                            $bm_stmt->execute();
+                            $bm_stmt->close();
+                            $success .= ' Strava proof uploaded and pending admin approval!';
+                        }
+                    } else {
+                        $error = 'Invalid file type for Strava proof. Please upload JPG, PNG, or PDF.';
+                    }
+                }
+
                 // Check and award milestones after new log
                 checkAndAwardMilestones();
             } else {

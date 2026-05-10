@@ -220,6 +220,9 @@ include 'header.php';
     // Get CSS variable for color
     const primaryColor = getComputedStyle(document.documentElement).getPropertyValue('--primary').trim() || '#3a86ff';
 
+    const healthMode = "<?php echo e($healthMode); ?>";
+    const shouldReverse = (healthMode === 'cutting');
+
     window.myHealthChart = new Chart(ctx, {
         type: 'line',
         data: {
@@ -258,6 +261,7 @@ include 'header.php';
                     ticks: { font: { family: "'Inter', sans-serif" } }
                 },
                 y: {
+                    reverse: shouldReverse,
                     beginAtZero: false,
                     grid: { color: 'rgba(0,0,0,0.05)' },
                     ticks: { font: { family: "'Inter', sans-serif" } }
