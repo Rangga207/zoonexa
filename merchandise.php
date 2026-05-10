@@ -167,7 +167,7 @@ include 'header.php';
       <p class="muted" style="margin-top: 4px;">Earn more points by logging your daily activities.</p>
     </div>
     <div style="font-size: 32px; font-weight: 800; color: var(--primary);">
-      <?php echo number_format($points); ?> <span style="font-size: 16px; color: var(--text-muted); font-weight: normal;">pts</span>
+      <?php echo isAdmin() ? '&infin;' : number_format($points); ?> <span style="font-size: 16px; color: var(--text-muted); font-weight: normal;">pts</span>
     </div>
   </div>
 

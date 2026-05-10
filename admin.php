@@ -440,8 +440,8 @@ include 'header.php';
                     <span style="background: var(--border); color: var(--text-dark); padding: 2px 8px; border-radius: 12px; font-size: 12px; font-weight: 600;">Member</span>
                 <?php endif; ?>
               </td>
-              <td style="padding: 12px; color: var(--primary); font-weight: 600;">
-                  <?php echo ($u['role'] === 'admin') ? 'Unlimited' : number_format($u['points']); ?>
+              <td style="padding: 12px; color: var(--primary); font-weight: 600; font-size: 16px;">
+                  <?php echo ($u['role'] === 'admin') ? '&infin;' : number_format($u['points']); ?>
               </td>
               <td style="padding: 12px; color: var(--text-body); font-size: 14px;"><?php echo date('M d, Y', strtotime($u['created_at'])); ?></td>
               <td style="padding: 12px; text-align: right;">

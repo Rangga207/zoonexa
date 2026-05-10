@@ -113,7 +113,7 @@ include 'header.php';
         <p><strong>Username:</strong> <span class="accent-text"><?php echo e($username); ?></span></p>
         <p><strong>Member since:</strong> <?php echo date('F j, Y', strtotime($user['created_at'])); ?></p>
         <p><strong>Health Mode:</strong> <span style="text-transform: capitalize;"><?php echo e($user['health_mode']); ?></span></p>
-        <p><strong>Health Points:</strong> <span class="accent-text"><?php echo number_format($user['points']); ?></span></p>
+        <p><strong>Health Points:</strong> <span class="accent-text"><?php echo isAdmin() ? '&infin;' : number_format($user['points']); ?></span></p>
         <p>
           <strong>Subscription:</strong>
           <?php if ($user['subscription_status']): ?>
@@ -161,7 +161,7 @@ include 'header.php';
             </li>
             <li>
               <span>Health Points</span>
-              <strong><?php echo number_format($user['points']); ?></strong>
+              <strong><?php echo isAdmin() ? '&infin;' : number_format($user['points']); ?></strong>
             </li>
           </ul>
         <?php endif; ?>
