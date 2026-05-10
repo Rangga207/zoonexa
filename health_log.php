@@ -8,7 +8,8 @@ $success = '';
 
 // Handle POST (add new log)
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $log_date    = $_POST['log_date'] ?? '';
+    // Force log date to today to prevent manipulation
+    $log_date    = date('Y-m-d');
     $steps       = (int)($_POST['steps'] ?? 0);
     $sleep_hours = (float)($_POST['sleep_hours'] ?? 0);
     $weight_kg   = (float)($_POST['weight_kg'] ?? 0);
@@ -143,9 +144,9 @@ include 'header.php';
     <form method="post" class="form" id="health-form" enctype="multipart/form-data">
       <div class="form-grid">
         <label>
-          Date
+          Date <span class="muted small">(Locked to Today)</span>
           <input type="date" name="log_date" id="log_date"
-                 max="<?php echo date('Y-m-d'); ?>" required>
+                 value="<?php echo date('Y-m-d'); ?>" readonly style="background: rgba(255,255,255,0.02); color: var(--text-muted); cursor: not-allowed; border-color: rgba(255,255,255,0.05);">
         </label>
         <label>
           Steps
@@ -234,7 +235,7 @@ include 'header.php';
     <h2>Your Logs <span class="muted small">(Last 30 entries)</span></h2>
     <div class="table-wrapper">
       <?php if (count($logs) === 0): ?>
-        <p class="muted" style="padding: 20px 0;">No logs yet. Fill in the form above to start tracking!</p>
+        <p class="muted" style="padding: 40px 20px; text-align: center; background: rgba(0,0,0,0.15); border-radius: 12px; margin: 16px;">No logs yet. Fill in the form above to start tracking!</p>
       <?php else: ?>
         <table class="table">
           <thead>
