@@ -78,413 +78,491 @@ $page_title = 'Home';
 include 'header.php';
 ?>
 
-<!-- =============================================
-     HERO SECTION
-     ============================================= -->
-<section class="home-hero">
-  <div class="home-hero-inner">
-    <div class="home-hero-text">
-      <div class="hero-tag">Welcome Back, <?php echo e($username); ?></div>
-      <h1>Your Health Dashboard</h1>
-      <p class="muted">
-        No spam notifications. No social feeds. Just your data, your progress, and your goals all in one clean place.
-      </p>
-      <div class="hero-actions">
-        <a href="health_log.php" class="hero-btn primary"> Log Today</a>
-        <a href="profile.php" class="hero-btn ghost"> My Profile</a>
-      </div>
-    </div>
-
-    <!-- Hero Stats Banner -->
-    <div class="home-hero-banner">
-      <div class="banner-pill">
-        <span class="pill-label">Your Mode</span>
-        <span class="pill-value" style="text-transform: capitalize;"><?php echo e($healthMode); ?></span>
-      </div>
-      <div class="banner-box-row">
-        <div class="banner-box">
-          <span class="label">Health Points</span>
-          <strong><?php echo number_format($points); ?></strong>
-          <span class="unit">total earned</span>
-        </div>
-        <div class="banner-box">
-          <span class="label">Mode</span>
-          <strong style="text-transform: capitalize;"><?php echo e($healthMode); ?></strong>
-          <span class="unit">current goal</span>
-        </div>
-        <div class="banner-box">
-          <span class="label">Status</span>
-          <strong style="color: <?php echo $subscribed ? 'var(--success)' : 'var(--warning)'; ?>;">
-            <?php echo $subscribed ? 'Pro' : 'Free'; ?>
-          </strong>
-          <span class="unit"><?php echo $subscribed ? 'all features' : 'upgrade available'; ?></span>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- =============================================
-     DAILY GAMIFICATION (SPIN BOX)
-     ============================================= -->
-<?php if ($canSpin): ?>
-<section class="home-section" id="daily-spin-section">
-  <div class="card" style="background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%); color: white; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px;">
-    <div>
-      <h2 style="color: white; margin-bottom: 8px;"><i class="fas fa-gift" style="margin-right: 8px;"></i> Daily Mystery Box</h2>
-      <p style="opacity: 0.9; margin: 0;">You have a free daily box to open! Claim your random Health Points now.</p>
-    </div>
-    <button onclick="openDailyBox()" id="btn-open-box" style="background: white; color: var(--primary); font-weight: 800; border: none; padding: 12px 24px; border-radius: 50px; cursor: pointer; transition: transform 0.2s; box-shadow: 0 4px 12px rgba(0,0,0,0.2);">
-      <i class="fas fa-box-open" style="margin-right: 8px;"></i> OPEN BOX
-    </button>
-  </div>
-</section>
-<?php endif; ?>
-
-<!-- =============================================
-     SOCIAL PULSE (LIVE FEED)
-     ============================================= -->
-<section class="home-section">
-  <div class="card" style="padding: 16px 24px; overflow: hidden; white-space: nowrap; border-left: 4px solid var(--warning);">
-    <div style="display: flex; align-items: center;">
-      <strong style="color: var(--warning); margin-right: 16px; display: flex; align-items: center; gap: 6px;">
-        <i class="fas fa-bolt"></i> Live Pulse
-      </strong>
-      <div class="pulse-ticker" style="display: inline-block; animation: ticker 20s linear infinite;">
-        <?php foreach ($pulseData as $pulse): ?>
-          <span style="margin-right: 30px; color: var(--text-muted);">
-            <strong style="color: var(--text-body);"><i class="fas fa-user-circle"></i> <?php echo e($pulse['username']); ?></strong> <?php echo $pulse['action']; ?>
-          </span>
-        <?php endforeach; ?>
-      </div>
-    </div>
-  </div>
-</section>
-
 <style>
-@keyframes ticker {
-  0% { transform: translateX(100%); }
-  100% { transform: translateX(-100%); }
+/* =============================================
+   CLEAN DASHBOARD LAYOUT
+   ============================================= */
+.dash-wrap {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 32px 24px;
 }
-.progress-ring {
-  width: 100px; height: 100px;
+
+/* Top greeting bar */
+.dash-greeting {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 28px;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.dash-greeting h1 {
+  font-size: 24px;
+  font-weight: 700;
+  margin: 0;
+}
+.dash-greeting h1 span { color: var(--primary); }
+.dash-greeting .sub { color: var(--text-muted); font-size: 14px; margin: 2px 0 0; }
+
+/* Mystery box pill (compact) */
+.spin-pill {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: linear-gradient(135deg, var(--primary), var(--primary-dark, #2272cc));
+  color: white;
+  padding: 10px 18px;
+  border-radius: 50px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  transition: transform 0.2s, box-shadow 0.2s;
+  box-shadow: 0 4px 16px rgba(58,134,255,0.3);
+}
+.spin-pill:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(58,134,255,0.4); }
+
+/* Main 2-column grid */
+.dash-grid {
+  display: grid;
+  grid-template-columns: 380px 1fr;
+  gap: 20px;
+  align-items: start;
+}
+@media (max-width: 900px) {
+  .dash-grid { grid-template-columns: 1fr; }
+}
+
+/* Stat cards row */
+.stat-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-bottom: 20px;
+}
+.stat-item {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 16px;
+  text-align: center;
+  transition: transform 0.2s;
+}
+.stat-item:hover { transform: translateY(-2px); }
+.stat-item .stat-val {
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--primary);
+  display: block;
+  line-height: 1.1;
+}
+.stat-item .stat-lbl {
+  font-size: 11px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-top: 4px;
+  display: block;
+}
+
+/* Today activity card */
+.activity-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 22px;
+}
+.activity-card .card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+.activity-card .card-title {
+  font-size: 15px;
+  font-weight: 700;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.activity-card .card-action {
+  font-size: 13px;
+  color: var(--primary);
+  text-decoration: none;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.activity-card .card-action:hover { opacity: 0.8; }
+
+/* Progress rings */
+.rings-row {
+  display: flex;
+  gap: 24px;
+  justify-content: center;
+}
+.ring-wrap { text-align: center; }
+.ring-circle {
+  width: 90px; height: 90px;
   border-radius: 50%;
-  display: flex; align-items: center; justify-content: center;
-  position: relative;
-  background: var(--bg-secondary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto;
 }
-.progress-ring-inner {
-  width: 80px; height: 80px;
+.ring-inner {
+  width: 70px; height: 70px;
   background: var(--bg-card);
   border-radius: 50%;
-  display: flex; flex-direction: column; align-items: center; justify-content: center;
-  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+}
+.ring-inner i { font-size: 16px; }
+.ring-inner strong { font-size: 13px; font-weight: 700; }
+.ring-label { font-size: 11px; color: var(--text-muted); margin-top: 8px; font-weight: 600; }
+.ring-sub { font-size: 11px; color: var(--text-muted); }
+
+/* Chart card */
+.chart-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 22px;
+}
+.chart-card .card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+.chart-card .card-title {
+  font-size: 15px;
+  font-weight: 700;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Quick nav row */
+.quick-nav {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+  gap: 12px;
+  margin-top: 20px;
+}
+.quick-link {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 16px 12px;
+  text-align: center;
+  text-decoration: none;
+  color: var(--text-body);
+  transition: all 0.2s;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+.quick-link:hover {
+  border-color: var(--primary);
+  background: rgba(58,134,255,0.06);
+  transform: translateY(-2px);
+  color: var(--primary);
+}
+.quick-link i { font-size: 20px; color: var(--primary); }
+.quick-link span { font-size: 12px; font-weight: 600; }
+
+/* Social pulse ticker */
+.pulse-bar {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 10px 18px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  overflow: hidden;
+  margin-top: 20px;
+  white-space: nowrap;
+}
+.pulse-label {
+  color: var(--warning);
+  font-size: 12px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  flex-shrink: 0;
+}
+.pulse-ticker {
+  display: inline-block;
+  animation: ticker 25s linear infinite;
+  font-size: 13px;
+  color: var(--text-muted);
+}
+@keyframes ticker {
+  0% { transform: translateX(60vw); }
+  100% { transform: translateX(-100%); }
+}
+@keyframes glow-gold {
+  from { box-shadow: 0 0 10px 2px rgba(255,215,0,0.4); }
+  to { box-shadow: 0 0 20px 8px rgba(255,215,0,0.7); }
+}
+@keyframes glow-neon {
+  from { box-shadow: 0 0 10px 2px rgba(0,255,255,0.4); }
+  to { box-shadow: 0 0 20px 8px rgba(0,255,255,0.8); }
+}
+@keyframes glow-fire {
+  from { box-shadow: 0 0 10px 2px rgba(255,69,0,0.5); border-color: #ff4500; }
+  to { box-shadow: 0 0 25px 10px rgba(255,0,0,0.8); border-color: #ff0000; }
 }
 </style>
 
-<!-- =============================================
-     TODAY'S PROGRESS RINGS
-     ============================================= -->
-<section class="home-section">
-  <div class="card big-card">
-    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-      <h2 style="margin:0;"><i class="fas fa-bullseye" style="color: var(--danger); margin-right: 8px;"></i> Today's Activity</h2>
-      <a href="health_log.php" class="hero-btn primary" style="padding: 8px 16px; font-size: 14px;">Update</a>
+<div class="dash-wrap">
+
+  <!-- ── Greeting Bar ── -->
+  <div class="dash-greeting">
+    <div>
+      <h1>Hey, <span><?php echo e($username); ?></span> 👋</h1>
+      <p class="sub"><?php echo date('l, F j, Y'); ?></p>
     </div>
-    
-    <div style="display: flex; gap: 32px; flex-wrap: wrap; justify-content: center;">
-      <?php 
-        $stepsPct = $todayLog ? min(100, round(($todayLog['steps'] / $targets['steps']['target']) * 100)) : 0;
-        $sleepPct = $todayLog ? min(100, round(($todayLog['sleep_hours'] / $targets['sleep']['target']) * 100)) : 0;
-      ?>
-      
-      <!-- Steps Ring -->
-      <div style="text-align: center;">
-        <div class="progress-ring" style="background: conic-gradient(var(--primary) <?php echo $stepsPct; ?>%, var(--bg-secondary) 0);">
-          <div class="progress-ring-inner">
-            <i class="fas fa-walking" style="color: var(--primary); font-size: 20px;"></i>
-            <strong style="margin-top: 4px;"><?php echo $stepsPct; ?>%</strong>
-          </div>
+    <?php if ($canSpin): ?>
+    <button class="spin-pill" onclick="openDailyBox()" id="btn-open-box">
+      <i class="fas fa-gift"></i> Daily Box Ready!
+    </button>
+    <?php endif; ?>
+  </div>
+
+  <!-- ── Main Grid ── -->
+  <div class="dash-grid">
+
+    <!-- LEFT COLUMN -->
+    <div>
+      <!-- Stat Row -->
+      <div class="stat-row">
+        <div class="stat-item">
+          <span class="stat-val"><?php echo number_format($points); ?></span>
+          <span class="stat-lbl">Points</span>
         </div>
-        <p class="muted small" style="margin-top: 12px; font-weight: bold;"><?php echo $todayLog ? number_format($todayLog['steps']) : 0; ?> / <?php echo number_format($targets['steps']['target']); ?></p>
+        <div class="stat-item">
+          <span class="stat-val" style="text-transform:capitalize; font-size:16px;"><?php echo e($healthMode); ?></span>
+          <span class="stat-lbl">Mode</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-val" style="color:<?php echo $subscribed ? 'var(--success)' : 'var(--warning)'; ?>; font-size:16px;">
+            <?php echo $subscribed ? 'Pro' : 'Free'; ?>
+          </span>
+          <span class="stat-lbl">Status</span>
+        </div>
       </div>
 
-      <!-- Sleep Ring -->
-      <div style="text-align: center;">
-        <div class="progress-ring" style="background: conic-gradient(#3498db <?php echo $sleepPct; ?>%, var(--bg-secondary) 0);">
-          <div class="progress-ring-inner">
-            <i class="fas fa-bed" style="color: #3498db; font-size: 20px;"></i>
-            <strong style="margin-top: 4px;"><?php echo $sleepPct; ?>%</strong>
+      <!-- Today's Activity -->
+      <div class="activity-card">
+        <div class="card-header">
+          <h3 class="card-title"><i class="fas fa-bullseye" style="color:var(--danger);"></i> Today's Activity</h3>
+          <a href="health_log.php" class="card-action"><i class="fas fa-plus"></i> Log</a>
+        </div>
+
+        <?php
+          $stepsPct = $todayLog ? min(100, round(($todayLog['steps'] / $targets['steps']['target']) * 100)) : 0;
+          $sleepPct = $todayLog ? min(100, round(($todayLog['sleep_hours'] / $targets['sleep']['target']) * 100)) : 0;
+        ?>
+
+        <?php if (!$todayLog): ?>
+          <div style="text-align:center; padding: 16px 0;">
+            <i class="fas fa-clipboard-list" style="font-size:32px; color:var(--text-muted); opacity:0.4;"></i>
+            <p class="muted" style="margin:12px 0 0; font-size:14px;">No log yet today. <a href="health_log.php" style="color:var(--primary);">Add one now →</a></p>
           </div>
-        </div>
-        <p class="muted small" style="margin-top: 12px; font-weight: bold;"><?php echo $todayLog ? $todayLog['sleep_hours'] : 0; ?> / <?php echo $targets['sleep']['target']; ?> hrs</p>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- =============================================
-     YOUR PROGRESS CHART
-     ============================================= -->
-<section class="home-section">
-  <div class="card big-card">
-    <h2>📈 Your Progress (Last 30 Days)</h2>
-    <div style="height: 300px; width: 100%; margin-top: 20px; position: relative;">
-      <?php if (count($logData) < 2): ?>
-        <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; background: rgba(0,0,0,0.5); z-index: 10; border-radius: 12px; backdrop-filter: blur(3px);">
-          <p style="color: white; font-weight: 500; margin-bottom: 12px;">Log your weight at least 2 times to see your real progress!</p>
-          <a href="health_log.php" class="hero-btn primary" style="display: inline-flex;">📝 Log Health Now</a>
-        </div>
-      <?php endif; ?>
-      <canvas id="healthChart"></canvas>
-    </div>
-  </div>
-</section>
-
-<!-- =============================================
-     WHAT YOU CAN DO
-     ============================================= -->
-<section class="home-section">
-  <div class="home-section-header">
-    <h2>What you can do here</h2>
-    <p class="muted">Everything is focused on the basics that actually matter for your health.</p>
-  </div>
-
-  <div class="service-grid">
-    <a class="service-card" href="health_log.php">
-      <div class="service-icon">📝</div>
-      <h3>Daily Log</h3>
-      <p class="muted">Log your steps, sleep, and weight every day. BMI calculates automatically.</p>
-    </a>
-
-    <a class="service-card" href="profile.php">
-      <div class="service-icon">📊</div>
-      <h3>Progress</h3>
-      <p class="muted">View your averages for steps, sleep, weight, and BMI. Track your journey over time.</p>
-    </a>
-
-    <a class="service-card" href="health_modes.php">
-      <div class="service-icon">🎯</div>
-      <h3>Health Modes</h3>
-      <p class="muted">Choose between Maintain, Bulking, or Cutting. Each mode sets different daily targets.</p>
-    </a>
-
-    <a class="service-card" href="tips.php">
-      <div class="service-icon">💡</div>
-      <h3>Health Tips</h3>
-      <p class="muted">Practical, no-nonsense tips for steps, sleep, hydration, and exercise.</p>
-    </a>
-  </div>
-</section>
-
-<!-- =============================================
-     PREMIUM FEATURES (SUBSCRIPTION PROMO)
-     ============================================= -->
-<section class="home-section">
-  <div class="home-section-header">
-    <h2>Premium Features</h2>
-    <p class="muted">
-      <?php if ($subscribed): ?>
-        You have full access to all premium features. Keep it up!
-      <?php else: ?>
-        Unlock these features with a simple subscription.
-      <?php endif; ?>
-    </p>
-  </div>
-
-  <div class="service-grid">
-    <a class="service-card <?php echo !$subscribed ? 'card-locked' : ''; ?>" href="milestone.php">
-      <div class="service-icon"><i class="fas fa-trophy" style="color: var(--warning);"></i></div>
-      <h3>Milestones <?php echo !$subscribed ? '<span class="lock-badge"><i class="fas fa-lock"></i> Pro</span>' : ''; ?></h3>
-      <p class="muted">Earn achievements based on your health activity. Collect points and unlock rewards.</p>
-    </a>
-
-    <a class="service-card" href="chatbot.php">
-      <div class="service-icon"><i class="fas fa-robot" style="color: var(--primary);"></i></div>
-      <h3>AI Assistant</h3>
-      <p class="muted">Ask questions about your health goals, modes, points, and get personalized guidance.</p>
-    </a>
-
-    <a class="service-card <?php echo !$subscribed ? 'card-locked' : ''; ?>" href="subscription.php">
-      <div class="service-icon"><i class="fas fa-gem" style="color: var(--secondary);"></i></div>
-      <h3>Subscription <?php echo !$subscribed ? '<span class="lock-badge"><i class="fas fa-lock"></i></span>' : '<span class="lock-badge" style="background: var(--success); color: white;"><i class="fas fa-check"></i> Active</span>'; ?></h3>
-      <p class="muted">
-        <?php if ($subscribed): ?>
-          Your subscription is active. Enjoy all premium features!
         <?php else: ?>
-          Rp 10,000/month — unlock milestones, AI features, and more.
+          <div class="rings-row">
+            <!-- Steps -->
+            <div class="ring-wrap">
+              <div class="ring-circle" style="background: conic-gradient(var(--primary) <?php echo $stepsPct; ?>%, var(--bg-secondary) 0);">
+                <div class="ring-inner">
+                  <i class="fas fa-walking" style="color:var(--primary);"></i>
+                  <strong><?php echo $stepsPct; ?>%</strong>
+                </div>
+              </div>
+              <div class="ring-label">Steps</div>
+              <div class="ring-sub"><?php echo number_format($todayLog['steps']); ?> / <?php echo number_format($targets['steps']['target']); ?></div>
+            </div>
+            <!-- Sleep -->
+            <div class="ring-wrap">
+              <div class="ring-circle" style="background: conic-gradient(#3498db <?php echo $sleepPct; ?>%, var(--bg-secondary) 0);">
+                <div class="ring-inner">
+                  <i class="fas fa-bed" style="color:#3498db;"></i>
+                  <strong><?php echo $sleepPct; ?>%</strong>
+                </div>
+              </div>
+              <div class="ring-label">Sleep</div>
+              <div class="ring-sub"><?php echo $todayLog['sleep_hours']; ?> / <?php echo $targets['sleep']['target']; ?> hrs</div>
+            </div>
+            <!-- Weight -->
+            <div class="ring-wrap">
+              <div class="ring-circle" style="background: conic-gradient(#9b59b6 100%, var(--bg-secondary) 0);">
+                <div class="ring-inner">
+                  <i class="fas fa-weight" style="color:#9b59b6;"></i>
+                  <strong style="font-size:12px;"><?php echo $todayLog['weight_kg']; ?></strong>
+                </div>
+              </div>
+              <div class="ring-label">Weight</div>
+              <div class="ring-sub"><?php echo $todayLog['weight_kg']; ?> kg</div>
+            </div>
+          </div>
         <?php endif; ?>
-      </p>
-    </a>
+      </div>
+    </div>
 
-    <a class="service-card" href="profile.php">
-      <div class="service-icon"><i class="fas fa-star" style="color: #f1c40f;"></i></div>
-      <h3>Health Points</h3>
-      <p class="muted">You have <strong><?php echo number_format($points); ?></strong> points. Earn more by logging daily and hitting your targets.</p>
-    </a>
-  </div>
-</section>
+    <!-- RIGHT COLUMN: Weight Chart -->
+    <div class="chart-card">
+      <div class="card-header">
+        <h3 class="card-title"><i class="fas fa-chart-line" style="color:var(--primary);"></i> Weight Progress</h3>
+        <span class="muted" style="font-size:12px;">Last 30 days</span>
+      </div>
+      <div style="height: 240px; position: relative;">
+        <?php if (count($logData) < 2): ?>
+          <div style="position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; background:rgba(0,0,0,0.45); border-radius:10px; backdrop-filter:blur(4px); z-index:5;">
+            <i class="fas fa-chart-bar" style="font-size:28px; color:rgba(255,255,255,0.3); margin-bottom:10px;"></i>
+            <p style="color:white; font-size:13px; margin:0;">Log at least 2 times to see your trend</p>
+            <a href="health_log.php" class="hero-btn primary" style="margin-top:12px; padding:8px 16px; font-size:13px;">Log Now</a>
+          </div>
+        <?php endif; ?>
+        <canvas id="healthChart"></canvas>
+      </div>
+    </div>
 
-<!-- =============================================
-     AI ASSISTANT PROMO
-     ============================================= -->
-<section class="home-section">
-  <div class="info-card">
-    <h3><i class="fas fa-robot" style="color: var(--primary); margin-right: 8px;"></i> Try the Zoonexa AI Assistant</h3>
-    <p>
-      Not sure what to do? Ask the AI! It can help with your daily targets, explain health modes, 
-      tell you how to earn points, and answer questions about your subscription benefits. Available 24/7.
-    </p>
-    <a href="chatbot.php" class="hero-btn primary" style="display: inline-flex; margin-top: 14px;">
-      <i class="fas fa-comment-dots" style="margin-right: 6px;"></i> Chat Now
-    </a>
+  </div><!-- /dash-grid -->
+
+  <!-- ── Quick Nav ── -->
+  <div class="quick-nav">
+    <a href="health_log.php" class="quick-link"><i class="fas fa-clipboard-list"></i><span>Daily Log</span></a>
+    <a href="health_modes.php" class="quick-link"><i class="fas fa-sliders-h"></i><span>Health Mode</span></a>
+    <a href="milestone.php" class="quick-link"><i class="fas fa-trophy"></i><span>Milestones</span></a>
+    <a href="leaderboard.php" class="quick-link"><i class="fas fa-crown"></i><span>Leaderboard</span></a>
+    <a href="tips.php" class="quick-link"><i class="fas fa-lightbulb"></i><span>Tips</span></a>
+    <a href="chatbot.php" class="quick-link"><i class="fas fa-robot"></i><span>AI Chat</span></a>
+    <a href="merchandise.php" class="quick-link"><i class="fas fa-shopping-bag"></i><span>Merch</span></a>
+    <a href="subscription.php" class="quick-link"><i class="fas fa-gem"></i><span>Pro Plan</span></a>
   </div>
-</section>
+
+  <!-- ── Social Pulse Ticker ── -->
+  <?php if (!empty($pulseData)): ?>
+  <div class="pulse-bar">
+    <span class="pulse-label"><i class="fas fa-bolt"></i> Live</span>
+    <div class="pulse-ticker">
+      <?php foreach ($pulseData as $p): ?>
+        <span style="margin-right:40px;">
+          <strong style="color:var(--text-body);"><?php echo e($p['username']); ?></strong>
+          <span><?php echo $p['action']; ?></span>
+        </span>
+      <?php endforeach; ?>
+    </div>
+  </div>
+  <?php endif; ?>
+
+</div><!-- /dash-wrap -->
+
+<!-- Hidden spin section for AJAX target -->
+<div id="daily-spin-section" style="display:none;"></div>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
-  (function() {
-    let rawData = <?php echo json_encode($logData); ?>;
-    const ctx = document.getElementById('healthChart');
-    if (!ctx) return;
+(function() {
+  let rawData = <?php echo json_encode($logData); ?>;
+  const ctx = document.getElementById('healthChart');
+  if (!ctx) return;
 
-    if (window.myHealthChart) {
-        window.myHealthChart.destroy();
+  if (rawData.length < 2) {
+    rawData = [];
+    for (let i = 6; i >= 0; i--) {
+      let d = new Date(); d.setDate(d.getDate() - i);
+      rawData.push({ log_date: d.toISOString().split('T')[0], weight_kg: 0 });
     }
-
-    // Use dummy flat data if user has less than 2 logs
-    if (rawData.length < 2) {
-        rawData = [];
-        for (let i = 6; i >= 0; i--) {
-            let d = new Date();
-            d.setDate(d.getDate() - i);
-            rawData.push({
-                log_date: d.toISOString().split('T')[0],
-                weight_kg: 0 // Flat line at 0
-            });
-        }
-    }
-
-    // Convert date string to readable format (e.g. May 08)
-    const labels = rawData.map(r => {
-        const d = new Date(r.log_date);
-        return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-    });
-    const weightData = rawData.map(r => parseFloat(r.weight_kg));
-
-    // Get CSS variable for color
-    const primaryColor = getComputedStyle(document.documentElement).getPropertyValue('--primary').trim() || '#3a86ff';
-
-    const healthMode = "<?php echo e($healthMode); ?>";
-    const shouldReverse = (healthMode === 'cutting');
-
-    // Create gradient fill
-    let gradientFill = ctx.getContext("2d").createLinearGradient(0, 0, 0, 400);
-    gradientFill.addColorStop(0, primaryColor + '66'); // 40% opacity
-    gradientFill.addColorStop(1, primaryColor + '00'); // 0% opacity
-
-    window.myHealthChart = new Chart(ctx, {
-        type: 'line',
-        data: {
-            labels: labels,
-            datasets: [{
-                label: 'Weight (kg)',
-                data: weightData,
-                borderColor: primaryColor,
-                backgroundColor: gradientFill,
-                borderWidth: 3,
-                fill: true,
-                tension: 0.4,
-                pointBackgroundColor: '#fff',
-                pointBorderColor: primaryColor,
-                pointBorderWidth: 3,
-                pointRadius: 4,
-                pointHoverRadius: 7,
-                pointHoverBackgroundColor: primaryColor,
-                pointHoverBorderColor: '#fff',
-                pointHoverBorderWidth: 3
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            animation: {
-                y: {
-                    duration: 2000,
-                    delay: 200,
-                    easing: 'easeOutQuart'
-                }
-            },
-            interaction: {
-                mode: 'index',
-                intersect: false,
-            },
-            plugins: {
-                legend: { display: false },
-                tooltip: {
-                    backgroundColor: 'rgba(26, 26, 26, 0.9)',
-                    titleFont: { size: 14, family: 'Inter', weight: 'bold' },
-                    bodyFont: { size: 14, family: 'Inter' },
-                    padding: 12,
-                    cornerRadius: 8,
-                    displayColors: false,
-                    callbacks: {
-                        label: function(context) {
-                            return context.parsed.y + ' kg';
-                        }
-                    }
-                }
-            },
-
-            scales: {
-                x: {
-                    grid: { display: false },
-                    ticks: { font: { family: "'Inter', sans-serif" } }
-                },
-                y: {
-                    reverse: shouldReverse,
-                    beginAtZero: false,
-                    grid: { color: 'rgba(0,0,0,0.05)' },
-                    ticks: { font: { family: "'Inter', sans-serif" } }
-                }
-            }
-        }
-    });
-  })();
-
-  function openDailyBox() {
-    const btn = document.getElementById('btn-open-box');
-    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> OPENING...';
-    btn.style.pointerEvents = 'none';
-
-    fetch('index.php?action=spin')
-      .then(res => res.json())
-      .then(data => {
-        if (data.success) {
-          btn.innerHTML = `<i class="fas fa-check-circle"></i> +${data.reward} POINTS!`;
-          btn.style.background = 'var(--success)';
-          btn.style.color = 'white';
-          
-          if (typeof confetti !== 'undefined') {
-              confetti({
-                  particleCount: 150,
-                  spread: 80,
-                  origin: { y: 0.6 },
-                  colors: ['#ffd700', '#ff8c00', '#16a085']
-              });
-          }
-          
-          // Hide section after 3 seconds
-          setTimeout(() => {
-              document.getElementById('daily-spin-section').style.display = 'none';
-              // Reload to update total points
-              window.location.reload();
-          }, 2500);
-        } else {
-          btn.innerHTML = 'Already Claimed!';
-        }
-      });
   }
+
+  const labels     = rawData.map(r => { const d = new Date(r.log_date); return d.toLocaleDateString('en-US', { month:'short', day:'numeric' }); });
+  const weightData = rawData.map(r => parseFloat(r.weight_kg));
+  const primary    = getComputedStyle(document.documentElement).getPropertyValue('--primary').trim() || '#3a86ff';
+  const grad       = ctx.getContext('2d').createLinearGradient(0, 0, 0, 280);
+  grad.addColorStop(0, primary + '55');
+  grad.addColorStop(1, primary + '00');
+
+  window.myHealthChart = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels,
+      datasets: [{
+        label: 'Weight (kg)',
+        data: weightData,
+        borderColor: primary,
+        backgroundColor: grad,
+        borderWidth: 2.5,
+        fill: true,
+        tension: 0.4,
+        pointBackgroundColor: '#fff',
+        pointBorderColor: primary,
+        pointBorderWidth: 2,
+        pointRadius: 3,
+        pointHoverRadius: 6
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      animation: { y: { duration: 1800, easing: 'easeOutQuart' } },
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          backgroundColor: 'rgba(20,20,30,0.92)',
+          titleFont: { size: 13, family: 'Inter' },
+          bodyFont: { size: 13, family: 'Inter' },
+          padding: 10,
+          cornerRadius: 8,
+          displayColors: false,
+          callbacks: { label: c => c.parsed.y + ' kg' }
+        }
+      },
+      scales: {
+        x: { grid: { display: false }, ticks: { font: { family: 'Inter', size: 11 } } },
+        y: {
+          reverse: "<?php echo e($healthMode); ?>" === 'cutting',
+          beginAtZero: false,
+          grid: { color: 'rgba(128,128,128,0.1)' },
+          ticks: { font: { family: 'Inter', size: 11 } }
+        }
+      }
+    }
+  });
+})();
+
+function openDailyBox() {
+  const btn = document.getElementById('btn-open-box');
+  btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Opening...';
+  btn.style.pointerEvents = 'none';
+
+  fetch('index.php?action=spin')
+    .then(r => r.json())
+    .then(data => {
+      if (data.success) {
+        btn.innerHTML = `<i class="fas fa-check-circle"></i> +${data.reward} pts!`;
+        btn.style.background = 'var(--success)';
+        if (typeof confetti !== 'undefined') {
+          confetti({ particleCount: 120, spread: 70, origin: { y: 0.5 }, colors: ['#ffd700','#ff8c00','#16a085'] });
+        }
+        setTimeout(() => window.location.reload(), 2200);
+      } else {
+        btn.innerHTML = '<i class="fas fa-times-circle"></i> Already claimed!';
+      }
+    });
+}
 </script>
 
 <?php include 'footer.php'; ?>
