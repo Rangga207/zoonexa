@@ -32,9 +32,9 @@ function initThemeToggle() {
         });
     }
 
-    // Apply saved theme on page load — default: dark
+    // Apply saved theme on page load — default: light
     const savedTheme = localStorage.getItem('zoonexa-theme');
-    applyTheme(savedTheme !== 'light'); // dark unless explicitly set to light
+    applyTheme(savedTheme === 'dark'); // dark only if explicitly saved
 
     function handleToggle() {
         const isDark = body.classList.toggle('theme-dark');
