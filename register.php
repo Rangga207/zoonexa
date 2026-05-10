@@ -76,7 +76,7 @@ $page_title = 'Sign Up';
   font-family: 'Inter', sans-serif;
   color: var(--text-dark);
 }
-/* Soft Glowing Background Shapes */
+/* Optimized Soft Glowing Background Shapes */
 .auth-bg-shapes {
   position: absolute;
   inset: 0;
@@ -87,12 +87,21 @@ $page_title = 'Sign Up';
 .shape {
   position: absolute;
   border-radius: 50%;
-  filter: blur(80px);
-  opacity: 0.6;
   animation: floatBG 12s infinite alternate ease-in-out;
+  will-change: transform;
 }
-.shape-1 { width: 500px; height: 500px; background: rgba(22, 160, 133, 0.4); top: -150px; left: -100px; }
-.shape-2 { width: 600px; height: 600px; background: rgba(52, 152, 219, 0.3); bottom: -200px; right: -150px; animation-delay: -5s; }
+/* Replaced expensive filter: blur() with cheap radial-gradient */
+.shape-1 { 
+  width: 500px; height: 500px; 
+  background: radial-gradient(circle, rgba(22, 160, 133, 0.4) 0%, transparent 70%); 
+  top: -150px; left: -100px; 
+}
+.shape-2 { 
+  width: 600px; height: 600px; 
+  background: radial-gradient(circle, rgba(52, 152, 219, 0.3) 0%, transparent 70%); 
+  bottom: -200px; right: -150px; 
+  animation-delay: -5s; 
+}
 
 .auth-wrapper {
   position: relative;
@@ -100,12 +109,13 @@ $page_title = 'Sign Up';
   width: 100%;
   max-width: 420px;
   padding: 20px;
+  box-sizing: border-box;
 }
 .auth-brand {
   text-align: center;
   margin-bottom: 30px;
 }
-.auth-logo { width: 60px; height: 60px; margin-bottom: 10px; animation: pulseLogo 3s infinite alternate; }
+.auth-logo { width: 60px; height: 60px; margin-bottom: 10px; animation: pulseLogo 3s infinite alternate; will-change: transform; }
 .auth-brand h1 { font-family: 'Outfit', sans-serif; font-size: 32px; font-weight: 800; margin: 0; letter-spacing: 1px; color: var(--primary-dark); }
 .auth-brand .muted { color: var(--text-muted); font-size: 14px; margin-top: 5px; }
 
@@ -142,7 +152,7 @@ $page_title = 'Sign Up';
   padding: 14px 16px;
   border-radius: 12px;
   font-size: 15px;
-  transition: all 0.3s;
+  transition: border-color 0.2s, box-shadow 0.2s;
   box-sizing: border-box;
 }
 .auth-input:focus {
@@ -163,12 +173,15 @@ $page_title = 'Sign Up';
   font-weight: 700;
   cursor: pointer;
   margin-top: 10px;
-  transition: all 0.3s;
+  transition: transform 0.2s, box-shadow 0.2s;
   box-shadow: 0 8px 20px rgba(22, 160, 133, 0.3);
 }
 .auth-btn:hover {
   transform: translateY(-2px);
   box-shadow: 0 12px 25px rgba(22, 160, 133, 0.4);
+}
+.auth-btn:active {
+  transform: translateY(0);
 }
 .auth-footer-text {
   text-align: center;
@@ -183,6 +196,17 @@ $page_title = 'Sign Up';
   transition: color 0.2s;
 }
 .auth-footer-text a:hover { color: var(--primary-dark); }
+
+/* Mobile Responsiveness */
+@media (max-width: 480px) {
+  .auth-card {
+    padding: 24px;
+    border-radius: 20px;
+  }
+  .auth-card h2 { font-size: 22px; }
+  .auth-brand h1 { font-size: 28px; }
+  .auth-logo { width: 50px; height: 50px; }
+}
 
 @keyframes floatBG { 100% { transform: translateY(30px) scale(1.05); } }
 @keyframes pulseLogo { 100% { transform: scale(1.05); filter: drop-shadow(0 4px 10px rgba(22, 160, 133, 0.3)); } }
