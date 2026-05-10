@@ -66,6 +66,14 @@ include 'header.php';
   <div class="card big-card">
     <div class="page-header" style="display: flex; align-items: center; gap: 24px;">
       <!-- User Avatar with Border Feature -->
+      <?php
+        $borderColorMap = [
+            'border_gold' => '#FFD700',
+            'border_neon' => '#00ffff',
+            'border_fire' => '#ff4500'
+        ];
+        $avatarColor = isset($user['avatar_border']) ? ($borderColorMap[$user['avatar_border']] ?? null) : null;
+      ?>
       <div style="
         width: 80px; 
         height: 80px; 
@@ -78,9 +86,9 @@ include 'header.php';
         font-family: 'Outfit', sans-serif;
         font-weight: 800; 
         color: var(--primary);
-        <?php if (!empty($user['avatar_border'])): ?>
-            border: 4px solid <?php echo e($user['avatar_border']); ?>;
-            box-shadow: 0 0 20px <?php echo e($user['avatar_border']); ?>;
+        <?php if ($avatarColor): ?>
+            border: 4px solid <?php echo $avatarColor; ?>;
+            box-shadow: 0 0 20px <?php echo $avatarColor; ?>;
         <?php else: ?>
             border: 2px solid var(--border);
             box-shadow: 0 4px 10px rgba(0,0,0,0.05);

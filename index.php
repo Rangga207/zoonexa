@@ -610,6 +610,14 @@ main.page {
     <span class="pulse-label"><i class="fas fa-bolt"></i> Live</span>
     <div class="pulse-ticker">
       <?php foreach ($pulseData as $p): ?>
+        <?php
+          $pulseColorMap = [
+              'border_gold' => '#FFD700',
+              'border_neon' => '#00ffff',
+              'border_fire' => '#ff4500'
+          ];
+          $pColor = isset($p['avatar_border']) ? ($pulseColorMap[$p['avatar_border']] ?? null) : null;
+        ?>
         <span style="margin-right:40px; display: inline-flex; align-items: center; gap: 8px;">
           <!-- Mini Avatar -->
           <div style="
@@ -625,9 +633,9 @@ main.page {
             font-weight: 800; 
             color: var(--primary);
             flex-shrink: 0;
-            <?php if (!empty($p['avatar_border'])): ?>
-                border: 2px solid <?php echo e($p['avatar_border']); ?>;
-                box-shadow: 0 0 10px <?php echo e($p['avatar_border']); ?>;
+            <?php if ($pColor): ?>
+                border: 2px solid <?php echo $pColor; ?>;
+                box-shadow: 0 0 10px <?php echo $pColor; ?>;
             <?php else: ?>
                 border: 1px solid var(--border);
             <?php endif; ?>
