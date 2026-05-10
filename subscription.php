@@ -14,27 +14,45 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
     if ($subscribed) {
         $error = 'You already have an active subscription.';
     } else {
-        $paymentCode = isset($_POST['payment_code']) ? trim($_POST['payment_code']) : '';
-        
-        if (empty($paymentCode)) {
-            $error = 'Please enter your payment reference code.';
+        if (!isset($_FILES['payment_proof']) || $_FILES['payment_proof']['error'] !== UPLOAD_ERR_OK) {
+            $error = 'Please upload a screenshot of your payment receipt.';
         } else {
-            // Generate unique order ID
-            $orderId = 'zoonexa-' . $user_id . '-' . time();
-            $paymentMethod = 'qris_manual: ' . e($paymentCode);
+            $uploadDir = __DIR__ . '/uploads/receipts/';
+            if (!is_dir($uploadDir)) {
+                mkdir($uploadDir, 0777, true);
+            }
             
-            // Simpan pending subscription ke DB
-            $stmt = $mysqli->prepare("
-                INSERT INTO subscriptions (user_id, midtrans_order_id, status, amount_paid, payment_method)
-                VALUES (?, ?, 'pending', 10000, ?)
-            ");
-            $stmt->bind_param('iss', $user_id, $orderId, $paymentMethod);
-            $stmt->execute();
-            $stmt->close();
+            $fileInfo = pathinfo($_FILES['payment_proof']['name']);
+            $ext = strtolower($fileInfo['extension']);
+            $allowed = ['jpg', 'jpeg', 'png', 'pdf'];
+            
+            if (!in_array($ext, $allowed)) {
+                $error = 'Invalid file type. Only JPG, PNG, and PDF are allowed.';
+            } else {
+                // Generate unique order ID
+                $orderId = 'zoonexa-' . $user_id . '-' . time();
+                $newFilename = $orderId . '.' . $ext;
+                $targetPath = $uploadDir . $newFilename;
+                
+                if (move_uploaded_file($_FILES['payment_proof']['tmp_name'], $targetPath)) {
+                    $paymentMethod = 'qris_manual: uploads/receipts/' . $newFilename;
+                    
+                    // Simpan pending subscription ke DB
+                    $stmt = $mysqli->prepare("
+                        INSERT INTO subscriptions (user_id, midtrans_order_id, status, amount_paid, payment_method)
+                        VALUES (?, ?, 'pending', 10000, ?)
+                    ");
+                    $stmt->bind_param('iss', $user_id, $orderId, $paymentMethod);
+                    $stmt->execute();
+                    $stmt->close();
 
-            // Redirect ke pending page
-            header('Location: subscription-pending.php?order_id=' . $orderId);
-            exit;
+                    // Redirect ke pending page
+                    header('Location: subscription-pending.php?order_id=' . $orderId);
+                    exit;
+                } else {
+                    $error = 'Failed to upload receipt. Please try again.';
+                }
+            }
         }
     }
 }
@@ -78,7 +96,29 @@ include 'header.php';
   border-radius: 20px;
   box-shadow: 0 10px 40px rgba(0,0,0,0.4), 0 0 0 2px rgba(255,255,255,0.05);
   overflow: hidden;
+  cursor: zoom-in;
+  transition: transform 0.2s;
 }
+.qris-box:hover { transform: scale(1.02); }
+.qris-box::after {
+  content: '\f00e'; /* fa-search-plus */
+  font-family: 'Font Awesome 5 Free';
+  font-weight: 900;
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.6);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 40px;
+  opacity: 0;
+  transition: opacity 0.2s;
+  z-index: 5;
+  border-radius: 20px;
+}
+.qris-box:hover::after { opacity: 1; }
+
 .qris-image {
   width: 100%;
   height: 100%;
@@ -131,13 +171,97 @@ include 'header.php';
   transition: all 0.3s;
   box-sizing: border-box;
 }
-.payment-input:focus {
+
+/* File Upload Zone */
+.upload-zone {
+  width: 100%;
+  border: 2px dashed rgba(255,255,255,0.2);
+  border-radius: 16px;
+  padding: 30px 20px;
+  text-align: center;
+  background: rgba(255,255,255,0.02);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  box-sizing: border-box;
+}
+.upload-zone:hover, .upload-zone.dragover {
   border-color: var(--primary);
-  background: rgba(255,255,255,0.06);
-  box-shadow: 0 0 0 4px rgba(58,134,255,0.15);
+  background: rgba(58,134,255,0.05);
+}
+.upload-icon {
+  font-size: 32px;
+  color: var(--primary);
+  margin-bottom: 12px;
+}
+.upload-text {
+  font-size: 15px;
+  font-weight: 600;
+  color: white;
+  margin-bottom: 6px;
+}
+.upload-sub {
+  font-size: 13px;
+  color: var(--text-muted);
+}
+.upload-zone input[type="file"] {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  cursor: pointer;
+}
+.preview-text {
+  display: none;
+  font-size: 14px;
+  color: var(--success);
+  font-weight: 600;
+  margin-top: 10px;
 }
 
-/* Epic Confirm Button */
+/* Modal for QR Zoom */
+.qr-modal {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.85);
+  backdrop-filter: blur(8px);
+  z-index: 9999;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+.qr-modal.show { display: flex; animation: fadeIn 0.3s; }
+.qr-modal-content {
+  background: white;
+  padding: 20px;
+  border-radius: 24px;
+  max-width: 500px;
+  width: 100%;
+  position: relative;
+  animation: scaleUp 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+.qr-modal-img {
+  width: 100%;
+  height: auto;
+  border-radius: 12px;
+  display: block;
+}
+.qr-modal-close {
+  position: absolute;
+  top: -40px;
+  right: 0;
+  background: none;
+  border: none;
+  color: white;
+  font-size: 30px;
+  cursor: pointer;
+}
+
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes scaleUp { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+@keyframes spin-glow { 100% { transform: rotate(360deg); } }
 .btn-confirm-payment {
   width: 100%;
   margin-top: 24px;
@@ -281,7 +405,7 @@ include 'header.php';
       <p class="muted">Scan the QRIS code below using your preferred E-Wallet or Mobile Banking app.</p>
       
       <div class="qris-container">
-        <div class="qris-box">
+        <div class="qris-box" onclick="document.getElementById('qrModal').classList.add('show')">
           <div class="qris-glow"></div>
           <img src="qris.png" alt="QRIS Zoonexa" class="qris-image">
           <div class="qris-scan-line"></div>
@@ -294,13 +418,18 @@ include 'header.php';
         </div>
       <?php endif; ?>
 
-      <form method="POST" class="payment-form">
+      <form method="POST" class="payment-form" enctype="multipart/form-data">
         <input type="hidden" name="action" value="submit_payment">
         
         <div class="input-group">
-          <label for="payment_code">Payment Reference Code</label>
-          <input type="text" id="payment_code" name="payment_code" class="payment-input" placeholder="e.g. OVO-987654321" required>
-          <span class="muted small" style="display:block; margin-top:8px;"><i class="fas fa-info-circle"></i> Enter the transaction ID from your receipt to help us verify faster.</span>
+          <label>Upload Payment Receipt</label>
+          <div class="upload-zone" id="dropZone">
+            <input type="file" name="payment_proof" id="payment_proof" accept="image/*,application/pdf" required onchange="handleFileSelect(this)">
+            <div class="upload-icon"><i class="fas fa-cloud-upload-alt"></i></div>
+            <div class="upload-text">Tap to Upload Screenshot</div>
+            <div class="upload-sub">Supports JPG, PNG, PDF</div>
+            <div class="preview-text" id="filePreview"><i class="fas fa-check-circle"></i> <span></span> attached</div>
+          </div>
         </div>
 
         <button type="submit" class="btn-confirm-payment">
@@ -341,6 +470,37 @@ include 'header.php';
     </div>
   </div>
 </section>
+
+<!-- QR Zoom Modal -->
+<div class="qr-modal" id="qrModal" onclick="this.classList.remove('show')">
+  <div class="qr-modal-content" onclick="event.stopPropagation()">
+    <button class="qr-modal-close" onclick="document.getElementById('qrModal').classList.remove('show')">&times;</button>
+    <img src="qris.png" alt="QRIS Zoom" class="qr-modal-img">
+    <p style="text-align: center; color: var(--text-muted); font-weight: 600; margin-top: 15px;">Scan this QR Code to Pay</p>
+  </div>
+</div>
+
+<script>
+function handleFileSelect(input) {
+  const preview = document.getElementById('filePreview');
+  const previewSpan = preview.querySelector('span');
+  
+  if (input.files && input.files[0]) {
+    previewSpan.textContent = input.files[0].name;
+    preview.style.display = 'block';
+    
+    // Hide default texts
+    document.querySelector('.upload-icon').style.display = 'none';
+    document.querySelector('.upload-text').style.display = 'none';
+    document.querySelector('.upload-sub').style.display = 'none';
+  } else {
+    preview.style.display = 'none';
+    document.querySelector('.upload-icon').style.display = 'block';
+    document.querySelector('.upload-text').style.display = 'block';
+    document.querySelector('.upload-sub').style.display = 'block';
+  }
+}
+</script>
 
 <!-- End Subscription Page -->
 
