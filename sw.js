@@ -1,4 +1,4 @@
-const CACHE_NAME = 'zoonexa-v3';
+const CACHE_NAME = 'zoonexa-v4';
 const ASSETS_TO_CACHE = [
   './style.css',
   './script.js',
