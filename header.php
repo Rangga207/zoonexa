@@ -22,8 +22,11 @@
 
   <!-- PWA Manifest & Meta -->
   <link rel="manifest" href="manifest.json">
-  <meta name="theme-color" content="#0d1117">
+  <meta name="theme-color" content="#16a085">
   <link rel="apple-touch-icon" href="zoonexa-logo.png">
+  
+  <!-- Smooth Page Transitions (Modern Browsers) -->
+  <meta name="view-transition" content="same-origin" />
 
   <!-- Scripts -->
   <script defer src="script.js?v=<?php echo time(); ?>"></script>
