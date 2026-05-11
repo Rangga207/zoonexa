@@ -565,7 +565,7 @@ main.page {
     </div>
     <?php if ($canSpin): ?>
     <button class="spin-pill" onclick="openDailyBox()" id="btn-open-box">
-      <i class="fas fa-gift"></i> Daily Box Ready!lal
+      <i class="fas fa-gift"></i> Daily Box Ready!
     </button>
     <?php endif; ?>
   </div>
