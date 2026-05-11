@@ -189,4 +189,17 @@
   </nav>
 </div>
 
+<script>
+window.addEventListener('scroll', function() {
+    const header = document.querySelector('.site-header');
+    if (header) {
+        if (window.scrollY > 20) {
+            header.classList.add('scrolled');
+        } else {
+            header.classList.remove('scrolled');
+        }
+    }
+});
+</script>
+
 <main class="page"><?php // Content starts here ?>
