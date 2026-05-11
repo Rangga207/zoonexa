@@ -258,23 +258,16 @@ a:hover {
     color: var(--primary);
 }
 
-/* Active nav link indicator */
+/* Active nav link indicator — bold pill style */
 .main-nav>a.nav-active {
-    background: rgba(22, 160, 133, 0.12);
-    color: var(--primary);
-    font-weight: 600;
-    position: relative;
-}
-.main-nav>a.nav-active::after {
-    content: '';
-    position: absolute;
-    bottom: -2px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 18px;
-    height: 3px;
     background: var(--primary);
-    border-radius: 2px;
+    color: #fff !important;
+    font-weight: 700;
+    position: relative;
+    box-shadow: 0 0 14px rgba(22, 160, 133, 0.45);
+}
+.main-nav>a.nav-active i {
+    color: #fff !important;
 }
 
 /* Nav CTA (Get Started) */
