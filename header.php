@@ -190,3 +190,22 @@
 </div>
 
 <main class="page"><?php // Content starts here ?>
+<script>
+(function() {
+  const current = window.location.pathname.split('/').pop() || 'index.php';
+  // Desktop nav
+  document.querySelectorAll('.main-nav a').forEach(link => {
+    const href = link.getAttribute('href');
+    if (href && href.split('?')[0] === current) {
+      link.classList.add('nav-active');
+    }
+  });
+  // Mobile drawer nav
+  document.querySelectorAll('.mobile-nav a').forEach(link => {
+    const href = link.getAttribute('href');
+    if (href && href.split('?')[0] === current) {
+      link.classList.add('mobile-nav-active');
+    }
+  });
+})();
+</script>

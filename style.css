@@ -258,6 +258,25 @@ a:hover {
     color: var(--primary);
 }
 
+/* Active nav link indicator */
+.main-nav>a.nav-active {
+    background: rgba(22, 160, 133, 0.12);
+    color: var(--primary);
+    font-weight: 600;
+    position: relative;
+}
+.main-nav>a.nav-active::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 18px;
+    height: 3px;
+    background: var(--primary);
+    border-radius: 2px;
+}
+
 /* Nav CTA (Get Started) */
 .nav-cta {
     background: var(--primary);
@@ -606,6 +625,17 @@ a:hover {
 .mobile-nav-item:active {
     background: var(--bg-secondary);
     color: var(--primary);
+}
+
+/* Active mobile nav link */
+.mobile-nav-active {
+    background: rgba(22, 160, 133, 0.12) !important;
+    color: var(--primary) !important;
+    font-weight: 700 !important;
+    border-left: 3px solid var(--primary);
+}
+.mobile-nav-active i {
+    color: var(--primary) !important;
 }
 
 .mobile-nav-item i {
