@@ -8,9 +8,9 @@
     --secondary: #3498db;
     --accent: #2ecc71;
 
-    --bg-main: #ffffff;
-    --bg-secondary: #f8f9fa;
-    --bg-card: #ffffff;
+    --bg-main: #f4f6f9;
+    --bg-secondary: rgba(255, 255, 255, 0.5);
+    --bg-card: rgba(255, 255, 255, 0.75);
     --text-dark: #2c3e50;
     --text-body: #34495e;
     --text-muted: #7f8c8d;
@@ -31,9 +31,9 @@
    DARK MODE VARIABLES
    ============================================= */
 :root[data-theme="dark"] {
-    --bg-main: #1a1a1a;
-    --bg-secondary: #2d2d2d;
-    --bg-card: #242424;
+    --bg-main: #121212;
+    --bg-secondary: rgba(45, 45, 45, 0.5);
+    --bg-card: rgba(36, 36, 36, 0.75);
     --text-dark: #ecf0f1;
     --text-body: #bdc3c7;
     --text-muted: #95a5a6;
@@ -75,13 +75,13 @@ body::before {
     z-index: -1;
     background: radial-gradient(circle at 50% 50%, var(--primary-light) 0%, transparent 40%),
                 radial-gradient(circle at 80% 20%, var(--secondary) 0%, transparent 30%);
-    opacity: 0.04;
+    opacity: 0.15;
     animation: auroraRotate 25s linear infinite;
     pointer-events: none;
 }
 
 :root[data-theme="dark"] body::before {
-    opacity: 0.12;
+    opacity: 0.25;
 }
 
 @keyframes auroraRotate {
@@ -162,7 +162,7 @@ a:hover {
     max-width: 1200px;
     margin: 0 auto;
     padding: 40px 24px;
-    background: var(--bg-main);
+    background: transparent;
 }
 
 .page-section {
@@ -716,6 +716,8 @@ body.auth-page.theme-dark .auth-card {
    ============================================= */
 .card {
     background: var(--bg-card);
+    -webkit-backdrop-filter: blur(16px);
+    backdrop-filter: blur(16px);
     border-radius: 14px;
     padding: 28px;
     box-shadow: var(--shadow-md);
