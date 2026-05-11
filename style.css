@@ -173,7 +173,7 @@ a:hover {
    HEADER & NAVIGATION
    ============================================= */
 .site-header {
-    background: rgba(255, 255, 255, 0.75);
+    background: rgba(255, 255, 255, 0.85);
     -webkit-backdrop-filter: blur(16px) saturate(180%);
     backdrop-filter: blur(16px) saturate(180%);
     border-bottom: 1px solid var(--border);
@@ -184,16 +184,9 @@ a:hover {
     transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
 }
 
+/* Floating pill — mobile only, applied via JS .scrolled class */
 .site-header.scrolled {
-    top: 16px;
-    width: calc(100% - 32px);
-    max-width: 1200px;
-    margin-left: auto;
-    margin-right: auto;
-    border-radius: 24px;
-    border: 1px solid var(--border);
-    background: var(--bg-card);
-    box-shadow: var(--shadow-md);
+    /* desktop: no change, stays full-width sticky */
 }
 
 .header-inner {
@@ -1890,6 +1883,46 @@ button:disabled {
    ============================================= */
 @media (max-width: 768px) {
 
+    /* ── Header: FIXED di mobile ── */
+    body {
+        padding-top: 56px;
+    }
+
+    .site-header {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        width: 100%;
+        /* Normal header: ada background glass dari awal */
+        background: rgba(255, 255, 255, 0.92);
+        -webkit-backdrop-filter: blur(16px) saturate(180%);
+        backdrop-filter: blur(16px) saturate(180%);
+        border-bottom: 1px solid var(--border);
+        box-shadow: var(--shadow-sm);
+        border-radius: 0;
+        transition: top 0.4s cubic-bezier(0.25, 0.8, 0.25, 1),
+                    left 0.4s cubic-bezier(0.25, 0.8, 0.25, 1),
+                    right 0.4s cubic-bezier(0.25, 0.8, 0.25, 1),
+                    border-radius 0.4s cubic-bezier(0.25, 0.8, 0.25, 1),
+                    box-shadow 0.4s ease,
+                    border-color 0.4s ease;
+    }
+
+    /* Floating pill — aktif saat scroll > 20px */
+    .site-header.scrolled {
+        top: 10px;
+        left: 12px;
+        right: 12px;
+        width: auto;
+        border-radius: 20px;
+        border: 1px solid var(--border);
+        background: var(--bg-card);
+        -webkit-backdrop-filter: blur(20px) saturate(200%);
+        backdrop-filter: blur(20px) saturate(200%);
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.14), 0 2px 8px rgba(0, 0, 0, 0.08);
+    }
+
     /* Hide desktop nav, show hamburger */
     .main-nav {
         display: none;
@@ -1901,45 +1934,52 @@ button:disabled {
 
     .header-inner {
         padding: 10px 16px;
+        height: 56px;
     }
 
-    /* Fixed mobile overlay stacking for full screen drawer */
+    /* Mobile drawer */
     .mobile-drawer {
         width: 85vw;
         max-width: 320px;
         box-shadow: -10px 0 40px rgba(0,0,0,0.15);
     }
-    
+
     :root[data-theme="dark"] .mobile-drawer {
         box-shadow: -10px 0 40px rgba(0,0,0,0.5);
     }
 
+    /* Layout */
     .page {
-        padding: 24px 16px;
+        padding: 20px 16px;
         min-height: calc(100vh - 120px);
     }
 
+    /* Hero section */
     .home-hero {
-        padding: 36px 16px;
-        margin: -24px -16px 0;
-        border-radius: 0 0 20px 20px;
+        padding: 32px 16px;
+        margin: -20px -16px 0;
+        border-radius: 0 0 24px 24px;
     }
 
     .home-hero-text h1 {
-        font-size: 26px;
+        font-size: 24px;
     }
 
     .hero-actions {
         gap: 10px;
+        flex-direction: column;
     }
 
     .hero-btn {
-        padding: 10px 18px;
+        padding: 12px 20px;
         font-size: 14px;
+        width: 100%;
+        justify-content: center;
     }
 
+    /* Grid adjustments */
     .form-grid {
-        grid-template-columns: repeat(2, 1fr);
+        grid-template-columns: 1fr;
     }
 
     .features-grid {
@@ -1954,20 +1994,84 @@ button:disabled {
         grid-template-columns: repeat(2, 1fr);
     }
 
+    /* Cards */
     .card {
-        padding: 20px;
+        padding: 18px;
+        border-radius: 14px;
     }
 
     .big-card {
         min-height: auto;
     }
 
-    /* Page header stack on mobile */
+    /* Page header */
     .page-header {
         flex-direction: column;
         align-items: flex-start;
-        gap: 8px;
+        gap: 10px;
         padding-bottom: 14px;
+    }
+
+    /* Tables: make scrollable horizontally */
+    .table-wrapper {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        border-radius: 10px;
+    }
+
+    table {
+        min-width: 520px;
+    }
+
+    /* Stat rows */
+    .banner-box-row {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+    }
+
+    /* Stack summary list */
+    .summary-list {
+        grid-template-columns: 1fr;
+    }
+
+    /* Targets grid 2 cols on tablet */
+    .targets-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    /* Sub active banner */
+    .sub-active-banner {
+        flex-direction: column;
+        text-align: center;
+        gap: 12px;
+    }
+
+    /* Buttons full width on mobile */
+    .btn {
+        width: 100%;
+        justify-content: center;
+        text-align: center;
+    }
+
+    /* Leaderboard table responsive */
+    .leaderboard-rank {
+        font-size: 13px;
+    }
+
+    /* Chatbot layout */
+    .chat-container {
+        height: calc(100vh - 140px);
+        border-radius: 14px;
+    }
+
+    /* Tips grid */
+    .tips-grid {
+        grid-template-columns: 1fr;
+    }
+
+    /* FAQ */
+    .faq-list {
+        gap: 10px;
     }
 }
 
@@ -2067,12 +2171,25 @@ button:disabled {
    RESPONSIVE — 480px (small phones)
    ============================================= */
 @media (max-width: 480px) {
+
+    /* Tighter floating pill on small screen */
+    body {
+        padding-top: 52px;
+    }
+
+    .site-header.scrolled {
+        top: 8px;
+        left: 8px;
+        right: 8px;
+        border-radius: 16px;
+    }
+
     .page {
         padding: 16px 12px;
     }
 
     .card {
-        padding: 16px;
+        padding: 14px;
         border-radius: 12px;
     }
 
@@ -2081,11 +2198,15 @@ button:disabled {
     }
 
     h1 {
-        font-size: 22px;
+        font-size: 20px;
     }
 
     h2 {
-        font-size: 18px;
+        font-size: 17px;
+    }
+
+    h3 {
+        font-size: 15px;
     }
 
     .sub-details {
@@ -2093,16 +2214,56 @@ button:disabled {
     }
 
     .home-hero {
-        padding: 24px 12px;
+        padding: 20px 12px;
         margin: -16px -12px 0;
     }
 
     .banner-box-row {
-        grid-template-columns: 1fr;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 8px;
     }
 
     .banner-pill {
+        padding: 6px 10px;
+        font-size: 12px;
+    }
+
+    .targets-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .milestone-summary {
+        grid-template-columns: 1fr;
+    }
+
+    .header-inner {
         padding: 8px 12px;
+        height: 52px;
+    }
+
+    .logo-image {
+        max-height: 32px;
+    }
+
+    /* Form inputs bigger tap target */
+    input, select, textarea {
+        font-size: 16px; /* prevents iOS zoom on focus */
+        padding: 12px 14px;
+    }
+
+    .btn-pay {
+        font-size: 15px;
+        padding: 13px;
+    }
+
+    /* Milestone cards */
+    .milestone-card {
+        padding: 14px;
+    }
+
+    /* Hide nav labels on very small screens */
+    .nav-label {
+        display: none;
     }
 }
 
@@ -2124,7 +2285,30 @@ button:disabled {
 }
 
 :root[data-theme="dark"] .site-header {
-    background: rgba(36, 36, 36, 0.75);
+    /* Desktop dark: selalu ada glass background */
+    background: rgba(18, 18, 18, 0.88);
+    -webkit-backdrop-filter: blur(16px) saturate(180%);
+    backdrop-filter: blur(16px) saturate(180%);
+}
+
+@media (max-width: 768px) {
+    :root[data-theme="dark"] .site-header {
+        /* Mobile dark: normal background dari awal */
+        background: rgba(18, 18, 18, 0.92);
+        -webkit-backdrop-filter: blur(16px) saturate(180%);
+        backdrop-filter: blur(16px) saturate(180%);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+        border-radius: 0;
+    }
+
+    :root[data-theme="dark"] .site-header.scrolled {
+        /* Floating pill di dark mode */
+        background: rgba(22, 22, 22, 0.94);
+        -webkit-backdrop-filter: blur(20px) saturate(200%);
+        backdrop-filter: blur(20px) saturate(200%);
+        border-color: rgba(255, 255, 255, 0.09);
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5), 0 2px 8px rgba(0, 0, 0, 0.3);
+    }
 }
 
 :root[data-theme="dark"] .text-dark,
