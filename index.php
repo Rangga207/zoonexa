@@ -438,78 +438,147 @@ main.page {
 .log-metrics { display: flex; gap: 16px; font-size: 13px; color: var(--text-muted); }
 .log-metrics span { display: flex; align-items: center; gap: 6px; }
 
-/* Social pulse ticker */
+/* Social pulse — live feed card */
 .pulse-bar {
   background: var(--bg-card);
   border: 1px solid var(--border);
-  border-radius: 12px;
-  padding: 10px 18px;
+  border-radius: 16px;
+  padding: 0;
+  margin-top: 20px;
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+}
+.pulse-top {
   display: flex;
   align-items: center;
-  gap: 12px;
-  margin-top: 20px;
+  justify-content: space-between;
+  padding: 10px 16px;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg-secondary);
 }
 .pulse-label {
   color: var(--warning);
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 700;
   display: flex;
   align-items: center;
-  gap: 5px;
-  flex-shrink: 0;
-  z-index: 2;
+  gap: 6px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
-.pulse-ticker-wrap {
-  flex-grow: 1;
-  overflow: hidden;
-  position: relative;
-  /* Fade out text on the left and right edges so it doesn't clip harshly */
-  -webkit-mask-image: linear-gradient(to right, transparent 0%, black 10%, black 90%, transparent 100%);
-  mask-image: linear-gradient(to right, transparent 0%, black 10%, black 90%, transparent 100%);
+.pulse-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--warning);
+  animation: blink 1.2s ease-in-out infinite;
 }
-.pulse-ticker {
-  display: inline-block;
-  white-space: nowrap;
-  animation: ticker 30s linear forwards; /* Run exactly once as requested */
-  font-size: 13px;
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.2; }
+}
+.pulse-count {
+  font-size: 11px;
   color: var(--text-muted);
+}
+.pulse-body {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 16px;
+}
+.pulse-feed {
+  flex: 1;
+  min-height: 36px;
+  position: relative;
+  overflow: hidden;
+}
+.pulse-item {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  opacity: 0;
+  transition: opacity 0.6s ease;
+  pointer-events: none;
+}
+.pulse-item.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+.pulse-avatar {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: var(--bg-main);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-family: 'Outfit', sans-serif;
+  font-weight: 800;
+  color: var(--primary);
+  flex-shrink: 0;
+  border: 1px solid var(--border);
+}
+.pulse-text {
+  font-size: 13px;
+  color: var(--text-body);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.pulse-text strong {
+  color: var(--text-dark);
+  font-weight: 600;
+}
+.pulse-text .pulse-time {
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-left: 6px;
 }
 .pulse-chat-form {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 7px;
   flex-shrink: 0;
 }
 .pulse-chat-input {
   background: var(--bg-main);
   border: 1px solid var(--border);
   border-radius: 20px;
-  padding: 6px 12px;
+  padding: 7px 14px;
   font-size: 12px;
   color: var(--text-body);
-  width: 150px;
-  transition: width 0.3s;
+  width: 140px;
+  transition: width 0.3s, border-color 0.2s;
+  font-family: inherit;
+  outline: none;
 }
 .pulse-chat-input:focus {
-  width: 200px;
-  outline: none;
+  width: 190px;
   border-color: var(--primary);
+  box-shadow: 0 0 0 2px rgba(22,160,133,0.12);
 }
 .pulse-chat-btn {
-  background: var(--primary);
+  background: linear-gradient(135deg, var(--primary), var(--primary-light));
   color: white;
   border: none;
   border-radius: 50%;
-  width: 28px;
-  height: 28px;
+  width: 30px;
+  height: 30px;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+  flex-shrink: 0;
 }
-@keyframes ticker {
-  0% { transform: translateX(100vw); }
-  100% { transform: translateX(-100%); }
+.pulse-chat-btn:hover {
+  transform: scale(1.1);
+  box-shadow: 0 4px 10px rgba(22,160,133,0.3);
 }
 @keyframes glow-gold {
   from { box-shadow: 0 0 10px 2px rgba(255,215,0,0.4); }
@@ -695,59 +764,54 @@ main.page {
 
   </div><!-- /dash-grid -->
 
-  <!-- ── Social Pulse Ticker & Global Chat ── -->
+  <!-- ── Social Pulse Live Feed & Global Chat ── -->
   <?php if (!empty($pulseData)): ?>
   <div class="pulse-bar">
-    <span class="pulse-label"><i class="fas fa-bolt"></i> Live</span>
-    <div class="pulse-ticker-wrap">
-      <div class="pulse-ticker">
-        <?php foreach ($pulseData as $p): ?>
-          <?php
-            $pulseColorMap = [
-                'border_gold' => '#FFD700',
-                'border_neon' => '#00ffff',
-                'border_fire' => '#ff4500'
-            ];
-            $pColor = isset($p['avatar_border']) ? ($pulseColorMap[$p['avatar_border']] ?? null) : null;
-          ?>
-          <span style="margin-right:40px; display: inline-flex; align-items: center; gap: 8px;">
-            <!-- Mini Avatar -->
-            <div style="
-              width: 24px; 
-              height: 24px; 
-              border-radius: 50%; 
-              background: var(--bg-main); 
-              display: inline-flex; 
-              align-items: center; 
-              justify-content: center; 
-              font-size: 12px; 
-              font-family: 'Outfit', sans-serif;
-              font-weight: 800; 
-              color: var(--primary);
-              flex-shrink: 0;
-              <?php if ($pColor): ?>
-                  border: 2px solid <?php echo $pColor; ?>;
-                  box-shadow: 0 0 10px <?php echo $pColor; ?>;
-              <?php else: ?>
-                  border: 1px solid var(--border);
-              <?php endif; ?>
-            ">
-              <?php echo strtoupper(substr($p['username'], 0, 1)); ?>
-            </div>
-            
-            <strong style="color:var(--text-body);"><?php echo e($p['username']); ?></strong>
-            <span><?php echo $p['action']; ?></span>
-          </span>
+    <!-- Top bar -->
+    <div class="pulse-top">
+      <span class="pulse-label">
+        <span class="pulse-dot"></span>
+        Live Activity
+      </span>
+      <span class="pulse-count">Latest from the community</span>
+    </div>
+    <!-- Feed + Chat -->
+    <div class="pulse-body">
+      <!-- Rotating single-item feed -->
+      <div class="pulse-feed" id="pulseFeed">
+        <?php foreach ($pulseData as $i => $p):
+          $pulseColorMap = ['border_gold' => '#FFD700', 'border_neon' => '#00ffff', 'border_fire' => '#ff4500'];
+          $pColor = isset($p['avatar_border']) ? ($pulseColorMap[$p['avatar_border']] ?? null) : null;
+          $avatarStyle = $pColor ? "border: 2px solid {$pColor}; box-shadow: 0 0 8px {$pColor};" : 'border: 1px solid var(--border);';
+          $timeAgo = '';
+          try {
+            $ts = strtotime($p['time']);
+            $diff = time() - $ts;
+            if ($diff < 60) $timeAgo = 'just now';
+            elseif ($diff < 3600) $timeAgo = floor($diff/60).'m ago';
+            elseif ($diff < 86400) $timeAgo = floor($diff/3600).'h ago';
+            else $timeAgo = date('M j', $ts);
+          } catch(Exception $e) {}
+        ?>
+        <div class="pulse-item<?php echo $i === 0 ? ' active' : ''; ?>" data-index="<?php echo $i; ?>">
+          <div class="pulse-avatar" style="<?php echo $avatarStyle; ?>">
+            <?php echo strtoupper(substr($p['username'], 0, 1)); ?>
+          </div>
+          <div class="pulse-text">
+            <strong><?php echo e($p['username']); ?></strong>
+            <?php echo htmlspecialchars(strip_tags($p['action'])); ?>
+            <?php if ($timeAgo): ?><span class="pulse-time">&middot; <?php echo $timeAgo; ?></span><?php endif; ?>
+          </div>
+        </div>
         <?php endforeach; ?>
       </div>
+      <!-- Global Chat Form -->
+      <form method="POST" class="pulse-chat-form" id="global-chat-form">
+        <input type="hidden" name="action" value="send_chat">
+        <input type="text" name="chat_message" class="pulse-chat-input" placeholder="Say something..." maxlength="100" required autocomplete="off">
+        <button type="submit" class="pulse-chat-btn" title="Send"><i class="fas fa-paper-plane" style="font-size:12px;"></i></button>
+      </form>
     </div>
-    
-    <!-- Global Chat Form -->
-    <form method="POST" class="pulse-chat-form" id="global-chat-form">
-      <input type="hidden" name="action" value="send_chat">
-      <input type="text" name="chat_message" class="pulse-chat-input" placeholder="Global chat..." maxlength="100" required autocomplete="off">
-      <button type="submit" class="pulse-chat-btn"><i class="fas fa-paper-plane" style="font-size: 12px;"></i></button>
-    </form>
   </div>
   <?php endif; ?>
 
@@ -847,60 +911,83 @@ function openDailyBox() {
     });
 }
 
-// Global Chat AJAX Submission
+// ── Pulse Feed: rotate one item at a time ──
+(function() {
+  const feed = document.getElementById('pulseFeed');
+  if (!feed) return;
+  const items = feed.querySelectorAll('.pulse-item');
+  if (items.length <= 1) return;
+  let current = 0;
+  setInterval(() => {
+    items[current].classList.remove('active');
+    current = (current + 1) % items.length;
+    items[current].classList.add('active');
+  }, 4000);
+})();
+
+// ── Global Chat AJAX ──
 document.getElementById('global-chat-form')?.addEventListener('submit', function(e) {
   e.preventDefault();
   const input = this.querySelector('input[name="chat_message"]');
-  const btn = this.querySelector('button[type="submit"]');
-  const msg = input.value.trim();
+  const btn   = this.querySelector('button[type="submit"]');
+  const msg   = input.value.trim();
   if (!msg) return;
   input.value = '';
-  
-  // Show loading state
-  const originalBtnHtml = btn.innerHTML;
-  btn.innerHTML = '<i class="fas fa-spinner fa-spin" style="font-size: 12px;"></i>';
+
+  const orig = btn.innerHTML;
+  btn.innerHTML = '<i class="fas fa-spinner fa-spin" style="font-size:12px;"></i>';
   btn.disabled = true;
-  
-  const formData = new FormData();
-  formData.append('action', 'send_chat');
-  formData.append('chat_message', msg);
-  formData.append('ajax', '1');
-  
-  fetch('index.php', { method: 'POST', body: formData })
+
+  const fd = new FormData();
+  fd.append('action', 'send_chat');
+  fd.append('chat_message', msg);
+  fd.append('ajax', '1');
+
+  fetch('index.php', { method: 'POST', body: fd })
     .then(r => r.json())
     .then(data => {
       if (data.success) {
-        // Show success state on button
-        btn.innerHTML = '<i class="fas fa-check" style="font-size: 12px;"></i>';
+        btn.innerHTML = '<i class="fas fa-check" style="font-size:12px;"></i>';
         btn.style.background = 'var(--success)';
-        btn.style.color = 'white';
-        
-        const ticker = document.querySelector('.pulse-ticker');
-        if (ticker) {
-          const newSpan = document.createElement('span');
-          newSpan.style.cssText = 'margin-right:40px; display:inline-flex; align-items:center; gap:8px; opacity: 0; transition: opacity 0.5s ease;';
-          newSpan.innerHTML = `
-            <div style="width: 24px; height: 24px; border-radius: 50%; background: var(--bg-main); display: inline-flex; align-items: center; justify-content: center; font-size: 12px; font-family: 'Outfit', sans-serif; font-weight: 800; color: var(--primary); flex-shrink: 0; border: 1px solid var(--border);">
-              ${data.username.substring(0, 1).toUpperCase()}
-            </div>
-            <strong style="color:var(--text-body);">${data.username}</strong> <span>says: "${data.message}" 💬</span>`;
-          
-          ticker.appendChild(newSpan);
-          // Fade it in smoothly
-          setTimeout(() => newSpan.style.opacity = '1', 50);
+
+        // Inject new item at top of feed and show it immediately
+        const feed = document.getElementById('pulseFeed');
+        if (feed) {
+          // Remove active from all
+          feed.querySelectorAll('.pulse-item').forEach(el => el.classList.remove('active'));
+
+          const newItem = document.createElement('div');
+          newItem.className = 'pulse-item active';
+          newItem.innerHTML = `
+            <div class="pulse-avatar">${data.username.substring(0,1).toUpperCase()}</div>
+            <div class="pulse-text">
+              <strong>${data.username}</strong>
+              says: &ldquo;${data.message}&rdquo;
+              <span class="pulse-time">&middot; just now</span>
+            </div>`;
+          feed.prepend(newItem);
+
+          // Re-init rotation with new total
+          let cur = 0;
+          const all = feed.querySelectorAll('.pulse-item');
+          clearInterval(window._pulseTimer);
+          if (all.length > 1) {
+            window._pulseTimer = setInterval(() => {
+              all[cur].classList.remove('active');
+              cur = (cur + 1) % all.length;
+              all[cur].classList.add('active');
+            }, 4000);
+          }
         }
-        
-        // Reset button after 2 seconds
+
         setTimeout(() => {
-          btn.innerHTML = originalBtnHtml;
+          btn.innerHTML = orig;
           btn.style.background = '';
-          btn.style.color = '';
           btn.disabled = false;
         }, 2000);
       }
-    }).catch(err => {
-      console.error(err);
-      btn.innerHTML = originalBtnHtml;
+    }).catch(() => {
+      btn.innerHTML = orig;
       btn.disabled = false;
     });
 });
