@@ -851,9 +851,15 @@ function openDailyBox() {
 document.getElementById('global-chat-form')?.addEventListener('submit', function(e) {
   e.preventDefault();
   const input = this.querySelector('input[name="chat_message"]');
+  const btn = this.querySelector('button[type="submit"]');
   const msg = input.value.trim();
   if (!msg) return;
   input.value = '';
+  
+  // Show loading state
+  const originalBtnHtml = btn.innerHTML;
+  btn.innerHTML = '<i class="fas fa-spinner fa-spin" style="font-size: 12px;"></i>';
+  btn.disabled = true;
   
   const formData = new FormData();
   formData.append('action', 'send_chat');
@@ -864,19 +870,39 @@ document.getElementById('global-chat-form')?.addEventListener('submit', function
     .then(r => r.json())
     .then(data => {
       if (data.success) {
+        // Show success state on button
+        btn.innerHTML = '<i class="fas fa-check" style="font-size: 12px;"></i>';
+        btn.style.background = 'var(--success)';
+        btn.style.color = 'white';
+        
         const ticker = document.querySelector('.pulse-ticker');
         if (ticker) {
           const newSpan = document.createElement('span');
-          newSpan.style.cssText = 'margin-right:40px; display:inline-flex; align-items:center; gap:8px;';
-          newSpan.innerHTML = `<strong style="color:var(--text-body);">${data.username}</strong> <span>says: "${data.message}" 💬</span>`;
+          newSpan.style.cssText = 'margin-right:40px; display:inline-flex; align-items:center; gap:8px; opacity: 0; transition: opacity 0.5s ease;';
+          newSpan.innerHTML = `
+            <div style="width: 24px; height: 24px; border-radius: 50%; background: var(--bg-main); display: inline-flex; align-items: center; justify-content: center; font-size: 12px; font-family: 'Outfit', sans-serif; font-weight: 800; color: var(--primary); flex-shrink: 0; border: 1px solid var(--border);">
+              ${data.username.substring(0, 1).toUpperCase()}
+            </div>
+            <strong style="color:var(--text-body);">${data.username}</strong> <span>says: "${data.message}" 💬</span>`;
+          
           ticker.appendChild(newSpan);
-          // Restart animation so the new message scrolls by
-          ticker.style.animation = 'none';
-          ticker.offsetHeight; // trigger reflow
-          ticker.style.animation = null;
+          // Fade it in smoothly
+          setTimeout(() => newSpan.style.opacity = '1', 50);
         }
+        
+        // Reset button after 2 seconds
+        setTimeout(() => {
+          btn.innerHTML = originalBtnHtml;
+          btn.style.background = '';
+          btn.style.color = '';
+          btn.disabled = false;
+        }, 2000);
       }
-    }).catch(err => console.error(err));
+    }).catch(err => {
+      console.error(err);
+      btn.innerHTML = originalBtnHtml;
+      btn.disabled = false;
+    });
 });
 </script>
 
