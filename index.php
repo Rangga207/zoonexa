@@ -64,10 +64,9 @@ $modeMotivations = [
 ];
 $motivationText = $modeMotivations[$healthMode] ?? "Ready to conquer your health goals today?";
 
-// ── FETCH PULSE DATA ──
-$pulseData = [];
+// Fetch latest global chat message only
+$latestChat = null;
 try {
-    // Ensure global_chats table exists (fails silently if no CREATE privileges)
     $mysqli->query("CREATE TABLE IF NOT EXISTS global_chats (
         id INT AUTO_INCREMENT PRIMARY KEY,
         user_id INT NOT NULL,
@@ -84,51 +83,31 @@ try {
             $stmt->bind_param("is", $user_id, $chat_msg);
             $stmt->execute();
             $stmt->close();
-            
             if (isset($_POST['ajax'])) {
                 echo json_encode(['success' => true, 'username' => $username, 'message' => htmlspecialchars($chat_msg)]);
                 exit;
             }
-            
             header("Location: index.php");
             exit;
         }
     }
 
-    // Fetch Social Pulse (Latest 10 activities including chats)
+    // Only fetch the single latest chat message
     $stmt = $mysqli->prepare("
-        (SELECT u.username, u.avatar_border, 'logged their health data! 🔥' as action, hl.created_at as time
-         FROM health_logs hl JOIN users u ON hl.user_id = u.id)
-        UNION
-        (SELECT u.username, u.avatar_border, CONCAT('reached the ', m.title, ' milestone! 🏆') as action, um.achieved_at as time
-         FROM user_milestones um JOIN users u ON um.user_id = u.id JOIN milestones m ON um.milestone_id = m.id)
-        UNION
-        (SELECT u.username, u.avatar_border, CONCAT('says: \"', gc.message, '\" 💬') as action, gc.created_at as time
-         FROM global_chats gc JOIN users u ON gc.user_id = u.id)
-        ORDER BY time DESC LIMIT 10
+        SELECT u.username, u.avatar_border, gc.message, gc.created_at
+        FROM global_chats gc
+        JOIN users u ON gc.user_id = u.id
+        ORDER BY gc.created_at DESC
+        LIMIT 1
     ");
     if ($stmt) {
         $stmt->execute();
         $res = $stmt->get_result();
-        $pulseData = $res ? $res->fetch_all(MYSQLI_ASSOC) : [];
+        $latestChat = $res ? $res->fetch_assoc() : null;
         $stmt->close();
     }
 } catch (Exception $e) {
-    // Fallback if global_chats fails
-    $stmt = $mysqli->prepare("
-        (SELECT u.username, u.avatar_border, 'logged their health data! 🔥' as action, hl.created_at as time
-         FROM health_logs hl JOIN users u ON hl.user_id = u.id)
-        UNION
-        (SELECT u.username, u.avatar_border, CONCAT('reached the ', m.title, ' milestone! 🏆') as action, um.achieved_at as time
-         FROM user_milestones um JOIN users u ON um.user_id = u.id JOIN milestones m ON um.milestone_id = m.id)
-        ORDER BY time DESC LIMIT 5
-    ");
-    if ($stmt) {
-        $stmt->execute();
-        $res = $stmt->get_result();
-        $pulseData = $res ? $res->fetch_all(MYSQLI_ASSOC) : [];
-        $stmt->close();
-    }
+    $latestChat = null;
 }
 
 // Handle Spin Action via AJAX
@@ -438,157 +417,166 @@ main.page {
 .log-metrics { display: flex; gap: 16px; font-size: 13px; color: var(--text-muted); }
 .log-metrics span { display: flex; align-items: center; gap: 6px; }
 
-/* Social pulse — live feed card */
-.pulse-bar {
+/* ── Global Chat Bar ── */
+.gchat-wrap {
+  margin-top: 20px;
+  display: flex;
+  align-items: stretch;
+  gap: 0;
   background: var(--bg-card);
   border: 1px solid var(--border);
-  border-radius: 16px;
-  padding: 0;
-  margin-top: 20px;
+  border-radius: 18px;
   overflow: hidden;
-  box-shadow: var(--shadow-sm);
+  box-shadow: var(--shadow-md);
+  transition: box-shadow 0.2s;
 }
-.pulse-top {
+.gchat-wrap:hover {
+  box-shadow: 0 8px 30px rgba(22,160,133,0.1), var(--shadow-md);
+}
+/* Colored left accent */
+.gchat-accent {
+  width: 4px;
+  background: linear-gradient(180deg, var(--primary) 0%, var(--primary-light) 100%);
+  flex-shrink: 0;
+}
+.gchat-inner {
+  flex: 1;
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  padding: 10px 16px;
-  border-bottom: 1px solid var(--border);
-  background: var(--bg-secondary);
+  gap: 14px;
+  padding: 14px 16px;
+  min-width: 0;
 }
-.pulse-label {
-  color: var(--warning);
-  font-size: 11px;
-  font-weight: 700;
+.gchat-badge {
   display: flex;
   align-items: center;
   gap: 6px;
+  font-size: 10px;
+  font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.5px;
+  color: var(--primary);
+  background: rgba(22,160,133,0.1);
+  border-radius: 20px;
+  padding: 3px 10px;
+  flex-shrink: 0;
 }
-.pulse-dot {
-  width: 7px;
-  height: 7px;
+.gchat-badge-dot {
+  width: 6px;
+  height: 6px;
   border-radius: 50%;
-  background: var(--warning);
-  animation: blink 1.2s ease-in-out infinite;
+  background: var(--primary);
+  animation: pulse-dot 1.4s ease-in-out infinite;
 }
-@keyframes blink {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.2; }
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%       { opacity: 0.3; transform: scale(0.7); }
 }
-.pulse-count {
-  font-size: 11px;
-  color: var(--text-muted);
-}
-.pulse-body {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  padding: 12px 16px;
-}
-.pulse-feed {
-  flex: 1;
-  overflow: hidden;
-  display: flex;
-  align-items: center;
-  min-height: 36px;
-}
-.pulse-item {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  width: 100%;
-  animation: fadeSlide 0.45s ease;
-}
-@keyframes fadeSlide {
-  from { opacity: 0; transform: translateY(6px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-.pulse-avatar {
-  width: 30px;
-  height: 30px;
+.gchat-avatar {
+  width: 34px;
+  height: 34px;
   border-radius: 50%;
-  background: var(--bg-main);
+  background: var(--bg-secondary);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 13px;
+  font-size: 14px;
   font-family: 'Outfit', sans-serif;
   font-weight: 800;
   color: var(--primary);
   flex-shrink: 0;
-  border: 1px solid var(--border);
+  border: 2px solid var(--border);
+  transition: box-shadow 0.2s;
 }
-.pulse-text {
+.gchat-content {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+.gchat-user {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text-dark);
+  white-space: nowrap;
+}
+.gchat-msg {
   font-size: 13px;
   color: var(--text-body);
-  white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  white-space: nowrap;
+  flex: 1;
+  min-width: 0;
 }
-.pulse-text strong {
-  color: var(--text-dark);
-  font-weight: 600;
-}
-.pulse-text .pulse-time {
+.gchat-msg::before { content: '\201C'; color: var(--text-muted); margin-right: 1px; }
+.gchat-msg::after  { content: '\201D'; color: var(--text-muted); margin-left: 1px; }
+.gchat-time {
   font-size: 11px;
   color: var(--text-muted);
-  margin-left: 6px;
-}
-.pulse-chat-form {
-  display: flex;
-  align-items: center;
-  gap: 7px;
+  white-space: nowrap;
   flex-shrink: 0;
 }
-.pulse-chat-input {
-  background: var(--bg-main);
+.gchat-sep {
+  width: 1px;
+  background: var(--border);
+  margin: 8px 0;
+  flex-shrink: 0;
+}
+.gchat-form {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  padding: 10px 14px;
+}
+.gchat-input {
+  background: var(--bg-secondary);
   border: 1px solid var(--border);
-  border-radius: 20px;
-  padding: 7px 14px;
-  font-size: 12px;
+  border-radius: 20px 0 0 20px;
+  padding: 8px 14px;
+  font-size: 13px;
   color: var(--text-body);
-  width: 140px;
-  transition: width 0.3s, border-color 0.2s;
-  font-family: inherit;
+  width: 180px;
   outline: none;
+  transition: border-color 0.2s, width 0.3s;
+  font-family: inherit;
+  border-right: none;
 }
-.pulse-chat-input:focus {
-  width: 190px;
+.gchat-input:focus {
   border-color: var(--primary);
-  box-shadow: 0 0 0 2px rgba(22,160,133,0.12);
+  width: 220px;
 }
-.pulse-chat-btn {
+.gchat-send {
   background: linear-gradient(135deg, var(--primary), var(--primary-light));
   color: white;
   border: none;
-  border-radius: 50%;
-  width: 30px;
-  height: 30px;
+  border-radius: 0 20px 20px 0;
+  padding: 8px 14px;
+  font-size: 12px;
+  cursor: pointer;
   display: flex;
   align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: transform 0.2s, box-shadow 0.2s;
-  flex-shrink: 0;
+  gap: 5px;
+  font-family: inherit;
+  font-weight: 600;
+  transition: opacity 0.2s;
+  white-space: nowrap;
 }
-.pulse-chat-btn:hover {
-  transform: scale(1.1);
-  box-shadow: 0 4px 10px rgba(22,160,133,0.3);
-}
-@keyframes glow-gold {
-  from { box-shadow: 0 0 10px 2px rgba(255,215,0,0.4); }
-  to { box-shadow: 0 0 20px 8px rgba(255,215,0,0.7); }
-}
-@keyframes glow-neon {
-  from { box-shadow: 0 0 10px 2px rgba(0,255,255,0.4); }
-  to { box-shadow: 0 0 20px 8px rgba(0,255,255,0.8); }
-}
-@keyframes glow-fire {
-  from { box-shadow: 0 0 10px 2px rgba(255,69,0,0.5); border-color: #ff4500; }
-  to { box-shadow: 0 0 25px 10px rgba(255,0,0,0.8); border-color: #ff0000; }
+.gchat-send:hover { opacity: 0.88; }
+.gchat-send:disabled { opacity: 0.5; cursor: not-allowed; }
+
+/* When no message yet — just show the input form */
+.gchat-wrap.empty-state .gchat-accent { background: var(--border); }
+.gchat-wrap.empty-state .gchat-badge { color: var(--text-muted); background: var(--bg-secondary); }
+.gchat-wrap.empty-state .gchat-badge-dot { background: var(--text-muted); animation: none; }
+
+@media (max-width: 600px) {
+  .gchat-input { width: 120px; }
+  .gchat-input:focus { width: 150px; }
+  .gchat-send span { display: none; }
+  .gchat-inner { gap: 10px; padding: 12px 12px; }
 }
 
 /* ── Responsive Breakpoints ── */
@@ -762,94 +750,56 @@ main.page {
 
   </div><!-- /dash-grid -->
 
-  <!-- Social Pulse Live Feed & Global Chat -->
-  <?php if (!empty($pulseData)): ?>
+  <!-- Global Chat Bar -->
   <?php
-    // Build JSON array for JS rotation
     $pulseColorMap = ['border_gold' => '#FFD700', 'border_neon' => '#00ffff', 'border_fire' => '#ff4500'];
-    $pulseJson = [];
-    foreach ($pulseData as $p) {
-      $pColor = isset($p['avatar_border']) ? ($pulseColorMap[$p['avatar_border']] ?? null) : null;
-      $ts = strtotime($p['time'] ?? '');
-      $diff = $ts ? (time() - $ts) : 0;
-      if ($diff < 60)        $timeAgo = 'just now';
-      elseif ($diff < 3600)  $timeAgo = floor($diff/60).'m ago';
-      elseif ($diff < 86400) $timeAgo = floor($diff/3600).'h ago';
-      else                   $timeAgo = date('M j', $ts);
-      $pulseJson[] = [
-        'initial'   => strtoupper(substr($p['username'], 0, 1)),
-        'username'  => htmlspecialchars($p['username'], ENT_QUOTES),
-        'action'    => htmlspecialchars(strip_tags($p['action']), ENT_QUOTES),
-        'timeAgo'   => $timeAgo,
-        'color'     => $pColor,
-      ];
+    $chatColor = ($latestChat && isset($latestChat['avatar_border']))
+                 ? ($pulseColorMap[$latestChat['avatar_border']] ?? null) : null;
+    if ($latestChat) {
+      $ts    = strtotime($latestChat['created_at']);
+      $diff  = time() - $ts;
+      if ($diff < 60)        $chatTimeAgo = 'just now';
+      elseif ($diff < 3600)  $chatTimeAgo = floor($diff/60).'m ago';
+      elseif ($diff < 86400) $chatTimeAgo = floor($diff/3600).'h ago';
+      else                   $chatTimeAgo = date('M j', $ts);
     }
   ?>
-  <div class="pulse-bar">
-    <div class="pulse-top">
-      <span class="pulse-label">
-        <span class="pulse-dot"></span>
-        Live Activity
-      </span>
-      <span class="pulse-count">Latest from the community</span>
-    </div>
-    <div class="pulse-body">
-      <!-- Single rotating element -->
-      <div class="pulse-feed">
-        <div class="pulse-item" id="pulseDisplay">
-          <!-- filled by JS -->
-        </div>
+  <div class="gchat-wrap<?php echo $latestChat ? '' : ' empty-state'; ?>" id="gchatWrap">
+    <div class="gchat-accent" id="gchatAccent"></div>
+    <div class="gchat-inner" id="gchatInner">
+      <div class="gchat-badge">
+        <div class="gchat-badge-dot"></div>
+        Live Chat
       </div>
-      <!-- Global Chat Form -->
-      <form method="POST" class="pulse-chat-form" id="global-chat-form">
-        <input type="hidden" name="action" value="send_chat">
-        <input type="text" name="chat_message" class="pulse-chat-input" placeholder="Say something..." maxlength="100" required autocomplete="off">
-        <button type="submit" class="pulse-chat-btn" title="Send"><i class="fas fa-paper-plane" style="font-size:12px;"></i></button>
-      </form>
+      <?php if ($latestChat): ?>
+      <?php
+        $avatarBorder = $chatColor ? "border: 2px solid {$chatColor}; box-shadow: 0 0 10px {$chatColor};" : '';
+      ?>
+      <div class="gchat-avatar" id="gchatAvatar" style="<?php echo $avatarBorder; ?>">
+        <?php echo strtoupper(substr($latestChat['username'], 0, 1)); ?>
+      </div>
+      <div class="gchat-content" id="gchatContent">
+        <span class="gchat-user" id="gchatUser"><?php echo e($latestChat['username']); ?></span>
+        <span class="gchat-msg" id="gchatMsg"><?php echo htmlspecialchars(strip_tags($latestChat['message'])); ?></span>
+        <span class="gchat-time" id="gchatTime"><?php echo $chatTimeAgo; ?></span>
+      </div>
+      <?php else: ?>
+      <div class="gchat-content">
+        <span class="gchat-user" style="color: var(--text-muted); font-weight: 400;">No messages yet. Be the first!</span>
+      </div>
+      <?php endif; ?>
     </div>
+    <div class="gchat-sep"></div>
+    <form method="POST" class="gchat-form" id="global-chat-form">
+      <input type="hidden" name="action" value="send_chat">
+      <input type="text" name="chat_message" class="gchat-input" id="gchatInput"
+             placeholder="Say something..." maxlength="100" required autocomplete="off">
+      <button type="submit" class="gchat-send" id="gchatSendBtn">
+        <i class="fas fa-paper-plane"></i>
+        <span>Send</span>
+      </button>
+    </form>
   </div>
-  <script>
-  (function(){
-    const el = document.getElementById('pulseDisplay');
-    if (!el) return;
-    const data = <?php echo json_encode($pulseJson); ?>;
-    if (!data.length) return;
-    let idx = 0;
-
-    function renderItem(item) {
-      const borderStyle = item.color
-        ? `border: 2px solid ${item.color}; box-shadow: 0 0 8px ${item.color};`
-        : 'border: 1px solid var(--border);';
-      el.innerHTML = `
-        <div class="pulse-avatar" style="${borderStyle}">${item.initial}</div>
-        <div class="pulse-text">
-          <strong>${item.username}</strong>
-          ${item.action}
-          <span class="pulse-time">&middot; ${item.timeAgo}</span>
-        </div>`;
-      // Restart the CSS animation by re-appending the element
-      el.style.animation = 'none';
-      void el.offsetWidth; // reflow
-      el.style.animation = '';
-    }
-
-    renderItem(data[0]);
-    if (data.length > 1) {
-      setInterval(() => {
-        idx = (idx + 1) % data.length;
-        renderItem(data[idx]);
-      }, 4000);
-    }
-
-    // Expose for chat injection
-    window.pulsePrepend = function(item) {
-      data.unshift(item);
-      idx = 0;
-      renderItem(data[0]);
-    };
-  })();
-  </script>
-  <?php endif; ?>
 
 </div><!-- /dash-wrap -->
 
@@ -957,7 +907,7 @@ document.getElementById('global-chat-form')?.addEventListener('submit', function
   input.value = '';
 
   const orig = btn.innerHTML;
-  btn.innerHTML = '<i class="fas fa-spinner fa-spin" style="font-size:12px;"></i>';
+  btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
   btn.disabled = true;
 
   const fd = new FormData();
@@ -969,17 +919,31 @@ document.getElementById('global-chat-form')?.addEventListener('submit', function
     .then(r => r.json())
     .then(data => {
       if (data.success) {
-        btn.innerHTML = '<i class="fas fa-check" style="font-size:12px;"></i>';
+        btn.innerHTML = '<i class="fas fa-check"></i> <span>Sent!</span>';
         btn.style.background = 'var(--success)';
-        if (typeof window.pulsePrepend === 'function') {
-          window.pulsePrepend({
-            initial:  data.username.substring(0,1).toUpperCase(),
-            username: data.username,
-            action:   'says: \u201c' + data.message + '\u201d',
-            timeAgo:  'just now',
-            color:    null
-          });
+
+        // Update the live chat display with the new message
+        const wrap    = document.getElementById('gchatWrap');
+        const inner   = document.getElementById('gchatInner');
+        const initial = data.username.substring(0,1).toUpperCase();
+
+        if (wrap && inner) {
+          // Remove empty-state if present
+          wrap.classList.remove('empty-state');
+          // Rebuild inner content
+          inner.innerHTML = `
+            <div class="gchat-badge">
+              <div class="gchat-badge-dot"></div>
+              Live Chat
+            </div>
+            <div class="gchat-avatar">${initial}</div>
+            <div class="gchat-content">
+              <span class="gchat-user">${data.username}</span>
+              <span class="gchat-msg">${data.message}</span>
+              <span class="gchat-time">just now</span>
+            </div>`;
         }
+
         setTimeout(() => {
           btn.innerHTML = orig;
           btn.style.background = '';
