@@ -694,18 +694,6 @@ body.auth-page.theme-dark {
     color: var(--primary);
 }
 
-.auth-card {
-    background: white;
-    border-radius: 16px;
-    padding: 32px;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-}
-
-body.auth-page.theme-dark .auth-card {
-    background: #242424;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
-}
-
 .auth-footer-text {
     margin-top: 18px;
     text-align: center;

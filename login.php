@@ -60,13 +60,13 @@ $page_title = 'Login';
 </head>
 <body class="auth-page">
 <style>
-/* Premium Light Theme Auth UI */
+/* Premium Light/Dark Theme Auth UI */
 .auth-page {
   min-height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #f0f4f8;
+  background: var(--bg-main);
   position: relative;
   overflow: hidden;
   font-family: 'Inter', sans-serif;
@@ -78,7 +78,7 @@ $page_title = 'Login';
   inset: 0;
   z-index: 0;
   overflow: hidden;
-  background: linear-gradient(135deg, #e0f2f1 0%, #f0f4f8 100%);
+  background: var(--bg-main);
 }
 .shape {
   position: absolute;
@@ -116,10 +116,10 @@ $page_title = 'Login';
 .auth-brand .muted { color: var(--text-muted); font-size: 14px; margin-top: 5px; }
 
 .auth-card {
-  background: rgba(255, 255, 255, 0.85);
+  background: var(--bg-card);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.5);
+  border: 1px solid var(--border);
   border-radius: 24px;
   padding: 40px;
   box-shadow: 0 20px 40px rgba(0,0,0,0.08), 0 1px 3px rgba(0,0,0,0.05);
