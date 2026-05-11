@@ -1,6 +1,5 @@
 <?php
 // header.php - Site Header & Navigation
-$currentPage = basename($_SERVER['PHP_SELF']);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -60,14 +59,14 @@ $currentPage = basename($_SERVER['PHP_SELF']);
     <!-- Desktop Navigation -->
     <nav class="main-nav" id="mainNav">
       <?php if (isLoggedIn()): ?>
-        <a href="index.php" class="<?php echo $currentPage==='index.php'?'nav-active':''; ?>"><i class="fas fa-home"></i> <span class="nav-label">Home</span></a>
-        <a href="health_log.php" class="<?php echo $currentPage==='health_log.php'?'nav-active':''; ?>"><i class="fas fa-clipboard-list"></i> <span class="nav-label">Daily Log</span></a>
-        <a href="health_modes.php" class="<?php echo $currentPage==='health_modes.php'?'nav-active':''; ?>"><i class="fas fa-bullseye"></i> <span class="nav-label">Modes</span></a>
-        <a href="tips.php" class="<?php echo $currentPage==='tips.php'?'nav-active':''; ?>"><i class="fas fa-lightbulb"></i> <span class="nav-label">Tips</span></a>
-        <a href="leaderboard.php" class="<?php echo $currentPage==='leaderboard.php'?'nav-active':''; ?>"><i class="fas fa-list-ol"></i> <span class="nav-label">Rank</span></a>
-        <a href="merchandise.php" class="<?php echo $currentPage==='merchandise.php'?'nav-active':''; ?>"><i class="fas fa-shopping-bag"></i> <span class="nav-label">Merch</span></a>
-        <a href="milestone.php" class="nav-milestone <?php echo $currentPage==='milestone.php'?'nav-active':''; ?>"><i class="fas fa-trophy"></i> <span class="nav-label">Milestones</span></a>
-        <a href="chatbot.php" class="nav-chatbot <?php echo $currentPage==='chatbot.php'?'nav-active':''; ?>">
+        <a href="index.php"><i class="fas fa-home"></i> <span class="nav-label">Home</span></a>
+        <a href="health_log.php"><i class="fas fa-clipboard-list"></i> <span class="nav-label">Daily Log</span></a>
+        <a href="health_modes.php"><i class="fas fa-bullseye"></i> <span class="nav-label">Modes</span></a>
+        <a href="tips.php"><i class="fas fa-lightbulb"></i> <span class="nav-label">Tips</span></a>
+        <a href="leaderboard.php"><i class="fas fa-list-ol"></i> <span class="nav-label">Rank</span></a>
+        <a href="merchandise.php"><i class="fas fa-shopping-bag"></i> <span class="nav-label">Merch</span></a>
+        <a href="milestone.php" class="nav-milestone"><i class="fas fa-trophy"></i> <span class="nav-label">Milestones</span></a>
+        <a href="chatbot.php" class="nav-chatbot">
           <i class="fas fa-robot"></i> <span class="nav-label">AI Assistant</span>
         </a>
         <div class="nav-user">
@@ -140,28 +139,28 @@ $currentPage = basename($_SERVER['PHP_SELF']);
 
   <nav class="mobile-nav">
     <?php if (isLoggedIn()): ?>
-      <a href="index.php" class="mobile-nav-item <?php echo $currentPage==='index.php'?'mobile-nav-active':''; ?>">
+      <a href="index.php" class="mobile-nav-item">
         <i class="fas fa-home"></i> Home
       </a>
-      <a href="health_log.php" class="mobile-nav-item <?php echo $currentPage==='health_log.php'?'mobile-nav-active':''; ?>">
+      <a href="health_log.php" class="mobile-nav-item">
         <i class="fas fa-clipboard-list"></i> Daily Log
       </a>
-      <a href="health_modes.php" class="mobile-nav-item <?php echo $currentPage==='health_modes.php'?'mobile-nav-active':''; ?>">
+      <a href="health_modes.php" class="mobile-nav-item">
         <i class="fas fa-bullseye"></i> Health Modes
       </a>
-      <a href="tips.php" class="mobile-nav-item <?php echo $currentPage==='tips.php'?'mobile-nav-active':''; ?>">
+      <a href="tips.php" class="mobile-nav-item">
         <i class="fas fa-lightbulb"></i> Tips
       </a>
-      <a href="leaderboard.php" class="mobile-nav-item <?php echo $currentPage==='leaderboard.php'?'mobile-nav-active':''; ?>">
+      <a href="leaderboard.php" class="mobile-nav-item">
         <i class="fas fa-list-ol"></i> Leaderboard
       </a>
-      <a href="merchandise.php" class="mobile-nav-item <?php echo $currentPage==='merchandise.php'?'mobile-nav-active':''; ?>">
+      <a href="merchandise.php" class="mobile-nav-item">
         <i class="fas fa-shopping-bag"></i> Merch
       </a>
-      <a href="milestone.php" class="mobile-nav-item <?php echo $currentPage==='milestone.php'?'mobile-nav-active':''; ?>">
+      <a href="milestone.php" class="mobile-nav-item">
         <i class="fas fa-trophy"></i> Milestones
       </a>
-      <a href="chatbot.php" class="mobile-nav-item mobile-nav-ai <?php echo $currentPage==='chatbot.php'?'mobile-nav-active':''; ?>">
+      <a href="chatbot.php" class="mobile-nav-item mobile-nav-ai">
         <i class="fas fa-robot"></i> AI Assistant
       </a>
       <div class="mobile-nav-divider"></div>

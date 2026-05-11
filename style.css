@@ -258,17 +258,6 @@ a:hover {
     color: var(--primary);
 }
 
-/* Active nav link indicator — bold pill style */
-.main-nav>a.nav-active {
-    background: var(--primary);
-    color: #fff !important;
-    font-weight: 700;
-    position: relative;
-    box-shadow: 0 0 14px rgba(22, 160, 133, 0.45);
-}
-.main-nav>a.nav-active i {
-    color: #fff !important;
-}
 
 /* Nav CTA (Get Started) */
 .nav-cta {
@@ -618,17 +607,6 @@ a:hover {
 .mobile-nav-item:active {
     background: var(--bg-secondary);
     color: var(--primary);
-}
-
-/* Active mobile nav link */
-.mobile-nav-active {
-    background: rgba(22, 160, 133, 0.12) !important;
-    color: var(--primary) !important;
-    font-weight: 700 !important;
-    border-left: 3px solid var(--primary);
-}
-.mobile-nav-active i {
-    color: var(--primary) !important;
 }
 
 .mobile-nav-item i {
