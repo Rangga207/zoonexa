@@ -96,6 +96,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
     }
 }
 
+// Handle Promote to Admin
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'promote_admin') {
+    $uid = (int)$_POST['user_id'];
+    if ($uid !== $_SESSION['user_id']) {
+        $stmt = $mysqli->prepare("UPDATE users SET role = 'admin' WHERE id = ?");
+        $stmt->bind_param("i", $uid);
+        $stmt->execute();
+        $stmt->close();
+        $success = "User successfully promoted to Admin.";
+    }
+}
+
 // Fetch Stats
 $res = $mysqli->query("SELECT COUNT(id) AS total FROM users");
 $totalUsers = $res->fetch_assoc()['total'];
@@ -446,6 +458,16 @@ include 'header.php';
               <td style="padding: 12px; color: var(--text-body); font-size: 14px;"><?php echo date('M d, Y', strtotime($u['created_at'])); ?></td>
               <td style="padding: 12px; text-align: right;">
                 <?php if ($u['id'] !== $_SESSION['user_id']): ?>
+                    <?php if ($u['role'] !== 'admin'): ?>
+                    <?php $uname = e($u['username']); ?>
+                    <form method="POST" style="margin: 0; display: inline-block;">
+                      <input type="hidden" name="action" value="promote_admin">
+                      <input type="hidden" name="user_id" value="<?php echo e($u['id']); ?>">
+                      <button type="submit" style="padding: 6px 12px; font-size: 12px; margin: 0 4px 0 0; background: rgba(22,160,133,0.1); border: 1px solid var(--primary); color: var(--primary); border-radius: 6px; cursor: pointer; font-weight: 600;" onclick="return confirm('Promote <?php echo $uname; ?> to Admin?');">
+                        <i class="fas fa-user-shield"></i> Make Admin
+                      </button>
+                    </form>
+                    <?php endif; ?>
                     <form method="POST" style="margin: 0; display: inline-block;">
                       <input type="hidden" name="action" value="delete_user">
                       <input type="hidden" name="user_id" value="<?php echo e($u['id']); ?>">
