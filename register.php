@@ -158,8 +158,17 @@ $page_title = 'Sign Up';
 .auth-input:focus {
   outline: none;
   border-color: var(--primary);
-  background: #fff;
+  background: var(--bg-card);
   box-shadow: 0 0 0 4px rgba(22, 160, 133, 0.15);
+}
+/* Override browser autofill background */
+.auth-input:-webkit-autofill,
+.auth-input:-webkit-autofill:hover, 
+.auth-input:-webkit-autofill:focus, 
+.auth-input:-webkit-autofill:active {
+  -webkit-box-shadow: 0 0 0 30px var(--bg-main) inset !important;
+  -webkit-text-fill-color: var(--text-dark) !important;
+  transition: background-color 5000s ease-in-out 0s;
 }
 
 .auth-btn {
