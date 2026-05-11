@@ -312,19 +312,75 @@ include 'header.php';
 
 <style>
 /* ============================================= */
-/* CHATBOT PAGE STYLES */
+/* CHATBOT PAGE STYLES - MOBILE FIRST */
 /* ============================================= */
+
+/* Tab switcher (mobile only) */
+.chat-tabs {
+    display: none;
+    gap: 0;
+    background: var(--bg-secondary);
+    border-radius: 12px;
+    padding: 4px;
+    margin-bottom: 14px;
+    border: 1px solid var(--border);
+}
+.chat-tab-btn {
+    flex: 1;
+    padding: 9px 12px;
+    border: none;
+    border-radius: 9px;
+    background: transparent;
+    color: var(--text-muted);
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: inherit;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+}
+.chat-tab-btn.active {
+    background: linear-gradient(135deg, var(--primary), var(--primary-light));
+    color: white;
+    box-shadow: 0 2px 8px rgba(22,160,133,0.3);
+}
+
+/* Stats row */
+.chatbot-stats-row {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 16px;
+}
+.stat-pill {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 10px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    flex: 1;
+    min-width: 80px;
+}
+.stat-pill .pill-label { font-size: 10px; color: var(--text-muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.4px; }
+.stat-pill .pill-value { font-size: 18px; font-weight: 700; color: var(--primary); line-height: 1.2; }
+
+/* Main layout */
 .chatbot-layout {
     display: grid;
     grid-template-columns: 2fr 1fr;
     gap: 20px;
-    margin-top: 20px;
+    align-items: start;
 }
 
 .chat-container {
     display: flex;
     flex-direction: column;
-    height: 600px;
+    height: 560px;
     background: var(--bg-card);
     border-radius: 14px;
     border: 1px solid var(--border);
@@ -335,14 +391,14 @@ include 'header.php';
 .chat-messages {
     flex: 1;
     overflow-y: auto;
-    padding: 20px;
+    padding: 16px;
     display: flex;
     flex-direction: column;
-    gap: 16px;
+    gap: 14px;
     background: var(--bg-secondary);
 }
 
-.chat-messages::-webkit-scrollbar { width: 6px; }
+.chat-messages::-webkit-scrollbar { width: 5px; }
 .chat-messages::-webkit-scrollbar-track { background: transparent; }
 .chat-messages::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
 
@@ -367,14 +423,7 @@ include 'header.php';
     font-size: 12px;
     gap: 12px;
 }
-
-.message-header strong {
-    color: var(--text-dark);
-    display: flex;
-    align-items: center;
-    gap: 5px;
-}
-
+.message-header strong { color: var(--text-dark); display: flex; align-items: center; gap: 5px; }
 .message-time { color: var(--text-muted); font-size: 11px; white-space: nowrap; }
 
 .message-content {
@@ -384,13 +433,11 @@ include 'header.php';
     font-size: 14px;
     word-wrap: break-word;
 }
-
 .user-message .message-content {
     background: linear-gradient(135deg, var(--primary), var(--primary-light));
     color: white;
     border-bottom-right-radius: 4px;
 }
-
 .bot-message .message-content {
     background: var(--bg-card);
     color: var(--text-body);
@@ -398,18 +445,16 @@ include 'header.php';
     border-bottom-left-radius: 4px;
     box-shadow: var(--shadow-sm);
 }
-
 .bot-message .message-content strong { color: var(--primary); }
 .user-message .message-content strong { color: white; }
 
 .chat-input-area {
     display: flex;
-    gap: 10px;
-    padding: 14px 16px;
+    gap: 8px;
+    padding: 12px 14px;
     background: var(--bg-card);
     border-top: 1px solid var(--border);
 }
-
 .chat-input-area input {
     flex: 1;
     padding: 11px 14px;
@@ -419,15 +464,13 @@ include 'header.php';
     color: var(--text-body);
     font-size: 14px;
 }
-
 .chat-input-area input:focus {
     outline: none;
     border-color: var(--primary);
     box-shadow: 0 0 0 3px rgba(22,160,133,0.1);
 }
-
 .chat-input-area button {
-    padding: 11px 20px;
+    padding: 11px 18px;
     border-radius: 10px;
     border: none;
     background: linear-gradient(135deg, var(--primary), var(--primary-light));
@@ -441,134 +484,111 @@ include 'header.php';
     transition: all 0.2s;
     white-space: nowrap;
 }
-
-.chat-input-area button:hover:not(:disabled) {
-    transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(22,160,133,0.3);
-}
-
+.chat-input-area button:hover:not(:disabled) { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(22,160,133,0.3); }
 .chat-input-area button:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
 
-/* Sidebar */
-.health-summary { display: flex; flex-direction: column; gap: 10px; margin-top: 14px; }
-
+/* Sidebar panel */
+.sidebar-panel { display: flex; flex-direction: column; gap: 0; }
+.health-summary { display: flex; flex-direction: column; gap: 9px; margin-top: 12px; }
 .health-metric {
     display: flex;
     align-items: center;
-    gap: 11px;
-    padding: 11px 12px;
+    gap: 10px;
+    padding: 10px 12px;
     background: var(--bg-secondary);
     border-radius: 10px;
     border: 1px solid var(--border);
 }
-
 .metric-icon {
-    width: 38px;
-    height: 38px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    width: 36px; height: 36px;
+    display: flex; align-items: center; justify-content: center;
     background: linear-gradient(135deg, var(--primary), var(--primary-light));
-    color: white;
-    border-radius: 10px;
-    font-size: 16px;
-    flex-shrink: 0;
+    color: white; border-radius: 9px; font-size: 15px; flex-shrink: 0;
 }
+.metric-info strong { display: block; font-size: 11px; color: var(--text-muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.3px; margin-bottom: 1px; }
+.metric-value { font-size: 14px; font-weight: 600; color: var(--text-dark); margin: 0; }
 
-.metric-info strong { display: block; font-size: 12px; color: var(--text-dark); margin-bottom: 1px; }
-.metric-value { font-size: 13px; color: var(--text-body); margin: 0; }
-
-.no-data { text-align: center; padding: 28px 16px; color: var(--text-muted); }
-.no-data p { margin-bottom: 14px; font-size: 14px; }
-
+.no-data { text-align: center; padding: 24px 16px; color: var(--text-muted); }
+.no-data p { margin-bottom: 12px; font-size: 14px; }
 .btn-record {
-    display: inline-flex;
-    align-items: center;
-    gap: 7px;
+    display: inline-flex; align-items: center; gap: 7px;
     padding: 9px 18px;
     background: linear-gradient(135deg, var(--primary), var(--primary-light));
-    color: white;
-    border-radius: 8px;
-    font-weight: 600;
-    font-size: 13px;
-    transition: all 0.2s;
-    text-decoration: none;
+    color: white; border-radius: 8px; font-weight: 600; font-size: 13px;
+    transition: all 0.2s; text-decoration: none;
 }
-
 .btn-record:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(22,160,133,0.3); color: white; }
 
-.quick-questions { margin-top: 20px; padding-top: 18px; border-top: 1px solid var(--border); }
+.quick-questions { margin-top: 18px; padding-top: 16px; border-top: 1px solid var(--border); }
 .quick-questions h4 { color: var(--text-dark); margin-bottom: 10px; font-size: 14px; display: flex; align-items: center; gap: 7px; }
-
-.question-buttons { display: flex; flex-direction: column; gap: 7px; }
-
+.question-buttons { display: flex; flex-direction: column; gap: 6px; }
 .question-btn {
-    width: 100%;
-    padding: 9px 13px;
-    background: var(--bg-card);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    color: var(--text-body);
-    font-size: 13px;
-    cursor: pointer;
-    transition: all 0.2s;
-    display: flex;
-    align-items: center;
-    gap: 7px;
-    text-align: left;
-    font-family: inherit;
+    width: 100%; padding: 9px 13px;
+    background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px;
+    color: var(--text-body); font-size: 13px; cursor: pointer;
+    transition: all 0.2s; display: flex; align-items: center; gap: 7px;
+    text-align: left; font-family: inherit;
 }
-
 .question-btn:hover {
     background: linear-gradient(135deg, var(--primary), var(--primary-light));
-    color: white;
-    border-color: var(--primary);
-    transform: translateX(4px);
+    color: white; border-color: var(--primary); transform: translateX(3px);
 }
 
-.recent-logs { margin-top: 20px; padding-top: 18px; border-top: 1px solid var(--border); }
+.recent-logs { margin-top: 18px; padding-top: 16px; border-top: 1px solid var(--border); }
 .recent-logs h4 { color: var(--text-dark); margin-bottom: 10px; font-size: 14px; display: flex; align-items: center; gap: 7px; }
-
 .logs-table table { width: 100%; border-collapse: collapse; font-size: 12px; }
 .logs-table th { text-align: left; padding: 7px 8px; background: var(--bg-secondary); color: var(--text-dark); font-weight: 600; border-bottom: 2px solid var(--border); }
 .logs-table td { padding: 7px 8px; border-bottom: 1px solid var(--border); color: var(--text-body); }
 .logs-table tr:last-child td { border-bottom: none; }
 
-.chatbot-stats-row {
-    display: flex;
-    gap: 14px;
-    flex-wrap: wrap;
-    margin-bottom: 4px;
-}
-
-.stat-pill {
-    background: var(--bg-secondary);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 10px 18px;
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-}
-
-.stat-pill .pill-label { font-size: 11px; color: var(--text-muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.4px; }
-.stat-pill .pill-value { font-size: 20px; font-weight: 700; color: var(--primary); line-height: 1.2; }
-
-/* Responsive */
+/* ============================================= */
+/* RESPONSIVE */
+/* ============================================= */
 @media (max-width: 900px) {
     .chatbot-layout { grid-template-columns: 1fr; }
-    .chat-container { height: 480px; }
-    .chatbot-stats-row { gap: 10px; }
+    .chat-container { height: 500px; }
 }
 
-@media (max-width: 600px) {
-    .chat-container { height: 400px; }
-    .message { max-width: 92%; }
+@media (max-width: 640px) {
+    /* Show tab switcher, hide sidebar by default */
+    .chat-tabs { display: flex; }
+    .chatbot-layout { display: block; }
+
+    .chat-panel { display: block; }
+    .sidebar-panel { display: none; }
+    .sidebar-panel.tab-active { display: block; }
+    .chat-panel.tab-hidden { display: none; }
+
+    /* Chat fills screen height */
+    .chat-container {
+        height: calc(100svh - 260px);
+        min-height: 320px;
+        border-radius: 12px;
+    }
+
+    /* Smaller stats row */
+    .chatbot-stats-row { gap: 7px; margin-bottom: 12px; }
+    .stat-pill { padding: 8px 10px; min-width: 0; }
+    .stat-pill .pill-label { font-size: 9px; }
+    .stat-pill .pill-value { font-size: 16px; }
+
+    /* Input area touch-friendly */
     .chat-input-area { padding: 10px 12px; gap: 8px; }
-    .chat-input-area input { font-size: 13px; }
+    .chat-input-area input { font-size: 16px; /* prevents iOS zoom */ padding: 12px 14px; }
     .chat-input-area button span { display: none; }
-    .stat-pill { padding: 8px 14px; }
-    .stat-pill .pill-value { font-size: 17px; }
+    .chat-input-area button { padding: 12px 14px; }
+
+    /* Messages */
+    .message { max-width: 90%; }
+    .message-content { font-size: 14px; }
+
+    /* Page header compact */
+    .page-header h1 { font-size: 20px; }
+    .page-header p { font-size: 13px; }
+
+    /* Quick questions horizontal scroll on mobile */
+    .question-buttons { flex-direction: row; flex-wrap: wrap; }
+    .question-btn { flex: 1; min-width: 140px; font-size: 12px; padding: 8px 10px; }
 }
 </style>
 
@@ -578,35 +598,46 @@ include 'header.php';
   <div class="page-header">
     <div>
       <h1><i class="fas fa-robot" style="color: var(--primary);"></i> AI Health Assistant</h1>
-      <p class="muted">Powered by Zoonexa AI · Get to know your health data</p>
+      <p class="muted">Powered by Zoonexa AI &middot; Get personalized health insights</p>
     </div>
   </div>
 
   <!-- Stats Row -->
-  <div class="chatbot-stats-row" style="margin-bottom: 20px;">
+  <div class="chatbot-stats-row">
     <div class="stat-pill">
       <span class="pill-label">Health Points</span>
       <span class="pill-value"><?php echo number_format($userData['points']); ?></span>
     </div>
     <div class="stat-pill">
       <span class="pill-label">Mode</span>
-      <span class="pill-value" style="font-size: 16px; text-transform: capitalize;"><?php echo e($userData['health_mode']); ?></span>
+      <span class="pill-value" style="font-size: 15px; text-transform: capitalize;"><?php echo e($userData['health_mode']); ?></span>
     </div>
     <div class="stat-pill">
       <span class="pill-label">Streak (7 days)</span>
-      <span class="pill-value"><?php echo $healthData['streak']; ?> <span style="font-size:14px;color:var(--text-muted)">days</span></span>
+      <span class="pill-value"><?php echo $healthData['streak']; ?> <span style="font-size:12px;color:var(--text-muted)">days</span></span>
     </div>
     <div class="stat-pill">
       <span class="pill-label">Subscription</span>
-      <span class="pill-value" style="font-size:14px; color: <?php echo $userData['subscription_active'] ? 'var(--success)' : 'var(--warning)'; ?>;">
-        <?php echo $userData['subscription_active'] ? '✓ Active' : '✗ Free'; ?>
+      <span class="pill-value" style="font-size:13px; color: <?php echo $userData['subscription_active'] ? 'var(--success)' : 'var(--warning)'; ?>;">
+        <?php echo $userData['subscription_active'] ? 'Active' : 'Free'; ?>
       </span>
     </div>
+  </div>
+
+  <!-- Mobile Tab Switcher -->
+  <div class="chat-tabs" id="chatTabs">
+    <button class="chat-tab-btn active" id="tabChat" onclick="switchTab('chat')">
+      <i class="fas fa-comments"></i> Chat
+    </button>
+    <button class="chat-tab-btn" id="tabSummary" onclick="switchTab('summary')">
+      <i class="fas fa-chart-bar"></i> Ringkasan
+    </button>
   </div>
 
   <div class="chatbot-layout">
 
     <!-- ========= Left: Chat Interface ========= -->
+    <div class="chat-panel" id="chatPanel">
     <div class="chat-container">
       <div class="chat-messages" id="chatContainer">
 
@@ -617,18 +648,17 @@ include 'header.php';
             <span class="message-time">Now</span>
           </div>
           <div class="message-content">
-            Hello <strong><?php echo e($userData['username']); ?></strong>! 👋<br><br>
-            I am Zoonexa AI — your health assistant. I can view your health data directly from the database and give personalized advice.<br><br>
+            Hi <strong><?php echo e($userData['username']); ?></strong>, I'm Zoonexa AI &mdash; your health assistant.<br><br>
             <?php if (!empty($healthData['averages'])): ?>
-              <strong>📊 Your data summary:</strong><br>
-              🚶 Average steps: <strong><?php echo number_format($healthData['averages']['steps']); ?>/day</strong><br>
-              😴 Average sleep: <strong><?php echo $healthData['averages']['sleep']; ?> hours/night</strong><br>
-              ⚖️ Average weight: <strong><?php echo $healthData['averages']['weight_kg']; ?> kg</strong><br>
-              📈 Average BMI: <strong><?php echo $healthData['averages']['bmi']; ?></strong><br><br>
+              <strong>Your data at a glance:</strong><br>
+              Steps: <strong><?php echo number_format($healthData['averages']['steps']); ?>/day avg</strong><br>
+              Sleep: <strong><?php echo $healthData['averages']['sleep']; ?> hrs/night avg</strong><br>
+              Weight: <strong><?php echo $healthData['averages']['weight_kg']; ?> kg avg</strong><br>
+              BMI: <strong><?php echo $healthData['averages']['bmi']; ?></strong><br><br>
             <?php else: ?>
-              You don't have any health data yet. <a href="health_log.php">Start your first log!</a><br><br>
+              You have no health data yet. <a href="health_log.php">Start your first log</a> to get personalized insights.<br><br>
             <?php endif; ?>
-            How can I help you today? 💪
+            What can I help you with today?
           </div>
         </div>
 
@@ -658,27 +688,28 @@ include 'header.php';
           type="text"
           name="message"
           id="messageInput"
-          placeholder="Ask about your health..."
+          placeholder="Tanya tentang kesehatanmu..."
           autocomplete="off"
-          autofocus
           required
           <?php echo $rateLimited ? 'disabled' : ''; ?>
         >
         <button type="submit" id="sendButton" <?php echo $rateLimited ? 'disabled' : ''; ?>>
           <i class="fas fa-paper-plane"></i>
-          <span>Send</span>
+          <span>Kirim</span>
         </button>
       </form>
 
       <?php if ($rateLimited): ?>
         <div style="padding: 8px 16px 12px; font-size: 12px; color: var(--warning); text-align: center;">
-          ⚠️ Message limit reached. Try again in 1 hour.
+          ⚠️ Batas pesan tercapai. Coba lagi dalam 1 jam.
         </div>
       <?php endif; ?>
     </div><!-- end chat-container -->
+    </div><!-- end chat-panel -->
 
 
     <!-- ========= Right: Health Summary Sidebar ========= -->
+    <div class="sidebar-panel" id="summaryPanel">
     <div class="card" style="padding: 20px;">
       <h3 style="font-size: 15px; margin-bottom: 4px;"><i class="fas fa-chart-bar"></i> Health Summary</h3>
 
@@ -695,7 +726,7 @@ include 'header.php';
             <div class="metric-icon"><i class="fas fa-moon"></i></div>
             <div class="metric-info">
               <strong>Sleep</strong>
-              <p class="metric-value"><?php echo $healthData['averages']['sleep']; ?> hours avg/night</p>
+              <p class="metric-value"><?php echo $healthData['averages']['sleep']; ?> hrs avg/night</p>
             </div>
           </div>
           <div class="health-metric">
@@ -716,7 +747,7 @@ include 'header.php';
             <div class="metric-icon"><i class="fas fa-fire"></i></div>
             <div class="metric-info">
               <strong>Log Streak</strong>
-              <p class="metric-value"><?php echo $healthData['streak']; ?> of the last 7 days</p>
+              <p class="metric-value"><?php echo $healthData['streak']; ?> of last 7 days</p>
             </div>
           </div>
         <?php else: ?>
@@ -734,10 +765,11 @@ include 'header.php';
           <?php
           $quickQuestions = [
             ['fas fa-bed',        'Tips for better sleep?'],
-            ['fas fa-dumbbell',   'Exercise recommendations?'],
+            ['fas fa-dumbbell',   'Exercise recommendations for my mode?'],
             ['fas fa-chart-line', 'Analyze my health progress'],
-            ['fas fa-crown',      'What are the subscription benefits?'],
-            ['fas fa-bullseye',   'Which mode is right for me?'],
+            ['fas fa-utensils',   'Nutrition advice for my goals?'],
+            ['fas fa-bullseye',   'Which health mode suits me?'],
+            ['fas fa-crown',      'What does a subscription unlock?'],
           ];
           foreach ($quickQuestions as $q):
           ?>
@@ -779,7 +811,8 @@ include 'header.php';
         </div>
       </div>
       <?php endif; ?>
-    </div><!-- end sidebar -->
+    </div><!-- end card -->
+    </div><!-- end sidebar-panel -->
 
   </div><!-- end chatbot-layout -->
 </section>
@@ -807,6 +840,27 @@ document.getElementById('chatForm')?.addEventListener('submit', function (e) {
         btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> <span>Mengirim...</span>';
     }
 });
+
+// Mobile tab switcher
+function switchTab(tab) {
+    const chatPanel    = document.getElementById('chatPanel');
+    const summaryPanel = document.getElementById('summaryPanel');
+    const tabChat      = document.getElementById('tabChat');
+    const tabSummary   = document.getElementById('tabSummary');
+
+    if (tab === 'chat') {
+        chatPanel.classList.remove('tab-hidden');
+        summaryPanel.classList.remove('tab-active');
+        tabChat.classList.add('active');
+        tabSummary.classList.remove('active');
+        setTimeout(scrollToBottom, 100);
+    } else {
+        chatPanel.classList.add('tab-hidden');
+        summaryPanel.classList.add('tab-active');
+        tabSummary.classList.add('active');
+        tabChat.classList.remove('active');
+    }
+}
 
 setTimeout(scrollToBottom, 300);
 </script>

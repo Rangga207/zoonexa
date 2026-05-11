@@ -34,7 +34,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $result = $check->get_result();
 
         if ($result->num_rows > 0) {
-            $error = 'An entry for this date already exists. Please delete it first to update.';
+            $error = 'An entry for this date already exists. Delete it first to re-log.';
         } else {
             // Insert new log
             $stmt = $mysqli->prepare('
@@ -44,9 +44,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $stmt->bind_param('isiddd', $user_id, $log_date, $steps, $sleep_hours, $weight_kg, $bmi);
 
             if ($stmt->execute()) {
-                $success = 'Health log saved successfully!';
+                $success = 'Health log saved.';
 
-                // Award points for logging (10 points per log)
+                // Beri poin untuk logging (10 poin per log)
                 addPoints(10);
 
                 // Handle Bonus Missions
@@ -57,7 +57,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $bm_stmt->execute();
                     $bm_stmt->close();
                     addPoints(3); // Auto approve jogging
-                    $success .= ' +3 points for Jogging!';
+                    $success .= ' +3 pts for completing the Jogging mission.';
                 }
 
                 // 2. Strava Proof Upload
@@ -74,10 +74,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             $bm_stmt->bind_param("iss", $user_id, $log_date, $path);
                             $bm_stmt->execute();
                             $bm_stmt->close();
-                            $success .= ' Strava proof uploaded and pending admin approval!';
+                            $success .= ' Strava proof submitted and pending admin review.';
                         }
                     } else {
-                        $error = 'Invalid file type for Strava proof. Please upload JPG, PNG, or PDF.';
+                        $error = 'Invalid file type. Please upload JPG, PNG, or PDF.';
                     }
                 }
 
@@ -98,7 +98,7 @@ if (isset($_GET['delete']) && is_numeric($_GET['delete'])) {
     $del = $mysqli->prepare('DELETE FROM health_logs WHERE id = ? AND user_id = ?');
     $del->bind_param('ii', $del_id, $user_id);
     if ($del->execute()) {
-        $success = 'Log entry deleted successfully.';
+        $success = 'Log entry deleted.';
     }
     $del->close();
 }
@@ -235,7 +235,7 @@ include 'header.php';
     <h2>Your Logs <span class="muted small">(Last 30 entries)</span></h2>
     <div class="table-wrapper">
       <?php if (count($logs) === 0): ?>
-        <p class="muted" style="padding: 40px 20px; text-align: center; background: rgba(0,0,0,0.15); border-radius: 12px; margin: 16px;">No logs yet. Fill in the form above to start tracking!</p>
+        <p class="muted" style="padding: 40px 20px; text-align: center; background: rgba(0,0,0,0.15); border-radius: 12px; margin: 16px;">No logs yet. Fill in the form above to start tracking.</p>
       <?php else: ?>
         <table class="table">
           <thead>
@@ -259,8 +259,8 @@ include 'header.php';
               <td>
                 <a href="health_log.php?delete=<?php echo (int)$log['id']; ?>"
                    class="btn-delete"
-                   onclick="return confirm('Are you sure you want to delete this log?');">
-                  🗑️ Delete
+                   onclick="return confirm('Delete this log entry?');">
+                  Delete
                 </a>
               </td>
             </tr>

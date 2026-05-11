@@ -7,7 +7,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="Zoonexa - Track your daily health habits simply and effectively">
-  <title><?php echo isset($page_title) ? e($page_title) . ' · Zoonexa' : 'Zoonexa · Healthy Habits'; ?></title>
+  <title><?php echo isset($page_title) ? e($page_title) . ' · Zoonexa' : 'Zoonexa · Health Tracker'; ?></title>
 
   <!-- Font Awesome -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -63,7 +63,7 @@
         <a href="health_log.php"><i class="fas fa-clipboard-list"></i> <span class="nav-label">Daily Log</span></a>
         <a href="health_modes.php"><i class="fas fa-bullseye"></i> <span class="nav-label">Modes</span></a>
         <a href="tips.php"><i class="fas fa-lightbulb"></i> <span class="nav-label">Tips</span></a>
-        <a href="leaderboard.php"><i class="fas fa-list-ol"></i> <span class="nav-label">Rank</span></a>
+        <a href="leaderboard.php"><i class="fas fa-list-ol"></i> <span class="nav-label">Leaderboard</span></a>
         <a href="merchandise.php"><i class="fas fa-shopping-bag"></i> <span class="nav-label">Merch</span></a>
         <a href="milestone.php" class="nav-milestone"><i class="fas fa-trophy"></i> <span class="nav-label">Milestones</span></a>
         <a href="chatbot.php" class="nav-chatbot">
@@ -131,7 +131,7 @@
     <div>
       <div class="mobile-user-name"><?php echo e($_SESSION['username']); ?></div>
       <div class="mobile-user-sub muted small">
-        <?php echo isSubscribed() ? '✨ Pro Member' : 'Free Account'; ?>
+        <?php echo isSubscribed() ? 'Pro Member' : 'Free Account'; ?>
       </div>
     </div>
   </div>

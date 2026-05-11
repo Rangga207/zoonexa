@@ -91,7 +91,7 @@ include 'header.php';
       </div>
     <?php else: ?>
       <div style="text-align: center; padding: 40px 0;">
-        <p class="muted">No users found. Start logging to be the first!</p>
+        <p class="muted">No users found yet. Start logging to be the first!</p>
       </div>
     <?php endif; ?>
   </div>

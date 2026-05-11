@@ -10,7 +10,7 @@ include 'header.php';
   <div class="page-header">
     <div>
       <h1>Health Tips</h1>
-      <p class="muted">Simple, practical advice to help you build healthier habits no fluff.</p>
+      <p class="muted">Simple, practical advice to help you build healthier habits.</p>
     </div>
   </div>
 
@@ -49,19 +49,19 @@ include 'header.php';
     <div class="tips-list">
       <div class="tip-item">
         <h4>Keep a consistent schedule</h4>
-        <p class="muted">Go to bed and wake up at the same time every day — even on weekends. Your body clock responds best to routine.</p>
+        <p class="muted">Go to bed and wake up at the same time every day, even on weekends. Your body clock responds best to routine.</p>
       </div>
       <div class="tip-item">
         <h4>No screens 1 hour before bed</h4>
-        <p class="muted">Blue light from phones and laptops tricks your brain into thinking it's daytime. Put devices away before winding down.</p>
+        <p class="muted">Blue light from phones and laptops delays melatonin production. Put devices away before winding down.</p>
       </div>
       <div class="tip-item">
         <h4>Keep your room cool and dark</h4>
-        <p class="muted">The ideal sleeping temperature is around 16–19°C (60–66°F). Blackout curtains can make a big difference.</p>
+        <p class="muted">The ideal sleeping temperature is around 16–19°C. Blackout curtains can make a significant difference in sleep quality.</p>
       </div>
       <div class="tip-item">
         <h4>Avoid caffeine after 2 PM</h4>
-        <p class="muted">Caffeine has a half-life of about 5–6 hours. An afternoon coffee can still be in your system when it's time to sleep.</p>
+        <p class="muted">Caffeine has a half-life of about 5–6 hours. An afternoon coffee can still affect your sleep at night.</p>
       </div>
     </div>
   </div>
@@ -75,19 +75,19 @@ include 'header.php';
     <div class="tips-list">
       <div class="tip-item">
         <h4>Start your day with water</h4>
-        <p class="muted">Drink a glass of water first thing in the morning before coffee or food. It wakes up your body and kickstarts your metabolism.</p>
+        <p class="muted">Drink a glass of water first thing in the morning before coffee or food. It activates your metabolism and rehydrates after sleep.</p>
       </div>
       <div class="tip-item">
         <h4>Carry a water bottle</h4>
-        <p class="muted">Having water within reach makes you drink more without even thinking about it. Aim for at least 2 liters per day.</p>
+        <p class="muted">Having water within reach makes you drink more without thinking about it. Aim for at least 2 liters per day.</p>
       </div>
       <div class="tip-item">
         <h4>Eat water-rich foods</h4>
-        <p class="muted">Fruits and vegetables like watermelon, cucumbers, and oranges count toward your hydration too — not just plain water.</p>
+        <p class="muted">Fruits and vegetables like watermelon, cucumber, and oranges count toward your daily hydration, not just plain water.</p>
       </div>
       <div class="tip-item">
         <h4>Set reminders</h4>
-        <p class="muted">If you forget to drink, set a reminder on your phone every hour. It takes about 21 days to build the habit.</p>
+        <p class="muted">If you forget to drink, set an hourly phone reminder. It takes about 21 days to build a consistent habit.</p>
       </div>
     </div>
   </div>
@@ -101,19 +101,19 @@ include 'header.php';
     <div class="tips-list">
       <div class="tip-item">
         <h4>Something is better than nothing</h4>
-        <p class="muted">You don't need a gym or a perfect workout plan. Even 10 minutes of stretching or bodyweight exercises counts.</p>
+        <p class="muted">You don't need a gym or a perfect workout plan. Even 10 minutes of movement counts toward your health.</p>
       </div>
       <div class="tip-item">
         <h4>Warm up before, cool down after</h4>
-        <p class="muted">Spend 5 minutes warming up with light movement before your workout. This reduces injury risk and makes it feel easier.</p>
+        <p class="muted">Spend 5 minutes warming up with light movement before your workout. This reduces injury risk and makes sessions feel easier.</p>
       </div>
       <div class="tip-item">
         <h4>Mix it up</h4>
-        <p class="muted">Doing the same thing every day gets boring fast. Try different activities — walking, cycling, yoga, or home workouts — to stay motivated.</p>
+        <p class="muted">Doing the same thing every day gets boring fast. Try different activities, walking, cycling, yoga, or home workouts, to stay consistent.</p>
       </div>
       <div class="tip-item">
         <h4>Rest days matter</h4>
-        <p class="muted">Your muscles grow and recover during rest days. Don't skip them. Light stretching or a walk is a great way to stay active while recovering.</p>
+        <p class="muted">Your muscles grow and recover during rest days. Light stretching or a short walk is a great way to stay active while your body recovers.</p>
       </div>
     </div>
   </div>
@@ -127,20 +127,20 @@ include 'header.php';
     <div class="tips-list">
       <div class="tip-item">
         <h4>BMI is a rough guide, not the full picture</h4>
-        <p class="muted">BMI doesn't account for muscle mass, bone density, or body composition. Use it as one data point among many — not a definitive measure of health.</p>
+        <p class="muted">BMI doesn't account for muscle mass, bone density, or body composition. Use it as one data point, not a definitive measure of health.</p>
       </div>
       <div class="tip-item">
         <h4>General BMI ranges</h4>
         <p class="muted">
-          <strong>Underweight:</strong> Below 18.5 |
-          <strong>Normal:</strong> 18.5 – 24.9 |
-          <strong>Overweight:</strong> 25 – 29.9 |
-          <strong>Obese:</strong> 30 and above
+          <strong>Underweight:</strong> Below 18.5 &nbsp;|&nbsp;
+          <strong>Normal:</strong> 18.5–24.9 &nbsp;|&nbsp;
+          <strong>Overweight:</strong> 25–29.9 &nbsp;|&nbsp;
+          <strong>Obese:</strong> 30+
         </p>
       </div>
       <div class="tip-item">
         <h4>Focus on how you feel</h4>
-        <p class="muted">Energy levels, sleep quality, and how your body feels day to day are often better indicators of health than any single number.</p>
+        <p class="muted">Energy levels, sleep quality, and daily wellbeing are often better health indicators than any single number on a scale.</p>
       </div>
     </div>
   </div>

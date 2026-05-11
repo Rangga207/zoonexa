@@ -16,7 +16,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $password = trim($_POST['password'] ?? '');
 
     if ($username === '' || $password === '') {
-        $error = 'Please enter username and password.';
+        $error = 'Please enter your username and password.';
     } else {
         $stmt = $mysqli->prepare('SELECT id, password_hash, role FROM users WHERE username = ?');
         $stmt->bind_param('s', $username);
@@ -236,7 +236,7 @@ $page_title = 'Login';
     <p class="muted">Sign in to continue your health journey.</p>
 
     <?php if ($registered): ?>
-      <div class="alert success" style="margin-bottom: 20px;">Account created successfully! You can now log in.</div>
+      <div class="alert success" style="margin-bottom: 20px;">Account created. You can now sign in.</div>
     <?php endif; ?>
 
     <?php if ($error): ?>

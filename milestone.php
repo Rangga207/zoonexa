@@ -110,10 +110,9 @@ include 'header.php';
   <div class="info-card" style="margin-top: 24px;">
     <h3><i class="fas fa-lightbulb" style="color: #f1c40f; margin-right: 8px;"></i> How to Earn Milestones</h3>
     <p>
-      Milestones are earned automatically based on your health activity. Log your data daily in the 
-      <a href="health_log.php">Daily Log</a>, hit your step and sleep targets, and keep your streak going. 
-      The system checks your progress automatically — no manual claiming needed. Points earned from milestones 
-      are added directly to your Health Points balance.
+      Milestones are earned automatically based on your health activity. Log your data daily in the
+      <a href="health_log.php">Daily Log</a>, hit your step and sleep targets, and keep your streak going.
+      The system checks your progress automatically, no manual claiming needed. Points are added directly to your Health Points balance.
     </p>
   </div>
 </section>
