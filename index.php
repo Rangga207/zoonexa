@@ -421,44 +421,52 @@ main.page {
 .gchat-wrap {
   margin-top: 20px;
   display: flex;
-  align-items: stretch;
-  gap: 0;
+  align-items: center;
   background: var(--bg-card);
   border: 1px solid var(--border);
-  border-radius: 18px;
+  border-radius: 16px;
   overflow: hidden;
-  box-shadow: var(--shadow-md);
-  transition: box-shadow 0.2s;
-}
-.gchat-wrap:hover {
-  box-shadow: 0 8px 30px rgba(22,160,133,0.1), var(--shadow-md);
-}
-/* Colored left accent */
-.gchat-accent {
-  width: 4px;
-  background: linear-gradient(180deg, var(--primary) 0%, var(--primary-light) 100%);
-  flex-shrink: 0;
-}
-.gchat-inner {
-  flex: 1;
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  padding: 14px 16px;
+  box-shadow: var(--shadow-sm);
+  transition: box-shadow 0.25s;
   min-width: 0;
 }
+.gchat-wrap:hover {
+  box-shadow: 0 6px 24px rgba(22,160,133,0.1), var(--shadow-sm);
+}
+
+/* Left accent bar */
+.gchat-accent {
+  width: 4px;
+  align-self: stretch;
+  flex-shrink: 0;
+  background: linear-gradient(180deg, var(--primary) 0%, var(--primary-light) 100%);
+}
+
+/* Middle: badge + avatar + message */
+.gchat-inner {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 14px;
+  overflow: hidden;
+}
+
+/* "LIVE" badge */
 .gchat-badge {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 5px;
   font-size: 10px;
   font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.6px;
   color: var(--primary);
   background: rgba(22,160,133,0.1);
   border-radius: 20px;
-  padding: 3px 10px;
+  padding: 3px 9px;
+  white-space: nowrap;
   flex-shrink: 0;
 }
 .gchat-badge-dot {
@@ -466,117 +474,136 @@ main.page {
   height: 6px;
   border-radius: 50%;
   background: var(--primary);
-  animation: pulse-dot 1.4s ease-in-out infinite;
+  animation: gcdot 1.4s ease-in-out infinite;
 }
-@keyframes pulse-dot {
-  0%, 100% { opacity: 1; transform: scale(1); }
-  50%       { opacity: 0.3; transform: scale(0.7); }
+@keyframes gcdot {
+  0%,100% { opacity:1; transform:scale(1); }
+  50%      { opacity:0.25; transform:scale(0.65); }
 }
+
+/* Avatar */
 .gchat-avatar {
-  width: 34px;
-  height: 34px;
+  width: 32px;
+  height: 32px;
   border-radius: 50%;
   background: var(--bg-secondary);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 14px;
+  font-size: 13px;
   font-family: 'Outfit', sans-serif;
   font-weight: 800;
   color: var(--primary);
   flex-shrink: 0;
   border: 2px solid var(--border);
-  transition: box-shadow 0.2s;
 }
+
+/* Message block */
 .gchat-content {
   flex: 1;
   min-width: 0;
   display: flex;
   align-items: baseline;
-  gap: 6px;
-  flex-wrap: wrap;
+  gap: 5px;
+  overflow: hidden;
 }
 .gchat-user {
   font-size: 13px;
   font-weight: 700;
   color: var(--text-dark);
   white-space: nowrap;
+  flex-shrink: 0;
 }
 .gchat-msg {
   font-size: 13px;
-  color: var(--text-body);
+  color: var(--text-muted);
+  white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  white-space: nowrap;
   flex: 1;
   min-width: 0;
 }
-.gchat-msg::before { content: '\201C'; color: var(--text-muted); margin-right: 1px; }
-.gchat-msg::after  { content: '\201D'; color: var(--text-muted); margin-left: 1px; }
 .gchat-time {
   font-size: 11px;
   color: var(--text-muted);
+  opacity: 0.7;
   white-space: nowrap;
   flex-shrink: 0;
 }
+
+/* Separator */
 .gchat-sep {
   width: 1px;
+  align-self: stretch;
   background: var(--border);
-  margin: 8px 0;
   flex-shrink: 0;
+  margin: 10px 0;
 }
+
+/* Send form */
 .gchat-form {
   display: flex;
   align-items: center;
-  gap: 0;
-  padding: 10px 14px;
+  padding: 8px 12px;
+  gap: 6px;
+  flex-shrink: 0;
 }
 .gchat-input {
   background: var(--bg-secondary);
-  border: 1px solid var(--border);
-  border-radius: 20px 0 0 20px;
-  padding: 8px 14px;
+  border: 1.5px solid var(--border);
+  border-radius: 10px;
+  padding: 8px 13px;
   font-size: 13px;
   color: var(--text-body);
-  width: 180px;
+  width: 160px;
   outline: none;
-  transition: border-color 0.2s, width 0.3s;
+  transition: border-color 0.2s, width 0.3s, box-shadow 0.2s;
   font-family: inherit;
-  border-right: none;
 }
 .gchat-input:focus {
   border-color: var(--primary);
-  width: 220px;
+  width: 200px;
+  box-shadow: 0 0 0 3px rgba(22,160,133,0.1);
 }
+.gchat-input::placeholder { color: var(--text-muted); opacity: 0.7; }
 .gchat-send {
   background: linear-gradient(135deg, var(--primary), var(--primary-light));
   color: white;
   border: none;
-  border-radius: 0 20px 20px 0;
+  border-radius: 10px;
   padding: 8px 14px;
-  font-size: 12px;
+  font-size: 13px;
   cursor: pointer;
   display: flex;
   align-items: center;
-  gap: 5px;
+  gap: 6px;
   font-family: inherit;
   font-weight: 600;
-  transition: opacity 0.2s;
   white-space: nowrap;
+  flex-shrink: 0;
+  box-shadow: 0 2px 8px rgba(22,160,133,0.25);
+  transition: opacity 0.2s, transform 0.15s;
 }
-.gchat-send:hover { opacity: 0.88; }
-.gchat-send:disabled { opacity: 0.5; cursor: not-allowed; }
+.gchat-send:hover  { opacity: 0.88; transform: translateY(-1px); }
+.gchat-send:active { transform: translateY(0); }
+.gchat-send:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
 
-/* When no message yet — just show the input form */
+/* Empty state */
 .gchat-wrap.empty-state .gchat-accent { background: var(--border); }
-.gchat-wrap.empty-state .gchat-badge { color: var(--text-muted); background: var(--bg-secondary); }
+.gchat-wrap.empty-state .gchat-badge  { color: var(--text-muted); background: var(--bg-secondary); }
 .gchat-wrap.empty-state .gchat-badge-dot { background: var(--text-muted); animation: none; }
 
-@media (max-width: 600px) {
-  .gchat-input { width: 120px; }
-  .gchat-input:focus { width: 150px; }
-  .gchat-send span { display: none; }
-  .gchat-inner { gap: 10px; padding: 12px 12px; }
+/* Mobile */
+@media (max-width: 640px) {
+  .gchat-wrap { flex-wrap: wrap; border-radius: 14px; }
+  .gchat-accent { width: 100%; height: 3px; align-self: auto;
+    background: linear-gradient(90deg, var(--primary) 0%, var(--primary-light) 100%); }
+  .gchat-inner { padding: 10px 14px; gap: 8px; }
+  .gchat-sep { display: none; }
+  .gchat-form { width: 100%; padding: 0 12px 10px; box-sizing: border-box; }
+  .gchat-input { flex: 1; width: auto !important; min-width: 0; }
+  .gchat-time { display: none; }
+  .gchat-badge { font-size: 9px; padding: 2px 8px; }
 }
 
 /* ── Responsive Breakpoints ── */
@@ -772,20 +799,18 @@ main.page {
         Live Chat
       </div>
       <?php if ($latestChat): ?>
-      <?php
-        $avatarBorder = $chatColor ? "border: 2px solid {$chatColor}; box-shadow: 0 0 10px {$chatColor};" : '';
-      ?>
+      <?php $avatarBorder = $chatColor ? "border: 2px solid {$chatColor}; box-shadow: 0 0 8px {$chatColor};" : ''; ?>
       <div class="gchat-avatar" id="gchatAvatar" style="<?php echo $avatarBorder; ?>">
         <?php echo strtoupper(substr($latestChat['username'], 0, 1)); ?>
       </div>
       <div class="gchat-content" id="gchatContent">
         <span class="gchat-user" id="gchatUser"><?php echo e($latestChat['username']); ?></span>
-        <span class="gchat-msg" id="gchatMsg"><?php echo htmlspecialchars(strip_tags($latestChat['message'])); ?></span>
-        <span class="gchat-time" id="gchatTime"><?php echo $chatTimeAgo; ?></span>
+        <span class="gchat-msg" id="gchatMsg">&ldquo;<?php echo htmlspecialchars(strip_tags($latestChat['message'])); ?>&rdquo;</span>
+        <span class="gchat-time" id="gchatTime">&middot; <?php echo $chatTimeAgo; ?></span>
       </div>
       <?php else: ?>
       <div class="gchat-content">
-        <span class="gchat-user" style="color: var(--text-muted); font-weight: 400;">No messages yet. Be the first!</span>
+        <span class="gchat-msg" style="color: var(--text-muted);">No messages yet. Be the first to say something!</span>
       </div>
       <?php endif; ?>
     </div>
@@ -793,7 +818,7 @@ main.page {
     <form method="POST" class="gchat-form" id="global-chat-form">
       <input type="hidden" name="action" value="send_chat">
       <input type="text" name="chat_message" class="gchat-input" id="gchatInput"
-             placeholder="Say something..." maxlength="100" required autocomplete="off">
+             placeholder="Say something..." maxlength="100" autocomplete="off">
       <button type="submit" class="gchat-send" id="gchatSendBtn">
         <i class="fas fa-paper-plane"></i>
         <span>Send</span>
@@ -928,20 +953,19 @@ document.getElementById('global-chat-form')?.addEventListener('submit', function
         const initial = data.username.substring(0,1).toUpperCase();
 
         if (wrap && inner) {
-          // Remove empty-state if present
           wrap.classList.remove('empty-state');
-          // Rebuild inner content
-          inner.innerHTML = `
-            <div class="gchat-badge">
-              <div class="gchat-badge-dot"></div>
-              Live Chat
-            </div>
+          const initial = data.username.substring(0,1).toUpperCase();
+          // Update only what's inside gchat-inner (keep badge)
+          const badge = inner.querySelector('.gchat-badge');
+          inner.innerHTML = '';
+          if (badge) inner.appendChild(badge);
+          inner.insertAdjacentHTML('beforeend', `
             <div class="gchat-avatar">${initial}</div>
             <div class="gchat-content">
               <span class="gchat-user">${data.username}</span>
-              <span class="gchat-msg">${data.message}</span>
-              <span class="gchat-time">just now</span>
-            </div>`;
+              <span class="gchat-msg">&ldquo;${data.message}&rdquo;</span>
+              <span class="gchat-time">&middot; just now</span>
+            </div>`);
         }
 
         setTimeout(() => {

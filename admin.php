@@ -229,6 +229,7 @@ include 'header.php';
               <th style="padding: 12px; color: var(--text-dark);">Order ID</th>
               <th style="padding: 12px; color: var(--text-dark);">Date</th>
               <th style="padding: 12px; color: var(--text-dark);">Amount</th>
+              <th style="padding: 12px; color: var(--text-dark);">Receipt</th>
               <th style="padding: 12px; text-align: right; color: var(--text-dark);">Action</th>
             </tr>
           </thead>
@@ -239,6 +240,36 @@ include 'header.php';
               <td style="padding: 12px; font-family: monospace; font-size: 13px; color: var(--text-muted);"><?php echo e($sub['midtrans_order_id']); ?></td>
               <td style="padding: 12px; color: var(--text-body);"><?php echo date('M d, Y H:i', strtotime($sub['created_at'])); ?></td>
               <td style="padding: 12px; color: var(--success); font-weight: 600;">Rp <?php echo number_format($sub['amount_paid']); ?></td>
+              <td style="padding: 12px;">
+                <?php
+                  // Extract file path from payment_method column
+                  $receiptPath = null;
+                  if (!empty($sub['payment_method']) && strpos($sub['payment_method'], 'uploads/receipts/') !== false) {
+                    $parts = explode('uploads/receipts/', $sub['payment_method']);
+                    $receiptFile = trim($parts[1] ?? '');
+                    if ($receiptFile) $receiptPath = 'uploads/receipts/' . $receiptFile;
+                  }
+                  $imgExts = ['jpg','jpeg','png','gif','webp','heic'];
+                  $isImg = $receiptPath && in_array(strtolower(pathinfo($receiptPath, PATHINFO_EXTENSION)), $imgExts);
+                ?>
+                <?php if ($receiptPath && file_exists(__DIR__ . '/' . $receiptPath)): ?>
+                  <?php if ($isImg): ?>
+                    <a href="<?php echo e($receiptPath); ?>" target="_blank"
+                       onclick="event.preventDefault(); showReceipt('<?php echo e($receiptPath); ?>');"
+                       style="display:inline-block; line-height:0; border-radius:6px; overflow:hidden; border:2px solid var(--border); cursor:zoom-in;">
+                      <img src="<?php echo e($receiptPath); ?>" alt="Receipt"
+                           style="width:60px; height:60px; object-fit:cover; display:block;">
+                    </a>
+                  <?php else: ?>
+                    <a href="<?php echo e($receiptPath); ?>" target="_blank"
+                       style="color: var(--primary); font-size: 13px; text-decoration: underline;">
+                      <i class="fas fa-file-download"></i> Download
+                    </a>
+                  <?php endif; ?>
+                <?php else: ?>
+                  <span class="muted small" style="font-size:12px;">No file</span>
+                <?php endif; ?>
+              </td>
               <td style="padding: 12px; text-align: right;">
                 <form method="POST" style="margin: 0; display: inline-block;">
                   <input type="hidden" name="action" value="activate_sub">
@@ -490,5 +521,26 @@ include 'header.php';
   </div>
 
 </section>
+
+<!-- Receipt Preview Modal -->
+<div id="receiptModal" onclick="closeReceipt()" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.85); backdrop-filter:blur(8px); z-index:9999; align-items:center; justify-content:center; padding:20px;">
+  <div onclick="event.stopPropagation()" style="background:var(--bg-card); border-radius:18px; padding:20px; max-width:520px; width:100%; position:relative; box-shadow:0 24px 60px rgba(0,0,0,0.5);">
+    <button onclick="closeReceipt()" style="position:absolute; top:12px; right:14px; background:none; border:none; font-size:22px; color:var(--text-muted); cursor:pointer; line-height:1;">&times;</button>
+    <p style="font-weight:700; margin:0 0 14px; font-size:15px; color:var(--text-dark);"><i class="fas fa-receipt" style="color:var(--primary);"></i> Payment Receipt</p>
+    <img id="receiptImg" src="" alt="Receipt" style="width:100%; border-radius:10px; display:block;">
+    <a id="receiptLink" href="" target="_blank" style="display:block; text-align:center; margin-top:12px; font-size:13px; color:var(--primary);"><i class="fas fa-external-link-alt"></i> Open in full size</a>
+  </div>
+</div>
+<script>
+function showReceipt(path) {
+  document.getElementById('receiptImg').src = path;
+  document.getElementById('receiptLink').href = path;
+  const m = document.getElementById('receiptModal');
+  m.style.display = 'flex';
+}
+function closeReceipt() {
+  document.getElementById('receiptModal').style.display = 'none';
+}
+</script>
 
 <?php include 'footer.php'; ?>

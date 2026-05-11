@@ -32,7 +32,7 @@ function getUserChatbotData($user_id) {
         if ($row) {
             $userData['username']            = $row['username'] ?? 'User';
             $userData['health_mode']         = $row['health_mode'] ?? 'maintain';
-            $userData['points']              = (int)($row['points'] ?? 0);
+            $userData['points']              = max(0, (int)($row['points'] ?? 0));
             $userData['subscription_active'] = (bool)($row['subscription_status'] ?? false);
         }
     }
@@ -703,20 +703,20 @@ include 'header.php';
           type="text"
           name="message"
           id="messageInput"
-          placeholder="Tanya tentang kesehatanmu..."
+          placeholder="About your health..."
           autocomplete="off"
           required
           <?php echo $rateLimited ? 'disabled' : ''; ?>
         >
         <button type="submit" id="sendButton" <?php echo $rateLimited ? 'disabled' : ''; ?>>
           <i class="fas fa-paper-plane"></i>
-          <span>Kirim</span>
+          <span>Send</span>
         </button>
       </form>
 
       <?php if ($rateLimited): ?>
         <div style="padding: 8px 16px 12px; font-size: 12px; color: var(--warning); text-align: center;">
-          ⚠️ Batas pesan tercapai. Coba lagi dalam 1 jam.
+          ⚠️ Try again 1 Hour Later.
         </div>
       <?php endif; ?>
     </div><!-- end chat-container -->
