@@ -156,7 +156,7 @@ if (isset($_SESSION['show_welcome_anim']) && $_SESSION['show_welcome_anim'] === 
 <div id="welcome-overlay">
   <div class="welcome-content">
     <div class="welcome-icon"></div>
-    <h1 class="welcome-text">Welcome to the Most Health Tracking Web in Indonesia</h1>
+    <h1 class="welcome-text">Welcome to Zoonexa</h1>
   </div>
 </div>
 <style>
@@ -490,23 +490,21 @@ main.page {
 }
 .pulse-feed {
   flex: 1;
-  min-height: 36px;
-  position: relative;
   overflow: hidden;
+  display: flex;
+  align-items: center;
+  min-height: 36px;
 }
 .pulse-item {
-  position: absolute;
-  inset: 0;
   display: flex;
   align-items: center;
   gap: 10px;
-  opacity: 0;
-  transition: opacity 0.6s ease;
-  pointer-events: none;
+  width: 100%;
+  animation: fadeSlide 0.45s ease;
 }
-.pulse-item.active {
-  opacity: 1;
-  pointer-events: auto;
+@keyframes fadeSlide {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 .pulse-avatar {
   width: 30px;
@@ -764,10 +762,30 @@ main.page {
 
   </div><!-- /dash-grid -->
 
-  <!-- ── Social Pulse Live Feed & Global Chat ── -->
+  <!-- Social Pulse Live Feed & Global Chat -->
   <?php if (!empty($pulseData)): ?>
+  <?php
+    // Build JSON array for JS rotation
+    $pulseColorMap = ['border_gold' => '#FFD700', 'border_neon' => '#00ffff', 'border_fire' => '#ff4500'];
+    $pulseJson = [];
+    foreach ($pulseData as $p) {
+      $pColor = isset($p['avatar_border']) ? ($pulseColorMap[$p['avatar_border']] ?? null) : null;
+      $ts = strtotime($p['time'] ?? '');
+      $diff = $ts ? (time() - $ts) : 0;
+      if ($diff < 60)        $timeAgo = 'just now';
+      elseif ($diff < 3600)  $timeAgo = floor($diff/60).'m ago';
+      elseif ($diff < 86400) $timeAgo = floor($diff/3600).'h ago';
+      else                   $timeAgo = date('M j', $ts);
+      $pulseJson[] = [
+        'initial'   => strtoupper(substr($p['username'], 0, 1)),
+        'username'  => htmlspecialchars($p['username'], ENT_QUOTES),
+        'action'    => htmlspecialchars(strip_tags($p['action']), ENT_QUOTES),
+        'timeAgo'   => $timeAgo,
+        'color'     => $pColor,
+      ];
+    }
+  ?>
   <div class="pulse-bar">
-    <!-- Top bar -->
     <div class="pulse-top">
       <span class="pulse-label">
         <span class="pulse-dot"></span>
@@ -775,35 +793,12 @@ main.page {
       </span>
       <span class="pulse-count">Latest from the community</span>
     </div>
-    <!-- Feed + Chat -->
     <div class="pulse-body">
-      <!-- Rotating single-item feed -->
-      <div class="pulse-feed" id="pulseFeed">
-        <?php foreach ($pulseData as $i => $p):
-          $pulseColorMap = ['border_gold' => '#FFD700', 'border_neon' => '#00ffff', 'border_fire' => '#ff4500'];
-          $pColor = isset($p['avatar_border']) ? ($pulseColorMap[$p['avatar_border']] ?? null) : null;
-          $avatarStyle = $pColor ? "border: 2px solid {$pColor}; box-shadow: 0 0 8px {$pColor};" : 'border: 1px solid var(--border);';
-          $timeAgo = '';
-          try {
-            $ts = strtotime($p['time']);
-            $diff = time() - $ts;
-            if ($diff < 60) $timeAgo = 'just now';
-            elseif ($diff < 3600) $timeAgo = floor($diff/60).'m ago';
-            elseif ($diff < 86400) $timeAgo = floor($diff/3600).'h ago';
-            else $timeAgo = date('M j', $ts);
-          } catch(Exception $e) {}
-        ?>
-        <div class="pulse-item<?php echo $i === 0 ? ' active' : ''; ?>" data-index="<?php echo $i; ?>">
-          <div class="pulse-avatar" style="<?php echo $avatarStyle; ?>">
-            <?php echo strtoupper(substr($p['username'], 0, 1)); ?>
-          </div>
-          <div class="pulse-text">
-            <strong><?php echo e($p['username']); ?></strong>
-            <?php echo htmlspecialchars(strip_tags($p['action'])); ?>
-            <?php if ($timeAgo): ?><span class="pulse-time">&middot; <?php echo $timeAgo; ?></span><?php endif; ?>
-          </div>
+      <!-- Single rotating element -->
+      <div class="pulse-feed">
+        <div class="pulse-item" id="pulseDisplay">
+          <!-- filled by JS -->
         </div>
-        <?php endforeach; ?>
       </div>
       <!-- Global Chat Form -->
       <form method="POST" class="pulse-chat-form" id="global-chat-form">
@@ -813,6 +808,47 @@ main.page {
       </form>
     </div>
   </div>
+  <script>
+  (function(){
+    const el = document.getElementById('pulseDisplay');
+    if (!el) return;
+    const data = <?php echo json_encode($pulseJson); ?>;
+    if (!data.length) return;
+    let idx = 0;
+
+    function renderItem(item) {
+      const borderStyle = item.color
+        ? `border: 2px solid ${item.color}; box-shadow: 0 0 8px ${item.color};`
+        : 'border: 1px solid var(--border);';
+      el.innerHTML = `
+        <div class="pulse-avatar" style="${borderStyle}">${item.initial}</div>
+        <div class="pulse-text">
+          <strong>${item.username}</strong>
+          ${item.action}
+          <span class="pulse-time">&middot; ${item.timeAgo}</span>
+        </div>`;
+      // Restart the CSS animation by re-appending the element
+      el.style.animation = 'none';
+      void el.offsetWidth; // reflow
+      el.style.animation = '';
+    }
+
+    renderItem(data[0]);
+    if (data.length > 1) {
+      setInterval(() => {
+        idx = (idx + 1) % data.length;
+        renderItem(data[idx]);
+      }, 4000);
+    }
+
+    // Expose for chat injection
+    window.pulsePrepend = function(item) {
+      data.unshift(item);
+      idx = 0;
+      renderItem(data[0]);
+    };
+  })();
+  </script>
   <?php endif; ?>
 
 </div><!-- /dash-wrap -->
@@ -911,21 +947,7 @@ function openDailyBox() {
     });
 }
 
-// ── Pulse Feed: rotate one item at a time ──
-(function() {
-  const feed = document.getElementById('pulseFeed');
-  if (!feed) return;
-  const items = feed.querySelectorAll('.pulse-item');
-  if (items.length <= 1) return;
-  let current = 0;
-  setInterval(() => {
-    items[current].classList.remove('active');
-    current = (current + 1) % items.length;
-    items[current].classList.add('active');
-  }, 4000);
-})();
-
-// ── Global Chat AJAX ──
+// Global Chat AJAX
 document.getElementById('global-chat-form')?.addEventListener('submit', function(e) {
   e.preventDefault();
   const input = this.querySelector('input[name="chat_message"]');
@@ -949,37 +971,15 @@ document.getElementById('global-chat-form')?.addEventListener('submit', function
       if (data.success) {
         btn.innerHTML = '<i class="fas fa-check" style="font-size:12px;"></i>';
         btn.style.background = 'var(--success)';
-
-        // Inject new item at top of feed and show it immediately
-        const feed = document.getElementById('pulseFeed');
-        if (feed) {
-          // Remove active from all
-          feed.querySelectorAll('.pulse-item').forEach(el => el.classList.remove('active'));
-
-          const newItem = document.createElement('div');
-          newItem.className = 'pulse-item active';
-          newItem.innerHTML = `
-            <div class="pulse-avatar">${data.username.substring(0,1).toUpperCase()}</div>
-            <div class="pulse-text">
-              <strong>${data.username}</strong>
-              says: &ldquo;${data.message}&rdquo;
-              <span class="pulse-time">&middot; just now</span>
-            </div>`;
-          feed.prepend(newItem);
-
-          // Re-init rotation with new total
-          let cur = 0;
-          const all = feed.querySelectorAll('.pulse-item');
-          clearInterval(window._pulseTimer);
-          if (all.length > 1) {
-            window._pulseTimer = setInterval(() => {
-              all[cur].classList.remove('active');
-              cur = (cur + 1) % all.length;
-              all[cur].classList.add('active');
-            }, 4000);
-          }
+        if (typeof window.pulsePrepend === 'function') {
+          window.pulsePrepend({
+            initial:  data.username.substring(0,1).toUpperCase(),
+            username: data.username,
+            action:   'says: \u201c' + data.message + '\u201d',
+            timeAgo:  'just now',
+            color:    null
+          });
         }
-
         setTimeout(() => {
           btn.innerHTML = orig;
           btn.style.background = '';
