@@ -350,29 +350,27 @@ include 'header.php';
 
 /* Stats row */
 .chatbot-stats-row {
-    display: flex;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
     gap: 10px;
-    flex-wrap: wrap;
-    margin-bottom: 16px;
+    margin-bottom: 18px;
 }
 .stat-pill {
-    background: var(--bg-secondary);
+    background: var(--bg-card);
     border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 10px 16px;
+    border-radius: 12px;
+    padding: 12px 16px;
     display: flex;
     flex-direction: column;
-    gap: 2px;
-    flex: 1;
-    min-width: 80px;
+    gap: 3px;
 }
-.stat-pill .pill-label { font-size: 10px; color: var(--text-muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.4px; }
-.stat-pill .pill-value { font-size: 18px; font-weight: 700; color: var(--primary); line-height: 1.2; }
+.stat-pill .pill-label { font-size: 10px; color: var(--text-muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+.stat-pill .pill-value { font-size: 20px; font-weight: 700; color: var(--primary); line-height: 1.2; }
 
 /* Main layout */
 .chatbot-layout {
     display: grid;
-    grid-template-columns: 2fr 1fr;
+    grid-template-columns: 3fr 1.25fr;
     gap: 20px;
     align-items: start;
 }
@@ -380,13 +378,28 @@ include 'header.php';
 .chat-container {
     display: flex;
     flex-direction: column;
-    height: 560px;
+    height: 540px;
     background: var(--bg-card);
     border-radius: 14px;
     border: 1px solid var(--border);
     overflow: hidden;
     box-shadow: var(--shadow-md);
 }
+
+/* Sidebar scrollable on desktop */
+.sidebar-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    max-height: 540px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    scrollbar-width: thin;
+    scrollbar-color: var(--border) transparent;
+}
+.sidebar-panel::-webkit-scrollbar { width: 4px; }
+.sidebar-panel::-webkit-scrollbar-track { background: transparent; }
+.sidebar-panel::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
 
 .chat-messages {
     flex: 1;
@@ -487,9 +500,9 @@ include 'header.php';
 .chat-input-area button:hover:not(:disabled) { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(22,160,133,0.3); }
 .chat-input-area button:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
 
-/* Sidebar panel */
-.sidebar-panel { display: flex; flex-direction: column; gap: 0; }
-.health-summary { display: flex; flex-direction: column; gap: 9px; margin-top: 12px; }
+/* Remove the old sidebar-panel rule since it's defined above */
+
+.health-summary { display: flex; flex-direction: column; gap: 8px; margin-top: 12px; }
 .health-metric {
     display: flex;
     align-items: center;
@@ -544,9 +557,11 @@ include 'header.php';
 /* ============================================= */
 /* RESPONSIVE */
 /* ============================================= */
-@media (max-width: 900px) {
+@media (max-width: 960px) {
     .chatbot-layout { grid-template-columns: 1fr; }
-    .chat-container { height: 500px; }
+    .chatbot-stats-row { grid-template-columns: repeat(2, 1fr); }
+    .chat-container { height: 460px; }
+    .sidebar-panel { max-height: none; overflow-y: visible; }
 }
 
 @media (max-width: 640px) {

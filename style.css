@@ -180,17 +180,16 @@ a:hover {
     top: 0;
     left: 0;
     right: 0;
-    background: rgba(255, 255, 255, 0.92);
+    background: rgba(255, 255, 255, 0.70);
     -webkit-backdrop-filter: blur(20px) saturate(180%);
     backdrop-filter: blur(20px) saturate(180%);
-    border-bottom: 1px solid var(--border);
+    border-bottom: 1px solid rgba(0,0,0,0.06);
     border-top: none;
     border-left: none;
     border-right: none;
     border-radius: 0;
-    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
     z-index: 200;
-    /* Spring animation — same easing used in iOS Dynamic Island */
     transition:
         top      0.55s cubic-bezier(0.34, 1.3, 0.64, 1),
         left     0.55s cubic-bezier(0.34, 1.3, 0.64, 1),
@@ -201,20 +200,20 @@ a:hover {
         border-color  0.35s ease;
 }
 
-/* ── Floating pill saat scroll (Dynamic Island) ── */
+/* Floating pill on scroll */
 .site-header.scrolled {
     top: 12px;
     left: 16px;
     right: 16px;
     border-radius: 50px;
-    border: 1px solid var(--border);
-    background: rgba(255, 255, 255, 0.96);
-    -webkit-backdrop-filter: blur(24px) saturate(200%);
-    backdrop-filter: blur(24px) saturate(200%);
+    border: 1px solid rgba(0,0,0,0.08);
+    background: rgba(255, 255, 255, 0.84);
+    -webkit-backdrop-filter: blur(28px) saturate(200%);
+    backdrop-filter: blur(28px) saturate(200%);
     box-shadow:
-        0 4px 24px rgba(0, 0, 0, 0.10),
-        0 1px 4px rgba(0, 0, 0, 0.06),
-        inset 0 1px 0 rgba(255, 255, 255, 0.6);
+        0 4px 24px rgba(0, 0, 0, 0.08),
+        0 1px 4px rgba(0, 0, 0, 0.04),
+        inset 0 1px 0 rgba(255, 255, 255, 0.5);
 }
 
 /* Desktop: pill lebih lebar (lebih ke tengah) */
@@ -707,12 +706,18 @@ body.auth-page {
     display: flex;
     align-items: center;
     justify-content: center;
-    background: linear-gradient(135deg, #f0fdf4 0%, #eff6ff 100%);
-    padding-top: 0; /* auth pages have no header */
+    background:
+        radial-gradient(ellipse at 20% 50%, rgba(22,160,133,0.18) 0%, transparent 55%),
+        radial-gradient(ellipse at 80% 20%, rgba(52,152,219,0.14) 0%, transparent 50%),
+        linear-gradient(160deg, #e8f5f1 0%, #edf4fb 100%);
+    padding-top: 0;
 }
 
-body.auth-page.theme-dark {
-    background: linear-gradient(135deg, #1a2e1a 0%, #1a1a2e 100%);
+:root[data-theme="dark"] body.auth-page {
+    background:
+        radial-gradient(ellipse at 20% 50%, rgba(22,160,133,0.22) 0%, transparent 55%),
+        radial-gradient(ellipse at 80% 20%, rgba(52,152,219,0.16) 0%, transparent 50%),
+        linear-gradient(160deg, #0e1c18 0%, #0e1522 100%);
 }
 
 .auth-wrapper {
@@ -2286,21 +2291,21 @@ button:disabled {
 }
 
 :root[data-theme="dark"] .site-header {
-    background: rgba(18, 18, 18, 0.92);
+    background: rgba(18, 18, 18, 0.68);
     -webkit-backdrop-filter: blur(20px) saturate(180%);
     backdrop-filter: blur(20px) saturate(180%);
-    border-bottom-color: rgba(255, 255, 255, 0.07);
+    border-bottom-color: rgba(255, 255, 255, 0.05);
 }
 
 :root[data-theme="dark"] .site-header.scrolled {
-    background: rgba(22, 22, 22, 0.96);
-    -webkit-backdrop-filter: blur(24px) saturate(200%);
-    backdrop-filter: blur(24px) saturate(200%);
-    border-color: rgba(255, 255, 255, 0.09);
+    background: rgba(22, 22, 22, 0.82);
+    -webkit-backdrop-filter: blur(28px) saturate(200%);
+    backdrop-filter: blur(28px) saturate(200%);
+    border-color: rgba(255, 255, 255, 0.07);
     box-shadow:
-        0 4px 24px rgba(0, 0, 0, 0.45),
-        0 1px 4px rgba(0, 0, 0, 0.25),
-        inset 0 1px 0 rgba(255, 255, 255, 0.04);
+        0 4px 24px rgba(0, 0, 0, 0.4),
+        0 1px 4px rgba(0, 0, 0, 0.2),
+        inset 0 1px 0 rgba(255, 255, 255, 0.03);
 }
 
 :root[data-theme="dark"] .text-dark,
