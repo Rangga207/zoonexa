@@ -560,7 +560,7 @@ main.page {
   <!-- ── Greeting Bar ── -->
   <div class="dash-greeting">
     <div>
-      <h1><?php echo $timeGreeting; ?>, <span><?php echo e($username); ?></span> <?php echo $timeEmoji; ?></h1>
+      <h1><?php echo $timeGreeting; ?>, <span><?php echo e($username); ?></span></h1>
       <p class="sub"><?php echo $motivationText; ?> • <span style="opacity:0.7; font-size: 13px;"><?php echo date('l, F j'); ?></span></p>
     </div>
     <?php if ($canSpin): ?>
