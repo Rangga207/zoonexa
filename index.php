@@ -767,7 +767,7 @@ main.page {
         <?php if (count($logData) < 2): ?>
           <div style="position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; background:rgba(0,0,0,0.45); border-radius:10px; backdrop-filter:blur(4px); z-index:5;">
             <i class="fas fa-chart-bar" style="font-size:28px; color:rgba(255,255,255,0.3); margin-bottom:10px;"></i>
-            <p style="color:white; font-size:13px; margin:0;">Log at least 2 times to see your trend</p>
+            <p style="color:white; font-size:13px; margin:0;">Log at least 2 times to see your chart</p>
             <a href="health_log.php" class="hero-btn primary" style="margin-top:12px; padding:8px 16px; font-size:13px;">Log Now</a>
           </div>
         <?php endif; ?>
